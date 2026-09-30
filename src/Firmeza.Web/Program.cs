@@ -1,4 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using Firmeza.Infrastructure.Persistence; 
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+                       ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(connectionString, b => b.MigrationsAssembly("Firmeza.Infrastructure")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

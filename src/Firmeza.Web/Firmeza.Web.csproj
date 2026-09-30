@@ -13,4 +13,8 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Firmeza.Infrastructure\Firmeza.Infrastructure.csproj" />
+    </ItemGroup>
+
 </Project>
