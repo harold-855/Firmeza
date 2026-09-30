@@ -11,4 +11,4 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         base.OnModelCreating(builder);
         // Las advertencias desaparecerán en cuanto agregues tablas aquí más adelante
     }
-}
+}   
