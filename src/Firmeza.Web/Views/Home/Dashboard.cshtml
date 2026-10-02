@@ -1,0 +1,319 @@
+@model DashboardMetricsDto
+@{
+    ViewData["Title"] = "Panel de Control Operativo - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+    var totalDespachos = (Model.DespachosPendientes + Model.DespachosEnRuta + Model.DespachosEntregados);
+    var tasaEntrega = totalDespachos > 0 ? (int)Math.Round((double)Model.DespachosEntregados / totalDespachos * 100) : 100;
+}
+
+<!-- Page Header & Welcome -->
+<div class="row align-items-center mb-4 g-3">
+    <div class="col-md-7">
+        <div class="d-flex align-items-center gap-3">
+            <div class="p-3 bg-primary text-white rounded-4 shadow-sm">
+                <i class="bi bi-speedometer2 fs-2"></i>
+            </div>
+            <div>
+                <h2 class="fw-bold mb-1 text-dark">Panel de Control General</h2>
+                <p class="text-muted mb-0">
+                    Bienvenido de nuevo, <span class="fw-semibold text-primary">@User.Identity?.Name</span>. Resumen operativo de <strong>Firmeza</strong>.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 text-md-end">
+        <div class="d-inline-flex gap-2 align-items-center bg-white p-2 px-3 rounded-pill shadow-sm border">
+            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                <i class="bi bi-circle-fill" style="font-size: 0.55rem;"></i> En Línea
+            </span>
+            <span class="text-muted small">@DateTime.Now.ToString("dd 'de' MMMM, yyyy", colCulture)</span>
+            <a asp-action="Dashboard" class="btn btn-sm btn-outline-primary rounded-circle p-1" style="width: 28px; height: 28px; line-height: 1;" title="Actualizar datos">
+                <i class="bi bi-arrow-clockwise"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- KPI Metric Cards -->
+<div class="row g-3 mb-4">
+    <!-- Card 1: Total Productos -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-kpi bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="card-body p-0 d-flex align-items-center">
+                <div class="kpi-icon-box bg-primary bg-opacity-10 text-primary me-3">
+                    <i class="bi bi-box-seam"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="text-muted small fw-semibold text-uppercase">Productos</span>
+                    <h3 class="fw-bold mb-0 text-dark">@Model.TotalProductos</h3>
+                    <span class="badge bg-primary-subtle text-primary mt-1">Catálogo Activo</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2: Clientes -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-kpi bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="card-body p-0 d-flex align-items-center">
+                <div class="kpi-icon-box bg-info bg-opacity-10 text-info me-3">
+                    <i class="bi bi-people"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="text-muted small fw-semibold text-uppercase">Clientes</span>
+                    <h3 class="fw-bold mb-0 text-dark">@Model.TotalClientes</h3>
+                    <span class="badge bg-info-subtle text-info mt-1">Registrados</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3: Ventas Realizadas -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-kpi bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="card-body p-0 d-flex align-items-center">
+                <div class="kpi-icon-box bg-warning bg-opacity-10 text-warning me-3">
+                    <i class="bi bi-cart-check"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="text-muted small fw-semibold text-uppercase">Total Ventas</span>
+                    <h3 class="fw-bold mb-0 text-dark">@Model.TotalVentas</h3>
+                    <span class="badge bg-warning-subtle text-warning mt-1">Órdenes procesadas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 4: Ingresos Totales -->
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="card card-kpi bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="card-body p-0 d-flex align-items-center">
+                <div class="kpi-icon-box bg-success bg-opacity-10 text-success me-3">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="text-muted small fw-semibold text-uppercase">Ingresos Totales</span>
+                    <h3 class="fw-bold mb-0 text-dark">@Model.MontoTotalVentas.ToString("C0", colCulture)</h3>
+                    <span class="badge bg-success-subtle text-success mt-1">Facturación COP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Logistics & Dispatch Status Bar -->
+<div class="card border-0 shadow-sm rounded-4 mb-4 bg-white p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                <i class="bi bi-truck text-primary"></i> Estado Operativo de Despachos y Logística
+            </h5>
+            <small class="text-muted">Control de entregas y distribución de materiales de construcción</small>
+        </div>
+        <div class="text-end">
+            <span class="small text-muted">Efectividad de entrega: </span>
+            <strong class="text-success">@tasaEntrega%</strong>
+        </div>
+    </div>
+
+    <div class="row g-3 text-center mb-3">
+        <div class="col-md-4">
+            <div class="p-3 rounded-4 bg-warning bg-opacity-10 border border-warning border-opacity-25 h-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="text-start">
+                        <span class="small text-warning-emphasis fw-bold text-uppercase">Pendientes</span>
+                        <h4 class="fw-bold mb-0 text-warning-emphasis">@Model.DespachosPendientes</h4>
+                    </div>
+                    <i class="bi bi-hourglass-split fs-2 text-warning"></i>
+                </div>
+                <small class="text-muted d-block text-start mt-2">En preparación o asignación</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 rounded-4 bg-primary bg-opacity-10 border border-primary border-opacity-25 h-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="text-start">
+                        <span class="small text-primary-emphasis fw-bold text-uppercase">En Ruta</span>
+                        <h4 class="fw-bold mb-0 text-primary-emphasis">@Model.DespachosEnRuta</h4>
+                    </div>
+                    <i class="bi bi-send-check fs-2 text-primary"></i>
+                </div>
+                <small class="text-muted d-block text-start mt-2">En tránsito hacia destino</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="p-3 rounded-4 bg-success bg-opacity-10 border border-success border-opacity-25 h-100">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="text-start">
+                        <span class="small text-success-emphasis fw-bold text-uppercase">Entregados</span>
+                        <h4 class="fw-bold mb-0 text-success-emphasis">@Model.DespachosEntregados</h4>
+                    </div>
+                    <i class="bi bi-check2-circle fs-2 text-success"></i>
+                </div>
+                <small class="text-muted d-block text-start mt-2">Recibidos a satisfacción</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress" style="height: 8px;" role="progressbar" aria-valuenow="@tasaEntrega" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-success" style="width: @(tasaEntrega)%"></div>
+    </div>
+</div>
+
+<!-- Quick Actions Row -->
+<div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+        <a asp-action="Dashboard" class="card action-card bg-white p-3 rounded-4 text-center text-dark shadow-sm">
+            <div class="text-primary mb-2"><i class="bi bi-plus-circle fs-3"></i></div>
+            <span class="fw-semibold small">Nueva Venta</span>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a asp-action="Dashboard" class="card action-card bg-white p-3 rounded-4 text-center text-dark shadow-sm">
+            <div class="text-success mb-2"><i class="bi bi-box-arrow-in-down fs-3"></i></div>
+            <span class="fw-semibold small">Añadir Producto</span>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a asp-action="Dashboard" class="card action-card bg-white p-3 rounded-4 text-center text-dark shadow-sm">
+            <div class="text-info mb-2"><i class="bi bi-person-plus fs-3"></i></div>
+            <span class="fw-semibold small">Registrar Cliente</span>
+        </a>
+    </div>
+    <div class="col-6 col-md-3">
+        <a asp-controller="Account" asp-action="Register" class="card action-card bg-white p-3 rounded-4 text-center text-dark shadow-sm">
+            <div class="text-dark mb-2"><i class="bi bi-shield-lock fs-3"></i></div>
+            <span class="fw-semibold small">Nuevo Administrador</span>
+        </a>
+    </div>
+</div>
+
+<!-- Main Tables Section -->
+<div class="row g-4">
+    <!-- Recent Sales Table -->
+    <div class="col-12 col-lg-7">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-receipt text-primary"></i> Ventas Recientes
+                    </h5>
+                    <small class="text-muted">Últimas transacciones registradas en el sistema</small>
+                </div>
+            </div>
+            <div class="card-body px-4 pb-4 pt-2">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-muted">
+                            <tr>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.VentasRecientes.Any())
+                            {
+                                @foreach (var v in Model.VentasRecientes)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                                    @(string.IsNullOrEmpty(v.ClienteNombre) ? "C" : v.ClienteNombre.Substring(0, 1).ToUpper())
+                                                </div>
+                                                <span class="fw-semibold text-dark">@v.ClienteNombre</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted small">@v.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                        <td class="fw-bold text-dark">@v.Total.ToString("C0", colCulture)</td>
+                                        <td>
+                                            @if (v.EstadoDespacho == "Pendiente")
+                                            {
+                                                <span class="badge bg-warning text-dark px-2 py-1"><i class="bi bi-clock me-1"></i>Pendiente</span>
+                                            }
+                                            else if (v.EstadoDespacho == "En Ruta")
+                                            {
+                                                <span class="badge bg-primary px-2 py-1"><i class="bi bi-truck me-1"></i>En Ruta</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-success px-2 py-1"><i class="bi bi-check-circle me-1"></i>Entregado</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox fs-2 d-block mb-1 text-muted"></i>
+                                        No hay transacciones registradas actualmente.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Stock Alerts -->
+    <div class="col-12 col-lg-5">
+        <div class="card border-0 shadow-sm rounded-4 h-100 bg-white">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
+                        <i class="bi bi-exclamation-triangle text-danger"></i> Alertas de Stock
+                    </h5>
+                    <small class="text-muted">Productos con existencia reducida (&lt; 50 uds)</small>
+                </div>
+            </div>
+            <div class="card-body px-4 pb-4 pt-2">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light small text-muted">
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center">Stock</th>
+                                <th class="text-end">Precio Unit.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.ProductosBajoStock.Any())
+                            {
+                                @foreach (var p in Model.ProductosBajoStock)
+                                {
+                                    <tr>
+                                        <td>
+                                            <span class="fw-semibold text-dark small d-block">@p.Nombre</span>
+                                            <span class="text-muted" style="font-size: 0.72rem;">@p.UnidadMedida</span>
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-2 py-1">
+                                                <i class="bi bi-arrow-down me-1"></i>@p.StockActual
+                                            </span>
+                                        </td>
+                                        <td class="text-end small fw-semibold text-muted">@p.PrecioUnitario.ToString("C0", colCulture)</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">
+                                        <i class="bi bi-check2-circle fs-2 d-block mb-1 text-success"></i>
+                                        Todo el catálogo cuenta con existencias óptimas.
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

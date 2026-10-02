@@ -9,7 +9,7 @@ public class Venta : BaseEntity
     public string EstadoDespacho { get; set; } = "Pendiente"; // Pendiente, En Ruta, Entregado
     
     // Relación con Cliente (Muchos a Uno)
-    public int ClienteId { get; set; }
+    public Guid ClienteId { get; set; }
     public Cliente Cliente { get; set; } = null!;
 
     // Relación: Una venta tiene muchos detalles (Uno a Muchos)

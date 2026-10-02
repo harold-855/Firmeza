@@ -1,0 +1,39 @@
+@{
+    ViewData["Title"] = "Acceso Denegado - Firmeza";
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6 text-center">
+        <div class="card shadow-sm border-0 rounded-3 p-4">
+            <div class="card-body">
+                <div class="mb-4">
+                    <span class="badge bg-danger rounded-pill p-3 fs-1">
+                        🔒
+                    </span>
+                </div>
+                <h2 class="text-danger fw-bold mb-3">Acceso Restringido</h2>
+                <p class="lead text-secondary mb-4">
+                    No tienes los permisos necesarios para acceder a esta sección del sistema.
+                </p>
+                <div class="alert alert-warning text-start">
+                    <h6 class="fw-bold mb-2">Información sobre roles:</h6>
+                    <ul class="mb-0 small">
+                        <li><strong>Administrador:</strong> Acceso total al panel de gestión web (Razor).</li>
+                        <li><strong>Cliente:</strong> Acceso exclusivo a través de la aplicación cliente (Angular).</li>
+                    </ul>
+                </div>
+                <div class="mt-4 d-flex justify-content-center gap-2">
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-primary">
+                        Ir al Inicio de Sesión
+                    </a>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-outline-secondary">Cerrar Sesión Actual</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

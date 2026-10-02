@@ -13,4 +13,4 @@ public class Producto: BaseEntity
 
     // Relación: Un producto puede estar en muchos detalles de venta
     public ICollection<VentaDetalle> DetallesVenta { get; set; } = new List<VentaDetalle>();
-}
+}   

@@ -1,6 +1,71 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
+@{
+    ViewData["Title"] = "Políticas de Privacidad y Seguridad - Firmeza";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card border-0 shadow-sm rounded-4 bg-white p-4 mb-4">
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+                <div class="p-3 bg-info bg-opacity-10 text-info rounded-4">
+                    <i class="bi bi-shield-lock fs-2"></i>
+                </div>
+                <div>
+                    <h3 class="fw-bold mb-1 text-dark">Políticas de Privacidad y Seguridad del Sistema</h3>
+                    <p class="text-muted mb-0">Normas y protocolos de protección de datos para la plataforma <strong>Firmeza</strong>.</p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="p-3 rounded-4 bg-light h-100 border">
+                        <h6 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <i class="bi bi-person-badge text-primary"></i> Control de Acceso y Roles
+                        </h6>
+                        <p class="text-muted small mb-0">
+                            El acceso a este panel está restringido exclusivamente a usuarios con el rol <code>Administrador</code>. Todas las sesiones se validan mediante cookies seguras HttpOnly con expiración automática.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 rounded-4 bg-light h-100 border">
+                        <h6 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <i class="bi bi-database-check text-success"></i> Protección de Información Comercial
+                        </h6>
+                        <p class="text-muted small mb-0">
+                            Los datos de ventas, clientes e inventario son almacenados de forma segura en PostgreSQL bajo estándares de cifrado y aislamiento por entorno en contenedores.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 rounded-4 bg-light h-100 border">
+                        <h6 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <i class="bi bi-shield-check text-warning"></i> Prevención CSRF / XSS
+                        </h6>
+                        <p class="text-muted small mb-0">
+                            Todas las peticiones que modifiquen el estado del sistema están protegidas con tokens anti-falsificación (ValidateAntiForgeryToken) y encabezados de seguridad de transporte.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="p-3 rounded-4 bg-light h-100 border">
+                        <h6 class="fw-bold text-dark d-flex align-items-center gap-2">
+                            <i class="bi bi-journal-text text-info"></i> Trazabilidad Operativa
+                        </h6>
+                        <p class="text-muted small mb-0">
+                            Cada movimiento de inventario, despacho de materiales y transacción comercial queda registrado con su fecha y estado correspondiente para fines de auditoría.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 text-end">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary rounded-pill px-4">
+                    <i class="bi bi-arrow-left me-1"></i> Regresar al Inicio
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,10 +9,10 @@ public class VentaDetalle : BaseEntity
     public decimal Subtotal => Cantidad * PrecioAplicado;
 
     // Relación con Venta (Muchos a Uno)
-    public int VentaId { get; set; }
+    public Guid VentaId { get; set; }
     public Venta Venta { get; set; } = null!;
 
     // Relación con Producto (Muchos a Uno)
-    public int ProductoId { get; set; }
+    public Guid ProductoId { get; set; }
     public Producto Producto { get; set; } = null!;
 }

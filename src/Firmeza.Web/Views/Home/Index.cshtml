@@ -1,8 +1,270 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Inicio - Firmeza | Materiales de Construcción y Ferretería";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Hero Section -->
+<div class="p-5 mb-5 rounded-4 text-white position-relative overflow-hidden shadow-lg" 
+     style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 60%, #1e3a8a 100%);">
+    <div class="row align-items-center py-4">
+        <div class="col-lg-7">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 rounded-pill bg-warning text-dark fw-bold small mb-3">
+                <i class="bi bi-star-fill"></i> Soluciones Integrales para la Construcción
+            </div>
+            <h1 class="display-4 fw-black tracking-tight mb-3 text-white">
+                Construye con la solidez de <span class="text-warning">FIRMEZA</span>
+            </h1>
+            <p class="lead text-white-50 mb-4 fs-5" style="max-width: 600px;">
+                Líderes en distribución de materiales pesados, ferretería industrial y logística de despachos directos a tu obra con puntualidad y garantía garantizada.
+            </p>
+            <div class="d-flex flex-wrap gap-3 align-items-center">
+                @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Administrador"))
+                {
+                    <a asp-controller="Home" asp-action="Dashboard" class="btn btn-warning btn-lg fw-bold px-4 py-3 shadow-sm rounded-pill d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-speedometer2 fs-5"></i> Ir al Panel de Control
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="btn btn-warning btn-lg fw-bold px-4 py-3 shadow-sm rounded-pill d-inline-flex align-items-center gap-2">
+                        <i class="bi bi-box-arrow-in-right fs-5"></i> Iniciar Sesión / Panel Administrativo
+                    </a>
+                }
+                <a href="#servicios" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-arrow-down-circle fs-5"></i> Conocer Servicios
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-5 d-none d-lg-block text-center position-relative">
+            <div class="p-4 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-10 shadow-lg text-start">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-3 bg-warning text-dark rounded-3 fs-3 fw-bold">
+                        <i class="bi bi-truck"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 text-white">Despachos Express</h5>
+                        <small class="text-white-50">Entregas directas en el punto de tu obra</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="p-3 bg-primary text-white rounded-3 fs-3 fw-bold">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 text-white">Calidad Certificada</h5>
+                        <small class="text-white-50">Materiales avalados con normas técnicas</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 bg-success text-white rounded-3 fs-3 fw-bold">
+                        <i class="bi bi-tag-fill"></i>
+                    </div>
+                    <div>
+                        <h5 class="fw-bold mb-0 text-white">Precios Mayoristas</h5>
+                        <small class="text-white-50">Las mejores cotizaciones para tus proyectos</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Servicios / Líneas de Materiales -->
+<div id="servicios" class="mb-5 pt-3">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary-subtle text-primary text-uppercase px-3 py-2 rounded-pill fw-bold">Nuestro Catálogo</span>
+        <h2 class="fw-bold mt-2 text-dark">Líneas de Materiales y Suministros</h2>
+        <p class="text-muted mx-auto" style="max-width: 600px;">
+            Contamos con un amplio inventario para cubrir cada etapa de tu proyecto de construcción o remodelación.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center hover-card bg-white">
+                <div class="mx-auto mb-3 p-3 bg-primary bg-opacity-10 text-primary rounded-circle" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-bricks fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Cementos y Concretos</h5>
+                <p class="text-muted small">
+                    Cemento gris, estructural, morteros secos, agregados y arenas con despacho a granel o por sacos.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center hover-card bg-white">
+                <div class="mx-auto mb-3 p-3 bg-warning bg-opacity-10 text-warning-emphasis rounded-circle" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-grid-3x3-gap-fill fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Aceros y Estructuras</h5>
+                <p class="text-muted small">
+                    Varillas corrugadas, mallas electrosoldadas, perfiles estructurales, alambres y estribos de alta resistencia.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center hover-card bg-white">
+                <div class="mx-auto mb-3 p-3 bg-success bg-opacity-10 text-success rounded-circle" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-tools fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Ferretería Industrial</h5>
+                <p class="text-muted small">
+                    Herramientas eléctricas y manuales, fijaciones, tornillería especializada y equipos de protección personal.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center hover-card bg-white">
+                <div class="mx-auto mb-3 p-3 bg-info bg-opacity-10 text-info rounded-circle" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-droplet-half fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Fontanería y Tuberías</h5>
+                <p class="text-muted small">
+                    Sistemas de tuberías PVC, CPVC, accesorios sanitarios, hidráulicos y de ventilación de marcas líderes.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center hover-card bg-white">
+                <div class="mx-auto mb-3 p-3 bg-danger bg-opacity-10 text-danger rounded-circle" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-paint-bucket fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Pinturas y Acabados</h5>
+                <p class="text-muted small">
+                    Vinilos, impermeabilizantes, estucos, selladores y revestimientos de alto rendimiento para interiores y exteriores.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 p-4 text-center hover-card bg-white">
+                <div class="mx-auto mb-3 p-3 bg-secondary bg-opacity-10 text-secondary rounded-circle" style="width: 70px; height: 70px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-lightning-charge-fill fs-2 text-warning"></i>
+                </div>
+                <h5 class="fw-bold text-dark">Material Eléctrico</h5>
+                <p class="text-muted small">
+                    Cables conductores, tubería conduit, tableros de distribución, iluminación LED y dispositivos de control.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ventajas Competitivas -->
+<div class="bg-white rounded-4 p-5 shadow-sm mb-5 border">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+            <span class="badge bg-success-subtle text-success text-uppercase px-3 py-2 rounded-pill fw-bold mb-2">Confianza y Firmeza</span>
+            <h2 class="fw-bold text-dark mb-3">¿Por qué las constructoras eligen Firmeza?</h2>
+            <p class="text-muted mb-4">
+                Entendemos que el cumplimiento en obra es fundamental. Por ello, nuestro sistema integral coordina pedidos, stock en tiempo real y despachos con trazabilidad garantizada.
+            </p>
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex align-items-start gap-3">
+                    <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Trazabilidad Total de Envíos</h6>
+                        <small class="text-muted">Conoce el estado exacto de tu despacho en tiempo real desde la carga hasta el desembarque.</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3">
+                    <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Atención y Asesoría Técnica</h6>
+                        <small class="text-muted">Personal capacitado listo para guiarte en el cálculo de cantidades y especificaciones de obra.</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start gap-3">
+                    <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+                    <div>
+                        <h6 class="fw-bold mb-0 text-dark">Precios Competitivos y Facturación Legal</h6>
+                        <small class="text-muted">Cumplimiento tributario con facturación electrónica y precios directos de distribuidor.</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="p-4 rounded-4 bg-light border text-center">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="p-3 bg-white rounded-3 shadow-sm">
+                            <h3 class="fw-bold text-primary mb-0">+100%</h3>
+                            <small class="text-muted">Cumplimiento en Despachos</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-white rounded-3 shadow-sm">
+                            <h3 class="fw-bold text-warning mb-0">24/48h</h3>
+                            <small class="text-muted">Entregas en Obra</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-white rounded-3 shadow-sm">
+                            <h3 class="fw-bold text-success mb-0">+5,000</h3>
+                            <small class="text-muted">Productos Disponibles</small>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="p-3 bg-white rounded-3 shadow-sm">
+                            <h3 class="fw-bold text-info mb-0">100%</h3>
+                            <small class="text-muted">Garantía Certificada</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Login Panel Anchor Section -->
+<div class="rounded-4 p-5 text-center text-white shadow-sm mb-5 position-relative overflow-hidden" 
+     style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+    <div class="position-relative" style="z-index: 2;">
+        <h2 class="fw-bold mb-2">¿Gestionas inventario, pedidos o despachos?</h2>
+        <p class="text-white-70 lead mb-4 mx-auto" style="max-width: 650px;">
+            Accede al portal administrativo para controlar ventas, coordinar rutas de despacho, revisar alertas de stock y gestionar clientes.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+            @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Administrador"))
+            {
+                <a asp-controller="Home" asp-action="Dashboard" class="btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill shadow">
+                    <i class="bi bi-speedometer2 me-2"></i>Ir al Panel de Control
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="btn btn-warning btn-lg fw-bold px-5 py-3 rounded-pill shadow">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión en el Panel
+                </a>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Contact & Info Section -->
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white text-center">
+            <i class="bi bi-geo-alt-fill fs-2 text-danger mb-2"></i>
+            <h6 class="fw-bold text-dark">Sede Principal</h6>
+            <p class="text-muted small mb-0">Av. Principal #45-12, Sector Industrial<br />Bogotá D.C., Colombia</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white text-center">
+            <i class="bi bi-telephone-fill fs-2 text-primary mb-2"></i>
+            <h6 class="fw-bold text-dark">Líneas de Atención</h6>
+            <p class="text-muted small mb-0">+57 (1) 8000-FIRMEZA<br />ventas@firmeza.com</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm rounded-4 p-4 bg-white text-center">
+            <i class="bi bi-clock-fill fs-2 text-success mb-2"></i>
+            <h6 class="fw-bold text-dark">Horarios de Despacho</h6>
+            <p class="text-muted small mb-0">Lunes a Viernes: 6:00 AM - 6:00 PM<br />Sábados: 7:00 AM - 2:00 PM</p>
+        </div>
+    </div>
 </div>

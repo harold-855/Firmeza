@@ -9,23 +9,69 @@ html {
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #2563eb;
 }
 
 body {
-  margin-bottom: 60px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #1e293b;
+  background-color: #f8fafc;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* Navbar links */
+.hover-light {
+  transition: all 0.2s ease-in-out;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+}
+.hover-light:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+.hover-light.active {
+  color: #ffffff !important;
+  font-weight: 600;
+  background-color: rgba(37, 99, 235, 0.2);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* KPI Cards */
+.card-kpi {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+.card-kpi:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+.kpi-icon-box {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  font-size: 1.5rem;
+}
+
+/* Table styling */
+.table-hover tbody tr:hover {
+  background-color: #f1f5f9;
+}
+
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Action card */
+.action-card {
+  transition: all 0.2s ease;
+  text-decoration: none;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.action-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0,0,0,0.06);
+  border-color: #3b82f6;
 }
