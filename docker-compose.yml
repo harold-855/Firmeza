@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  # Base de Datos PostgreSQL
+  firmeza-db:
+    image: postgres:16-alpine
+    container_name: firmeza-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: firmeza_db
+      POSTGRES_USER: firmeza_user
+      POSTGRES_PASSWORD: FirmezaSecurePassword2026*
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - firmeza-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U firmeza_user -d firmeza_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Aplicación Web Backend ASP.NET Core & SPA Frontend Integrada
+  firmeza-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: firmeza-web-app
+    restart: unless-stopped
+    depends_on:
+      firmeza-db:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Host=firmeza-db;Port=5432;Database=firmeza_db;Username=firmeza_user;Password=FirmezaSecurePassword2026*
+    ports:
+      - "5000:8080"
+    networks:
+      - firmeza-network
+
+networks:
+  firmeza-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local

@@ -1,0 +1,111 @@
+@model ProductoDto
+@{
+    ViewData["Title"] = $"Detalle del Producto: {Model.Nombre} - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Navigation breadcrumb / back link -->
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-muted d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Volver al Catálogo de Productos
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+            <div class="card-header bg-light border-0 p-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 bg-primary text-white rounded-4">
+                        <i class="bi bi-box-seam fs-2"></i>
+                    </div>
+                    <div>
+                        <span class="badge bg-primary-subtle text-primary mb-1">ID: @Model.Id</span>
+                        <h3 class="fw-bold mb-0 text-dark">@Model.Nombre</h3>
+                    </div>
+                </div>
+                <div>
+                    @if (Model.Activo)
+                    {
+                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-2 fs-6">
+                            <i class="bi bi-check-circle me-1"></i>Activo
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary rounded-pill px-3 py-2 fs-6">
+                            <i class="bi bi-dash-circle me-1"></i>Inactivo
+                        </span>
+                    }
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-12">
+                        <label class="text-muted small fw-semibold text-uppercase">Descripción Técnica</label>
+                        <p class="fs-6 text-dark bg-light p-3 rounded-3 mb-0">@Model.Descripcion</p>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded-4 bg-light border h-100">
+                            <span class="text-muted small fw-semibold text-uppercase d-block mb-1">Precio Unitario de Venta</span>
+                            <h3 class="fw-bold text-primary mb-0">@Model.PrecioUnitario.ToString("C0", colCulture)</h3>
+                            <small class="text-muted">Por cada @Model.UnidadMedida</small>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded-4 bg-light border h-100">
+                            <span class="text-muted small fw-semibold text-uppercase d-block mb-1">Stock Disponible</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <h3 class="fw-bold mb-0 @(Model.StockActual < 50 ? "text-danger" : "text-success")">
+                                    @Model.StockActual
+                                </h3>
+                                <span class="badge bg-secondary-subtle text-dark">@(Model.UnidadMedida)</span>
+                            </div>
+                            @if (Model.StockActual < 50)
+                            {
+                                <small class="text-danger fw-semibold"><i class="bi bi-exclamation-triangle-fill me-1"></i>Nivel de stock bajo (&lt; 50)</small>
+                            }
+                            else
+                            {
+                                <small class="text-success"><i class="bi bi-check2-circle me-1"></i>Nivel de inventario óptimo</small>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold text-uppercase">Unidad de Medida</label>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <i class="bi bi-rulers text-secondary"></i>
+                            <span class="fw-semibold">@Model.UnidadMedida</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <label class="text-muted small fw-semibold text-uppercase">Ventas y Órdenes Históricas</label>
+                        <div class="d-flex align-items-center gap-2 mt-1">
+                            <i class="bi bi-cart-check text-primary"></i>
+                            <span class="fw-semibold">@Model.TotalVentasAsociadas factura(s) / detalle(s)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-4" />
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger rounded-pill px-3">
+                        <i class="bi bi-trash me-1"></i> Eliminar / Desactivar
+                    </a>
+                    <div class="d-flex gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Volver</a>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning rounded-pill px-4 fw-semibold shadow-sm">
+                            <i class="bi bi-pencil me-1"></i> Editar
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

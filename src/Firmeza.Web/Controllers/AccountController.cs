@@ -75,6 +75,13 @@ public class AccountController(IAuthService authService) : Controller
     {
         ViewData["ReturnUrl"] = returnUrl;
 
+        // 1. Validación de la edad ingresada con try-catch y int.Parse
+        var validacionEdad = Firmeza.Application.Validators.ValidadorEdad.Validar(model.Edad);
+        if (!validacionEdad.EsValido)
+        {
+            ModelState.AddModelError("Edad", validacionEdad.MensajeError!);
+        }
+
         if (!ModelState.IsValid)
         {
             return View(model);

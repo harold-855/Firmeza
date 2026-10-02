@@ -34,7 +34,28 @@ export interface Producto {
   precioUnitario: number;
   stockActual: number;
   activo: boolean;
+  totalVentasAsociadas?: number;
 }
+
+export interface CreateProductoDto {
+  nombre: string;
+  descripcion: string;
+  unidadMedida: string;
+  precioUnitario: number;
+  stockActual: number;
+  activo: boolean;
+}
+
+export interface UpdateProductoDto {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  unidadMedida: string;
+  precioUnitario: number;
+  stockActual: number;
+  activo: boolean;
+}
+
 
 export interface Cliente {
   id: string;
@@ -44,6 +65,24 @@ export interface Cliente {
   email: string;
   direccionEnvio: string;
   totalCompras: number;
+  montoTotalComprado?: number;
+}
+
+export interface CreateClienteDto {
+  documentoIdentidad: string;
+  razonSocial: string;
+  telefono: string;
+  direccionEnvio: string;
+  email: string;
+}
+
+export interface UpdateClienteDto {
+  id: string;
+  documentoIdentidad: string;
+  razonSocial: string;
+  telefono: string;
+  direccionEnvio: string;
+  email: string;
 }
 
 export interface Venta {

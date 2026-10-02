@@ -1,0 +1,111 @@
+@model UpdateProductoDto
+@{
+    ViewData["Title"] = "Editar Material / Producto - Firmeza";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Navigation breadcrumb / back link -->
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-muted d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Volver al Catálogo de Productos
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-4">
+                        <i class="bi bi-pencil-square fs-2"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-1 text-dark">Editar Producto / Material</h3>
+                        <p class="text-muted small mb-0">Actualiza precios, disponibilidad o detalles técnicos del producto.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
+
+                    <div class="row g-3">
+                        <!-- Nombre -->
+                        <div class="col-12">
+                            <label asp-for="Nombre" class="form-label fw-semibold text-dark"></label>
+                            <input asp-for="Nombre" class="form-control form-control-lg rounded-3" placeholder="Ej: Cemento Gris Tipo 1 x 50kg..." />
+                            <span asp-validation-for="Nombre" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="col-12">
+                            <label asp-for="Descripcion" class="form-label fw-semibold text-dark"></label>
+                            <textarea asp-for="Descripcion" rows="3" class="form-control rounded-3" placeholder="Especificaciones técnicas..."></textarea>
+                            <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Unidad de Medida -->
+                        <div class="col-12 col-md-6">
+                            <label asp-for="UnidadMedida" class="form-label fw-semibold text-dark"></label>
+                            <input asp-for="UnidadMedida" list="unidadesSugeridas" class="form-control rounded-3" />
+                            <datalist id="unidadesSugeridas">
+                                <option value="Bolsa" />
+                                <option value="Unidad" />
+                                <option value="Millar" />
+                                <option value="M3" />
+                                <option value="Tonelada" />
+                                <option value="Kilo" />
+                                <option value="Metro" />
+                            </datalist>
+                            <span asp-validation-for="UnidadMedida" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Precio Unitario -->
+                        <div class="col-12 col-md-6">
+                            <label asp-for="PrecioUnitario" class="form-label fw-semibold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light">$ COP</span>
+                                <input asp-for="PrecioUnitario" type="number" step="100" min="0" class="form-control rounded-end-3" />
+                            </div>
+                            <span asp-validation-for="PrecioUnitario" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Stock Actual -->
+                        <div class="col-12 col-md-6">
+                            <label asp-for="StockActual" class="form-label fw-semibold text-dark"></label>
+                            <input asp-for="StockActual" type="number" min="0" class="form-control rounded-3" />
+                            <span asp-validation-for="StockActual" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Activo -->
+                        <div class="col-12 col-md-6 d-flex align-items-center">
+                            <div class="form-check form-switch mt-3">
+                                <input asp-for="Activo" class="form-check-input" type="checkbox" id="activoSwitch" />
+                                <label class="form-check-label fw-semibold text-dark" for="activoSwitch">
+                                    Producto Activo para Venta
+                                </label>
+                                <div class="form-text small text-muted">Desactivar para ocultar temporalmente sin borrar el historial.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-warning rounded-pill px-4 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+                            <i class="bi bi-check-lg"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

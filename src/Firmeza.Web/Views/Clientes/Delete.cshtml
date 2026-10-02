@@ -1,0 +1,93 @@
+@model ClienteDto
+@{
+    ViewData["Title"] = $"Eliminar Cliente: {Model.RazonSocial} - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+    var hasSales = Model.TotalCompras > 0;
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Navigation breadcrumb / back link -->
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-muted d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Volver al Directorio de Clientes
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+            <div class="card-header bg-danger bg-opacity-10 border-0 p-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 bg-danger text-white rounded-4 shadow-sm">
+                        <i class="bi bi-exclamation-triangle fs-2"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-1 text-danger">¿Confirmas la eliminación de este cliente?</h3>
+                        <p class="text-muted small mb-0">Por favor revisa la información antes de continuar.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                @if (hasSales)
+                {
+                    <div class="alert alert-warning rounded-4 border-0 p-3 mb-4 d-flex align-items-center gap-3" role="alert">
+                        <i class="bi bi-shield-lock-fill text-warning fs-3"></i>
+                        <div>
+                            <strong>Restricción de Integridad Referencial:</strong>
+                            <p class="mb-0 small">
+                                Este cliente tiene <strong>@Model.TotalCompras orden(es) de venta registradas</strong> por un total de <strong>@Model.MontoTotalComprado.ToString("C0", colCulture)</strong>. La base de datos protege los balances comerciales y no permite eliminar clientes con historial de transacciones.
+                            </p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger bg-opacity-10 rounded-4 border-0 p-3 mb-4 d-flex align-items-center gap-3" role="alert">
+                        <i class="bi bi-trash3-fill text-danger fs-3"></i>
+                        <div>
+                            <strong>Eliminación Definitiva:</strong>
+                            <p class="mb-0 small">Este cliente no tiene facturación ni órdenes asociadas. Será eliminado permanentemente del sistema.</p>
+                        </div>
+                    </div>
+                }
+
+                <div class="p-4 rounded-4 bg-light border mb-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Razón Social</span>
+                            <span class="fw-bold text-dark fs-5">@Model.RazonSocial</span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Documento / NIT</span>
+                            <span class="badge bg-white text-dark border px-3 py-2 font-monospace">@Model.DocumentoIdentidad</span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Correo</span>
+                            <span class="text-dark">@Model.Email</span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Teléfono</span>
+                            <span class="text-dark">@Model.Telefono</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Dirección de Despacho</span>
+                            <span class="text-dark">@Model.DireccionEnvio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm" @(hasSales ? "disabled" : "")>
+                            <i class="bi bi-trash-fill"></i> Eliminar Cliente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

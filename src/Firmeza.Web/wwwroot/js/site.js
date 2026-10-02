@@ -1,4 +1,22 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+// FIRMEZA - UI Scripts & Sidebar Toggle
+document.addEventListener('DOMContentLoaded', function () {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.app-sidebar');
+    const backdrop = document.querySelector('.sidebar-backdrop');
 
-// Write your JavaScript code.
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function () {
+            sidebar.classList.toggle('show');
+            if (backdrop) {
+                backdrop.classList.toggle('show');
+            }
+        });
+    }
+
+    if (backdrop) {
+        backdrop.addEventListener('click', function () {
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+        });
+    }
+});

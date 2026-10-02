@@ -1,6 +1,8 @@
 using Firmeza.Application.Interfaces;
+using Firmeza.Application.Interfaces.Repositories;
 using Firmeza.Infrastructure.Identity;
 using Firmeza.Infrastructure.Persistence;
+using Firmeza.Infrastructure.Repositories;
 using Firmeza.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -34,8 +36,18 @@ public static class DependencyInjection
         .AddEntityFrameworkStores<ApplicationDbContext>()
         .AddDefaultTokenProviders();
 
+        // Repositories & Unit of Work (Clean Architecture)
+        services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+        services.AddScoped<IClienteRepository, ClienteRepository>();
+        services.AddScoped<IProductoRepository, ProductoRepository>();
+        services.AddScoped<IVentaRepository, VentaRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        // Application Services
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IDashboardService, DashboardService>();
+        services.AddScoped<IProductoService, ProductoService>();
+        services.AddScoped<IClienteService, ClienteService>();
 
         return services;
     }

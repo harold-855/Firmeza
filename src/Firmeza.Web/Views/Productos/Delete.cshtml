@@ -1,0 +1,93 @@
+@model ProductoDto
+@{
+    ViewData["Title"] = $"Eliminar Producto: {Model.Nombre} - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+    var hasSales = Model.TotalVentasAsociadas > 0;
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Navigation breadcrumb / back link -->
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-muted d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Volver al Catálogo de Productos
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 bg-white overflow-hidden">
+            <div class="card-header bg-danger bg-opacity-10 border-0 p-4">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 bg-danger text-white rounded-4 shadow-sm">
+                        <i class="bi bi-exclamation-triangle fs-2"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-1 text-danger">¿Confirmas la eliminación de este producto?</h3>
+                        <p class="text-muted small mb-0">Por favor revisa los detalles antes de proceder.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                @if (hasSales)
+                {
+                    <div class="alert alert-warning rounded-4 border-0 p-3 mb-4 d-flex align-items-center gap-3" role="alert">
+                        <i class="bi bi-info-circle-fill text-warning fs-3"></i>
+                        <div>
+                            <strong>Nota de Integridad de Datos:</strong>
+                            <p class="mb-0 small">
+                                Este material cuenta con <strong>@Model.TotalVentasAsociadas ventas/detalles registrados</strong>. Para proteger los registros contables e históricos, el producto <strong>no será destruido físicamente de la base de datos</strong>, sino que será <strong>desactivado</strong> para que no aparezca en nuevas órdenes de venta.
+                            </p>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-danger bg-opacity-10 rounded-4 border-0 p-3 mb-4 d-flex align-items-center gap-3" role="alert">
+                        <i class="bi bi-trash3-fill text-danger fs-3"></i>
+                        <div>
+                            <strong>Eliminación Definitiva:</strong>
+                            <p class="mb-0 small">Este producto no tiene transacciones asociadas. Será eliminado permanentemente de la base de datos.</p>
+                        </div>
+                    </div>
+                }
+
+                <div class="p-4 rounded-4 bg-light border mb-4">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Producto / Material</span>
+                            <span class="fw-bold text-dark fs-5">@Model.Nombre</span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Unidad de Medida</span>
+                            <span class="badge bg-white text-dark border px-3 py-2">@Model.UnidadMedida</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Descripción</span>
+                            <p class="mb-0 text-muted small">@Model.Descripcion</p>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Precio Actual</span>
+                            <span class="fw-bold text-primary">@Model.PrecioUnitario.ToString("C0", colCulture)</span>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <span class="text-muted small fw-semibold text-uppercase d-block">Stock en Bodega</span>
+                            <span class="fw-bold text-dark">@Model.StockActual unidades</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+                            <i class="bi bi-trash-fill"></i> @(hasSales ? "Desactivar Producto" : "Eliminar Definitivamente")
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -29,6 +29,13 @@
                     </div>
 
                     <div class="mb-3">
+                        <label asp-for="Edad" class="form-label fw-semibold">Edad</label>
+                        <input asp-for="Edad" class="form-control" placeholder="Ej: 28" type="text" />
+                        <div class="form-text small text-muted">Ingrese su edad en años (número entero).</div>
+                        <span asp-validation-for="Edad" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
                         <label asp-for="Password" class="form-label fw-semibold">Contraseña</label>
                         <input asp-for="Password" class="form-control" placeholder="••••••••" autocomplete="new-password" />
                         <span asp-validation-for="Password" class="text-danger small"></span>

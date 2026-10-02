@@ -1,0 +1,97 @@
+@model UpdateClienteDto
+@{
+    ViewData["Title"] = "Editar Cliente - Firmeza";
+}
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <!-- Navigation breadcrumb / back link -->
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-muted d-inline-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left"></i> Volver al Directorio de Clientes
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm rounded-4 bg-white">
+            <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 bg-warning bg-opacity-10 text-warning rounded-4">
+                        <i class="bi bi-pencil-square fs-2"></i>
+                    </div>
+                    <div>
+                        <h3 class="fw-bold mb-1 text-dark">Editar Información del Cliente</h3>
+                        <p class="text-muted small mb-0">Actualiza los datos de contacto, dirección de despacho o NIT.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-4">
+                <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
+
+                    <div class="row g-3">
+                        <!-- DocumentoIdentidad -->
+                        <div class="col-12 col-md-6">
+                            <label asp-for="DocumentoIdentidad" class="form-label fw-semibold text-dark"></label>
+                            <input asp-for="DocumentoIdentidad" class="form-control rounded-3 font-monospace" placeholder="900123456-1" />
+                            <span asp-validation-for="DocumentoIdentidad" class="text-danger small"></span>
+                        </div>
+
+                        <!-- RazonSocial -->
+                        <div class="col-12 col-md-6">
+                            <label asp-for="RazonSocial" class="form-label fw-semibold text-dark"></label>
+                            <input asp-for="RazonSocial" class="form-control rounded-3" />
+                            <span asp-validation-for="RazonSocial" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="col-12 col-md-6">
+                            <label asp-for="Email" class="form-label fw-semibold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-envelope"></i></span>
+                                <input asp-for="Email" type="email" class="form-control rounded-end-3" />
+                            </div>
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+
+                        <!-- Telefono -->
+                        <div class="col-12 col-md-6">
+                            <label asp-for="Telefono" class="form-label fw-semibold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-telephone"></i></span>
+                                <input asp-for="Telefono" class="form-control rounded-end-3" />
+                            </div>
+                            <span asp-validation-for="Telefono" class="text-danger small"></span>
+                        </div>
+
+                        <!-- DireccionEnvio -->
+                        <div class="col-12">
+                            <label asp-for="DireccionEnvio" class="form-label fw-semibold text-dark"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light"><i class="bi bi-geo-alt"></i></span>
+                                <input asp-for="DireccionEnvio" class="form-control rounded-end-3" />
+                            </div>
+                            <span asp-validation-for="DireccionEnvio" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4" />
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-warning rounded-pill px-4 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm">
+                            <i class="bi bi-check-lg"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

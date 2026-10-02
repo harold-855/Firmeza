@@ -1,0 +1,276 @@
+@model ProductoIndexViewModel
+@{
+    ViewData["Title"] = "Gestión de Productos y Catálogo - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+}
+
+<!-- Flash Notifications -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+        <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+        <span>@TempData["Success"]</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+        <span>@TempData["Error"]</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Page Header -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+        <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-4 shadow-sm">
+            <i class="bi bi-box-seam-fill fs-2"></i>
+        </div>
+        <div>
+            <h2 class="fw-bold mb-1 text-dark">Gestión de Catálogo de Productos</h2>
+            <p class="text-muted mb-0">Administración completa de materiales pesados y de construcción.</p>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-plus-lg"></i>
+            <span class="fw-semibold">Nuevo Producto</span>
+        </a>
+    </div>
+</div>
+
+<!-- KPI Mini-Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+        <div class="card border-0 bg-white rounded-4 p-3 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Total en Inventario</span>
+                    <h3 class="fw-bold mb-0 text-dark">@Model.TotalProductos</h3>
+                </div>
+                <div class="p-3 rounded-circle bg-light text-primary fs-4">
+                    <i class="bi bi-boxes"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card border-0 bg-white rounded-4 p-3 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Productos Activos</span>
+                    <h3 class="fw-bold mb-0 text-success">@Model.TotalActivos</h3>
+                </div>
+                <div class="p-3 rounded-circle bg-success bg-opacity-10 text-success fs-4">
+                    <i class="bi bi-check-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card border-0 bg-white rounded-4 p-3 shadow-sm">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Bajo Stock (&lt; 50 uds)</span>
+                    <h3 class="fw-bold mb-0 text-danger">@Model.TotalBajoStock</h3>
+                </div>
+                <div class="p-3 rounded-circle bg-danger bg-opacity-10 text-danger fs-4">
+                    <i class="bi bi-exclamation-triangle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filtering Card -->
+<div class="card border-0 shadow-sm rounded-4 bg-white mb-4">
+    <div class="card-body p-4">
+        <form method="get" asp-action="Index">
+            <div class="row g-3">
+                <!-- Search input -->
+                <div class="col-12 col-lg-4">
+                    <label class="form-label small fw-bold text-muted">Búsqueda rápida</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                        <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" class="form-control bg-light border-start-0" placeholder="Nombre, descripción..." />
+                    </div>
+                </div>
+
+                <!-- Unidad de Medida Filter -->
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small fw-bold text-muted">Unidad</label>
+                    <select name="UnidadMedida" class="form-select bg-light">
+                        <option value="">-- Todas --</option>
+                        @foreach (var unidad in Model.UnidadesMedida)
+                        {
+                            <option value="@unidad" selected="@(Model.Filter.UnidadMedida == unidad)">@unidad</option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Estado Filter -->
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small fw-bold text-muted">Estado</label>
+                    <select name="SoloActivos" class="form-select bg-light">
+                        <option value="">-- Todos --</option>
+                        <option value="true" selected="@(Model.Filter.SoloActivos == true)">Activos</option>
+                        <option value="false" selected="@(Model.Filter.SoloActivos == false)">Inactivos</option>
+                    </select>
+                </div>
+
+                <!-- Ordenamiento -->
+                <div class="col-6 col-lg-2">
+                    <label class="form-label small fw-bold text-muted">Ordenar por</label>
+                    <select name="OrderBy" class="form-select bg-light">
+                        <option value="nombre_asc" selected="@(Model.Filter.OrderBy == "nombre_asc" || string.IsNullOrEmpty(Model.Filter.OrderBy))">Nombre (A-Z)</option>
+                        <option value="nombre_desc" selected="@(Model.Filter.OrderBy == "nombre_desc")">Nombre (Z-A)</option>
+                        <option value="precio_asc" selected="@(Model.Filter.OrderBy == "precio_asc")">Menor Precio</option>
+                        <option value="precio_desc" selected="@(Model.Filter.OrderBy == "precio_desc")">Mayor Precio</option>
+                        <option value="stock_asc" selected="@(Model.Filter.OrderBy == "stock_asc")">Menor Stock</option>
+                        <option value="stock_desc" selected="@(Model.Filter.OrderBy == "stock_desc")">Mayor Stock</option>
+                    </select>
+                </div>
+
+                <!-- Filter Actions -->
+                <div class="col-6 col-lg-2 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-primary w-100 rounded-3">
+                        <i class="bi bi-funnel-fill me-1"></i> Filtrar
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-3" title="Limpiar filtros">
+                        <i class="bi bi-arrow-counterclockwise"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Additional Quick Toggles -->
+            <div class="row g-2 mt-2 pt-2 border-top">
+                <div class="col-12 d-flex align-items-center gap-3 flex-wrap">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="SoloBajoStock" value="true" id="soloBajoStockCheck" @(Model.Filter.SoloBajoStock == true ? "checked" : "") onchange="this.form.submit()">
+                        <label class="form-check-label small fw-semibold text-danger" for="soloBajoStockCheck">
+                            <i class="bi bi-exclamation-circle me-1"></i> Ver solo productos con bajo stock (&lt; 50)
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Products Table Card -->
+<div class="card border-0 shadow-sm rounded-4 bg-white">
+    <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div>
+            <h5 class="fw-bold mb-0 text-dark">Listado de Materiales</h5>
+            <small class="text-muted">Se encontraron <strong>@Model.Productos.Count()</strong> producto(s) según los filtros aplicados</small>
+        </div>
+    </div>
+    <div class="card-body p-4 pt-2">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small text-muted">
+                    <tr>
+                        <th>Material / Producto</th>
+                        <th>Descripción</th>
+                        <th>Unidad</th>
+                        <th class="text-end">Precio Unitario</th>
+                        <th class="text-center">Stock Actual</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Ventas</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Productos.Any())
+                    {
+                        @foreach (var p in Model.Productos)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="p-2 bg-light rounded-3 text-primary">
+                                            <i class="bi bi-box fs-5"></i>
+                                        </div>
+                                        <div>
+                                            <a asp-action="Details" asp-route-id="@p.Id" class="fw-bold text-dark text-decoration-none hover-primary">
+                                                @p.Nombre
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="text-muted small text-truncate d-inline-block" style="max-width: 260px;" title="@p.Descripcion">
+                                        @p.Descripcion
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">@p.UnidadMedida</span>
+                                </td>
+                                <td class="text-end fw-bold text-primary">
+                                    @p.PrecioUnitario.ToString("C0", colCulture)
+                                </td>
+                                <td class="text-center">
+                                    @if (p.StockActual < 50)
+                                    {
+                                        <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 rounded-pill px-2 py-1">
+                                            <i class="bi bi-exclamation-triangle-fill me-1"></i>@p.StockActual
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                                            @p.StockActual
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    @if (p.Activo)
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-1">
+                                            <i class="bi bi-check-circle me-1"></i>Activo
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary rounded-pill px-2 py-1">
+                                            <i class="bi bi-dash-circle me-1"></i>Inactivo
+                                        </span>
+                                    }
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-muted border" title="Ventas asociadas">
+                                        <i class="bi bi-receipt me-1"></i>@p.TotalVentasAsociadas
+                                    </span>
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-outline-secondary" title="Ver detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-outline-primary" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@p.Id" class="btn btn-outline-danger" title="Eliminar o Desactivar">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center text-muted py-5">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-muted"></i>
+                                No se encontraron productos con los criterios de búsqueda seleccionados.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
