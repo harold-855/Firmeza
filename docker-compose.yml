@@ -38,6 +38,8 @@ services:
       - ConnectionStrings__DefaultConnection=Host=firmeza-db;Port=5432;Database=firmeza_db;Username=firmeza_user;Password=FirmezaSecurePassword2026*
     ports:
       - "5000:8080"
+    volumes:
+      - recibos_data:/app/wwwroot/recibos
     networks:
       - firmeza-network
 
@@ -47,4 +49,6 @@ networks:
 
 volumes:
   postgres_data:
+    driver: local
+  recibos_data:
     driver: local

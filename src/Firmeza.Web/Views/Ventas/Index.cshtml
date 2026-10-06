@@ -1,0 +1,241 @@
+@using System.Globalization
+@model Firmeza.Web.Controllers.VentaIndexViewModel
+@{
+    ViewData["Title"] = "Gestión de Ventas y Comprobantes - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+}
+
+<!-- Flash Notifications -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            <div>@TempData["Success"]</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+            <div>@TempData["Error"]</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Header de Página -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+        <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-4 shadow-sm">
+            <i class="bi bi-receipt-cutoff fs-2"></i>
+        </div>
+        <div>
+            <h2 class="fw-bold mb-1 text-dark">Gestión de Ventas y Comprobantes</h2>
+            <p class="text-muted mb-0">Control de órdenes comerciales, facturación con IVA y comprobantes PDF.</p>
+        </div>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a asp-action="ExportarExcel" asp-route-SearchTerm="@Model.Filter.SearchTerm" asp-route-EstadoDespacho="@Model.Filter.EstadoDespacho" class="btn btn-outline-success rounded-pill px-3 py-2 d-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-file-earmark-excel"></i>
+            <span class="fw-semibold small">Exportar Excel</span>
+        </a>
+        <a asp-action="ExportarPdf" asp-route-SearchTerm="@Model.Filter.SearchTerm" asp-route-EstadoDespacho="@Model.Filter.EstadoDespacho" class="btn btn-outline-danger rounded-pill px-3 py-2 d-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-file-earmark-pdf"></i>
+            <span class="fw-semibold small">Exportar PDF</span>
+        </a>
+        <a asp-action="Create" class="btn btn-primary rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-plus-lg"></i>
+            <span class="fw-semibold">Registrar Venta</span>
+        </a>
+    </div>
+</div>
+
+<!-- KPI Mini-Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Total Órdenes</span>
+                    <h3 class="fw-bold mb-0 text-dark">@Model.TotalVentas</h3>
+                </div>
+                <div class="p-3 rounded-circle bg-light text-primary fs-4">
+                    <i class="bi bi-bag-check"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Facturación Total</span>
+                    <h3 class="fw-bold mb-0 text-success">@Model.MontoTotalFacturado.ToString("C0", colCulture)</h3>
+                </div>
+                <div class="p-3 rounded-circle bg-success bg-opacity-10 text-success fs-4">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Pendientes / En Ruta</span>
+                    <h3 class="fw-bold mb-0 text-warning">@(Model.TotalPendientes + Model.TotalEnRuta)</h3>
+                    <small class="text-muted">(@Model.TotalPendientes pend. / @Model.TotalEnRuta ruta)</small>
+                </div>
+                <div class="p-3 rounded-circle bg-warning bg-opacity-10 text-warning fs-4">
+                    <i class="bi bi-truck"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold text-uppercase">Entregadas</span>
+                    <h3 class="fw-bold mb-0 text-info">@Model.TotalEntregadas</h3>
+                </div>
+                <div class="p-3 rounded-circle bg-info bg-opacity-10 text-info fs-4">
+                    <i class="bi bi-check2-circle"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros y Búsqueda -->
+<div class="card border-0 bg-white rounded-4 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 rounded-start-pill"><i class="bi bi-search text-muted"></i></span>
+                    <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" class="form-control bg-light border-start-0 rounded-end-pill" placeholder="Buscar por cliente, documento o comprobante..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="EstadoDespacho" class="form-select bg-light rounded-pill">
+                    <option value="">Todos los Estados</option>
+                    <option value="Pendiente" selected="@(Model.Filter.EstadoDespacho == "Pendiente")">Pendiente</option>
+                    <option value="En Ruta" selected="@(Model.Filter.EstadoDespacho == "En Ruta")">En Ruta</option>
+                    <option value="Entregado" selected="@(Model.Filter.EstadoDespacho == "Entregado")">Entregado</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="OrderBy" class="form-select bg-light rounded-pill">
+                    <option value="fecha_desc" selected="@(Model.Filter.OrderBy == "fecha_desc")">Fecha: Recientes primero</option>
+                    <option value="fecha_asc" selected="@(Model.Filter.OrderBy == "fecha_asc")">Fecha: Antiguos primero</option>
+                    <option value="total_desc" selected="@(Model.Filter.OrderBy == "total_desc")">Mayor Monto</option>
+                    <option value="total_asc" selected="@(Model.Filter.OrderBy == "total_asc")">Menor Monto</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary rounded-pill w-100 fw-semibold">Filtrar</button>
+                <a asp-action="Index" class="btn btn-light rounded-pill border" title="Limpiar"><i class="bi bi-arrow-counterclockwise"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de Ventas -->
+<div class="card border-0 bg-white rounded-4 shadow-sm mb-4">
+    <div class="card-body p-0">
+        @if (Model.Ventas.Count == 0)
+        {
+            <div class="text-center py-5">
+                <i class="bi bi-inbox text-muted fs-1 mb-2 d-block"></i>
+                <h6 class="fw-bold text-dark">No se encontraron ventas registradas</h6>
+                <p class="text-muted small mb-3">Comienza creando una nueva orden de venta o importando desde Excel.</p>
+                <a asp-action="Create" class="btn btn-primary rounded-pill px-4 btn-sm">Registrar Primera Venta</a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 py-3">Comprobante</th>
+                            <th class="py-3">Fecha y Hora</th>
+                            <th class="py-3">Cliente / Receptor</th>
+                            <th class="py-3">Ítems</th>
+                            <th class="py-3">Subtotal / IVA</th>
+                            <th class="py-3">Total Venta</th>
+                            <th class="py-3 text-center">Estado</th>
+                            <th class="pe-4 py-3 text-end">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var v in Model.Ventas)
+                        {
+                            <tr>
+                                <td class="ps-4">
+                                    <div class="fw-bold text-primary">@v.NumeroComprobante</div>
+                                    <small class="text-muted">ID: @v.Id.ToString()[..8]</small>
+                                </td>
+                                <td>
+                                    <div>@v.FechaVenta.ToString("dd/MM/yyyy")</div>
+                                    <small class="text-muted">@v.FechaVenta.ToString("HH:mm")</small>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-dark">@v.ClienteRazonSocial</div>
+                                    <small class="text-muted">NIT: @v.ClienteDocumento</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">
+                                        <i class="bi bi-boxes me-1"></i>@v.TotalItems @(v.TotalItems == 1 ? "unidad" : "unidades")
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="small text-muted">Sub: @v.SubtotalBase.ToString("C0", colCulture)</div>
+                                    <div class="small text-muted">IVA: @v.Iva.ToString("C0", colCulture)</div>
+                                </td>
+                                <td>
+                                    <span class="fw-bold text-dark fs-6">@v.Total.ToString("C0", colCulture)</span>
+                                </td>
+                                <td class="text-center">
+                                    @if (v.EstadoDespacho == "Entregado")
+                                    {
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+                                            <i class="bi bi-check-circle me-1"></i>Entregado
+                                        </span>
+                                    }
+                                    else if (v.EstadoDespacho == "En Ruta")
+                                    {
+                                        <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-1">
+                                            <i class="bi bi-truck me-1"></i>En Ruta
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-3 py-1">
+                                            <i class="bi bi-hourglass-split me-1"></i>Pendiente
+                                        </span>
+                                    }
+                                </td>
+                                <td class="pe-4 text-end">
+                                    <div class="btn-group">
+                                        <a asp-action="Details" asp-route-id="@v.Id" class="btn btn-outline-primary btn-sm rounded-pill px-3 me-1" title="Ver Detalle">
+                                            <i class="bi bi-eye me-1"></i> Detalle
+                                        </a>
+                                        <a asp-action="DescargarRecibo" asp-route-id="@v.Id" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Descargar Comprobante PDF">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i> Recibo PDF
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

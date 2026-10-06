@@ -16,14 +16,16 @@
 5. [Patrón Repository y Unit of Work (Acceso a Datos Desacoplado)](#-patrón-repository-y-unit-of-work-acceso-a-datos-desacoplado)
 6. [Módulo de Gestión de Productos (CRUD, ViewModels y Filtrado)](#-módulo-de-gestión-de-productos-crud-viewmodels-y-filtrado)
 7. [Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)](#-módulo-de-gestión-de-clientes-crud-validaciones-y-búsqueda)
-8. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
-9. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
-10. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
-11. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
-12. [Guía de Puesta en Marcha (Instalación y Ejecución Local)](#-guía-de-puesta-en-marcha-instalación-y-ejecución-local)
-13. [Despliegue y Ejecución con Docker y Docker Compose](#-despliegue-y-ejecución-con-docker-y-docker-compose)
-14. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
-15. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
+8. [Módulo de Importación y Normalización de Excel con EPPlus](#-módulo-de-importación-y-normalización-de-excel-con-epplus)
+9. [Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)](#-módulo-de-exportación-de-datos-y-comprobantes-pdf-questpdf--epplus)
+10. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
+11. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
+12. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
+13. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
+14. [Guía de Puesta en Marcha (Instalación y Ejecución Local)](#-guía-de-puesta-en-marcha-instalación-y-ejecución-local)
+15. [Despliegue y Ejecución con Docker y Docker Compose](#-despliegue-y-ejecución-con-docker-y-docker-compose)
+16. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
+17. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
 
 ---
 
@@ -76,24 +78,26 @@ Firmeza/
 │   │   └── Shared/              # BaseEntity (Id)
 │   │
 │   ├── Firmeza.Application/     # Casos de Uso, DTOs y Contratos
-│   │   ├── DTOS/                # Clientes, Productos, Dashboard, Auth
-│   │   ├── Interfaces/          # IAuthService, IDashboardService, IClienteService, IProductoService
+│   │   ├── DTOS/                # Clientes, Productos, Ventas, Dashboard, Auth, Importacion
+│   │   │   ├── Ventas/          # VentaDto, VentaDetalleDto, CreateVentaDto, VentaFilterDto
+│   │   │   └── Importacion/     # ExcelImportOptionsDto, ExcelImportResultDto, ExcelImportErrorDto
+│   │   ├── Interfaces/          # IAuthService, IDashboardService, IClienteService, IProductoService, IVentaService, IExportService, IExcelImportService
 │   │   │   └── Repositories/    # IBaseRepository, IClienteRepository, IProductoRepository, IVentaRepository, IUnitOfWork
 │   │   └── Validators/          # ValidadorEdad (Validaciones con try-catch diferenciado)
 │   │
 │   ├── Firmeza.Infrastructure/  # Acceso a Datos, Repositorios y Servicios Externos
 │   │   ├── Persistence/         # ApplicationDbContext, DataSeeder, Configuraciones EF Core
 │   │   ├── Repositories/        # BaseRepository, ClienteRepository, ProductoRepository, VentaRepository, UnitOfWork
-│   │   ├── Services/            # ClienteService, ProductoService, DashboardService (Usan IUnitOfWork)
+│   │   ├── Services/            # ClienteService, ProductoService, VentaService, ExportService (QuestPDF/EPPlus), DashboardService, ExcelImportService (EPPlus)
 │   │   ├── Identity/            # IdentitySeeder, AuthService (ASP.NET Core Identity & RBAC)
 │   │   └── DependencyInjection.cs # Registro de dependencias en contenedor IoC
 │   │
 │   └── Firmeza.Web/             # Capa de Presentación Web (MVC y API REST)
-│       ├── Controllers/         # ClientesController, ProductosController, HomeController, AccountController
-│       ├── Controllers/Api/     # ClientesApiController, ProductosApiController, VentasApiController, DashboardApiController
-│       ├── Views/               # Vistas Razor (Clientes, Productos, Home, Account)
+│       ├── Controllers/         # ClientesController, ProductosController, VentasController, HomeController, AccountController, ImportacionController
+│       ├── Controllers/Api/     # ClientesApiController, ProductosApiController, VentasApiController, DashboardApiController, ImportacionApiController
+│       ├── Views/               # Vistas Razor (Clientes, Productos, Ventas, Importacion, Home, Account)
 │       ├── Models/              # ViewModels (ClienteIndexViewModel, ProductoIndexViewModel)
-│       ├── wwwroot/             # Archivos estáticos, CSS/JS y compilado SPA Angular (/wwwroot/spa)
+│       ├── wwwroot/             # Archivos estáticos, CSS/JS, recibos (/wwwroot/recibos) y SPA Angular (/wwwroot/spa)
 │       ├── appsettings.json     # Conexión a PostgreSQL e Identity
 │       └── Program.cs           # Pipeline HTTP, CORS, Autenticación y Middleware
 │
@@ -101,7 +105,8 @@ Firmeza/
 │   └── Firmeza.UnitTests/       # Proyecto de Pruebas Unitarias (xUnit & Moq)
 │       ├── Domain/              # ProductoEntityTests, VentaDetalleEntityTests
 │       ├── Application/         # ValidadorEdadTests
-│       └── Services/            # ClienteServiceTests, ProductoServiceTests
+│       ├── Services/            # ClienteServiceTests, ProductoServiceTests, VentaServiceTests, ExportServiceTests, ExcelImportServiceTests
+│       └── Controllers/         # VentasControllerTests, ImportacionControllerTests
 │
 └── firmeza.client/              # Frontend Desacoplado (Angular 22 SPA)
     ├── src/
@@ -395,6 +400,136 @@ La carpeta **`Repositories`** (ubicada en `Firmeza.Infrastructure/Repositories`)
 
 ---
 
+---
+
+## 📊 Módulo de Importación y Normalización de Excel con EPPlus
+
+El sistema integra un motor avanzado de procesamiento de archivos **Excel (.xlsx / .xls)** utilizando la librería **EPPlus**, diseñado específicamente para resolver el problema de hojas de cálculo **no normalizadas, con datos desorganizados o columnas mezcladas** provenientes de sistemas externos, exportaciones heterogéneas o planillas manuales de clientes y proveedores.
+
+```mermaid
+flowchart TD
+    A["Archivo Excel (.xlsx)<br/>(Columnas mezcladas y no normalizadas)"] --> B["ExcelImportService (EPPlus)"]
+    B --> C{"Detección Dinámica de Encabezados<br/>(Filas 1-10 por Tokens y Sinónimos)"}
+    C --> D["Extracción y Normalización en Memoria"]
+    
+    D --> E1["Entidad Cliente<br/>(NIT, Razón Social, Tel, Email, Dir)"]
+    D --> E2["Entidad Producto<br/>(Nombre, UM, Precio, Stock, Activo)"]
+    D --> E3["Entidad Venta & Detalle<br/>(Fecha, Cantidad, Precio, Despacho)"]
+    
+    E1 --> F1{"Validación Obligatoria<br/>(Documento / Nombre)"}
+    E2 --> F2{"Validación Obligatoria<br/>(Nombre, Precio >= 0)"}
+    E3 --> F3{"Validación de Venta<br/>(Cliente + Producto, Cantidad > 0)"}
+    
+    F1 --> G1["Upsert Clientes<br/>(Insertar nuevo o actualizar existente)"]
+    F2 --> G2["Upsert Productos<br/>(Insertar nuevo o actualizar catálogo)"]
+    F3 --> G3["Insertar Ventas & Descontar Stock"]
+    
+    G1 --> H["UnitOfWork & SaveChangesAsync()"]
+    G2 --> H
+    G3 --> H
+    
+    D -.-> L["Bitácora de Inconsistencias y Log<br/>(Errores 🔴 | Advertencias 🟡 | Info 🔵)"]
+```
+
+### 🧠 Capacidades y Lógica de Normalización:
+
+1. **Detección Dinámica de Encabezados y Mapeo Flexible:**
+   - Examina las primeras 10 filas de cada hoja para identificar la fila real de encabezados, permitiendo archivos que contengan títulos o metadatos superiores.
+   - Diccionario semántico tolerante a tildes, mayúsculas, guiones y barras (`/`):
+     - **Clientes:** `nit`, `cedula`, `documento`, `id_cliente`, `razon_social`, `nombre_cliente`, `empresa`, `telefono`, `celular`, `direccion_envio`, `email`, `correo`.
+     - **Productos:** `producto`, `articulo`, `material`, `item`, `descripcion`, `unidad_medida`, `u.m.`, `precio_unitario`, `stock_actual`, `disponible`, `activo`.
+     - **Ventas y Detalles:** `cantidad_vendida`, `cant`, `unidades`, `precio_aplicado`, `precio_venta`, `fecha_venta`, `estado_despacho`, `nro_factura`, `referencia`.
+
+2. **División y Relacionamiento en Memoria:**
+   - Si una sola fila contiene datos del cliente (ej. *Constructora Bolívar*), datos del producto (ej. *Cemento Gris Argos 50kg*) y datos de la venta (ej. *150 bultos el 2026-10-01*), el motor los extrae, valida y estructura en memoria vinculando las llaves foráneas (`ClienteId`, `ProductoId`, `VentaId`) de manera automática.
+   - Deduplica clientes y productos en memoria para evitar colisiones antes del guardado.
+
+3. **Validación de Datos Obligatorios y Normalización de Formatos:**
+   - Limpieza automática de símbolos de moneda (`$`, `€`, `COP`, `USD`), puntos y comas decimales/miles (`1,250.50` vs `1.250,50`).
+   - Soporte para fechas en formatos de texto estándar (`dd/MM/yyyy`, `yyyy-MM-dd`) y números de serie serializados de Excel (`OADate`).
+   - Exigencia de campos obligatorios:
+     - Nombre de producto no vacío y precio no negativo.
+     - Documento de identidad o razón social de cliente.
+     - Cantidades de venta estrictamente mayores a cero.
+
+4. **Estrategia de Inserción o Actualización (Upsert) y Control de Stock:**
+   - **Clientes:** Si ya existe por NIT en la base de datos o en el lote actual, actualiza teléfonos, correos y direcciones; si no, lo registra como nuevo.
+   - **Productos:** Si ya existe por nombre de material, actualiza su precio unitario y ajusta el inventario según los parámetros elegidos.
+   - **Ventas:** Registra la orden de despacho, congela el precio histórico aplicado y descuenta automáticamente el inventario disponible.
+
+5. **Bitácora Detallada de Inconsistencias y Errores:**
+   - Reporte con métricas completas (`ClientesCreados`, `ClientesActualizados`, `ProductosCreados`, `VentasCreadas`, `MontoTotalVentas`).
+   - Tabla de bitácora clasificada por severidad:
+     - **Error 🔴:** Registros que violan integridad (ej. producto sin nombre, venta sin cliente).
+     - **Advertencia 🟡:** Ajustes automáticos aplicados (ej. precio negativo ajustado a $0, email malformado, stock insuficiente).
+     - **Info 🔵:** Mapeo de columnas y resumen de ejecución.
+
+6. **Interfaz Web (Razor MVC) y API REST:**
+   - **Vista Web (`/Importacion`):** Área de carga con Drag & Drop, interruptores configurables (*Upsert*, *Crear ventas*, *Descontar inventario*), KPIs en tiempo real y tabla interactiva de errores.
+   - **Plantilla de Ejemplo:** Botón para descargar un `.xlsx` preconstruido con ejemplos de datos desorganizados y tablas mixtas para pruebas inmediatas.
+   - **Endpoint REST:** `POST /api/importacion/excel` (`multipart/form-data`) y `GET /api/importacion/plantilla`.
+
+---
+
+## 📄 Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)
+
+El sistema cuenta con un motor integral de exportación y generación documental que permite emitir reportes en formatos **Excel (.xlsx)** y **PDF (.pdf)** para todos los módulos clave (**Productos, Clientes y Ventas**), así como la **generación automática de recibos/comprobantes oficiales en PDF** al registrar cada venta en el sistema.
+
+```mermaid
+flowchart TD
+    subgraph Ventas ["Registro de Venta"]
+        V1["Registro de Orden (UI / API)"] --> V2["VentaService.CreateAsync()"]
+        V2 --> V3["Descuento de Stock & Cálculo Financiero<br/>(Subtotal + IVA 19% + Total)"]
+        V3 --> V4["Guardar en Base de Datos (UnitOfWork)"]
+    end
+
+    subgraph Recibos ["Generación de Comprobante PDF"]
+        V4 --> G1["ExportService.GuardarComprobanteReciboAsync()"]
+        G1 --> G2["QuestPDF Document Engine"]
+        G2 --> G3["Almacenamiento Físico:<br/>wwwroot/recibos/recibo_{id}.pdf"]
+    end
+
+    subgraph Descargas ["Descargas y Reportes"]
+        G3 --> D1["Descarga desde UI (/Ventas/DescargarRecibo)"]
+        G3 --> D2["Descarga desde API (GET /api/ventas/{id}/recibo)"]
+        
+        E1["Exportar Productos / Clientes / Ventas"] --> E2{"Formato Seleccionado"}
+        E2 -->|Excel| E3["EPPlus (.xlsx) con Estilos Corporativos"]
+        E2 -->|PDF| E4["QuestPDF (.pdf) con Tablas Tipadas"]
+    end
+```
+
+### 🧾 Características de los Comprobantes de Venta en PDF:
+1. **Disparador Automático:** Cada vez que se crea una venta (desde la interfaz Razor MVC `/Ventas/Create`, desde el proceso de importación masiva o desde el endpoint REST `POST /api/ventas`), el sistema invoca `IExportService.GuardarComprobanteReciboAsync` generando el documento sin intervención manual.
+2. **Estructura Oficial del Recibo:**
+   - **Encabezado Corporativo:** Logotipo/Marca "FIRMEZA", NIT empresarial, dirección, teléfono y correo de soporte.
+   - **Metadatos de la Orden:** Número oficial consecutivo `#VENTA-{Id}`, fecha y hora exacta de expedición, estado de despacho (`Pendiente`, `En Ruta`, `Entregado`).
+   - **Datos Completos del Cliente:** Razón Social / Nombre, Documento de Identidad / NIT, teléfono, correo electrónico y dirección de entrega.
+   - **Desglose Detallado de Productos:** Tabla con columnas de Cantidad, Unidad de Medida, Descripción del Material, Precio Unitario y Subtotal por ítem.
+   - **Liquidación Financiera e Impuestos:**
+     - **Subtotal Base:** Base imponible gravada calculada de forma exacta (`Total / 1.19`).
+     - **IVA (19%):** Impuesto al valor agregado discriminado (`Total - SubtotalBase`).
+     - **Total General:** Valor total a pagar en Pesos Colombianos (COP).
+   - **Pie de Página y Trazabilidad:** Mensaje de validez legal, paginación y fecha de generación del reporte.
+3. **Almacenamiento Físico Persistente:**
+   - Se guardan en el directorio `wwwroot/recibos/` bajo la convención `recibo_{ventaId}.pdf`.
+   - Si la carpeta `wwwroot/recibos` no existe, se crea automáticamente en tiempo de ejecución.
+4. **Acceso y Descarga Directa:**
+   - Botón directo de **Descargar Recibo (PDF)** en las vistas de listado (`/Ventas`), detalle (`/Ventas/Details/{id}`) y formularios.
+   - Endpoint REST: `GET /api/ventas/{id}/recibo` con cabecera `Content-Disposition: inline; filename=recibo_{id}.pdf`.
+
+---
+
+### 📊 Módulo de Exportación General (Excel & PDF):
+
+| Módulo | Formatos Disponibles | Ruta MVC | Endpoint API | Contenido Exportado |
+| :--- | :--- | :--- | :--- | :--- |
+| **Productos** | Excel (`.xlsx`) & PDF (`.pdf`) | `/Productos/ExportarExcel`<br/>`/Productos/ExportarPdf` | `GET /api/productos/exportar/excel`<br/>`GET /api/productos/exportar/pdf` | ID, Nombre, Descripción, Unidad de Medida, Precio Unitario, Stock Actual y Estado Activo/Inactivo. |
+| **Clientes** | Excel (`.xlsx`) & PDF (`.pdf`) | `/Clientes/ExportarExcel`<br/>`/Clientes/ExportarPdf` | `GET /api/clientes/exportar/excel`<br/>`GET /api/clientes/exportar/pdf` | ID, Documento/NIT, Razón Social, Teléfono, Email, Dirección de Envío y Total Compras. |
+| **Ventas** | Excel (`.xlsx`) & PDF (`.pdf`) | `/Ventas/ExportarExcel`<br/>`/Ventas/ExportarPdf` | `GET /api/ventas/exportar/excel`<br/>`GET /api/ventas/exportar/pdf` | ID, Fecha, Cliente (NIT y Nombre), Cantidad de Ítems, Total Facturado y Estado de Despacho. |
+
+---
+
 ## 🛡️ Manejo de Errores con Try-Catch y Validaciones de Entrada
 
 La capa de aplicación implementa manejo defensivo de excepciones mediante [`ValidadorEdad`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Application/Validators/ValidadorEdad.cs), aplicando bloques `try-catch` con captura de excepciones tipadas:
@@ -406,7 +541,7 @@ La capa de aplicación implementa manejo defensivo de excepciones mediante [`Val
 
 ## 🔐 Seguridad y Control de Acceso (RBAC)
 
-* **Rol `Administrador`:** Acceso exclusivo al panel administrativo Razor MVC (`/Home/Dashboard`, `/Productos`, `/Clientes`).
+* **Rol `Administrador`:** Acceso exclusivo al panel administrativo Razor MVC (`/Home/Dashboard`, `/Productos`, `/Clientes`, `/Ventas`, `/Importacion`).
 * **Rol `Cliente`:** Diseñado para compras desde la aplicación cliente. Si un usuario con rol `Cliente` intenta ingresar al panel administrativo, [`AuthService`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Infrastructure/Identity/AuthService.cs) activa la bandera `IsClientBlockedFromAdmin = true` y bloquea el acceso de inmediato.
 
 ---
@@ -415,7 +550,7 @@ La capa de aplicación implementa manejo defensivo de excepciones mediante [`Val
 
 Tanto en **ASP.NET Core Razor MVC** como en **Angular SPA**, la experiencia de usuario mantiene un diseño profesional y coherente:
 1. **Encabezado Superior (Header):** Identidad del sistema, estado en tiempo real del servidor (`Servidor / API Conectada`), avatar del usuario y menú desplegable de perfil.
-2. **Navegación Lateral (Sidebar):** Menú lateral estilizado con fondo oscuro (`#0f172a`), íconos vectoriales modernos, enlaces activos en azul corporativo (`#2563eb`) y toggle responsivo para dispositivos móviles.
+2. **Navegación Lateral (Sidebar):** Menú lateral estilizado con fondo oscuro (`#0f172a`), íconos vectoriales modernos, enlaces activos en azul corporativo (`#2563eb`), acceso directo a ventas, reportes e importación Excel y toggle responsivo para dispositivos móviles.
 3. **Pie de Página (Footer):** Barra de cierre con información legal, políticas y versión del sistema.
 4. **Paleta de Colores y Tipografía:**
    * Primario: `#2563eb` (Royal Blue)
@@ -427,7 +562,7 @@ Tanto en **ASP.NET Core Razor MVC** como en **Angular SPA**, la experiencia de u
 
 ## 🧪 Pruebas Unitarias Automatizadas (xUnit & Moq)
 
-El proyecto cuenta con una suite de pruebas unitarias automatizadas en [`tests/Firmeza.UnitTests/`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests) utilizando **xUnit** (framework de pruebas oficial y líder en el ecosistema .NET) y **Moq** (librería de aislamiento y dobles de prueba/mocking).
+El proyecto cuenta con una suite de **48 pruebas unitarias automatizadas** en [`tests/Firmeza.UnitTests/`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests) utilizando **xUnit** (framework de pruebas oficial y líder en el ecosistema .NET) y **Moq** (librería de aislamiento y dobles de prueba/mocking).
 
 ### 🎯 ¿Qué es xUnit y por qué se utiliza?
 * **xUnit.net** es un framework de pruebas moderno, extensible y orientado a la programación orientada a objetos para C# y .NET.
@@ -443,7 +578,7 @@ Cada método de prueba sigue el estándar internacional **AAA**:
 * **`[Fact]`:** Pruebas con condiciones e invariantes fijas que siempre deben cumplirse.
 * **`[Theory]`:** Pruebas parametrizadas ejecutadas con múltiples conjuntos de datos (`[InlineData(...)]`) para verificar casos límite, datos válidos y datos erróneos en una sola prueba.
 
-### 📦 Batería de Pruebas Implementadas:
+### 📦 Batería de Pruebas Implementadas (48 Pruebas):
 
 | Proyecto / Capa | Archivo de Prueba | Escenarios Validados |
 | :--- | :--- | :--- |
@@ -452,6 +587,11 @@ Cada método de prueba sigue el estándar internacional **AAA**:
 | **Aplicación (`Application`)** | [`ValidadorEdadTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Application/ValidadorEdadTests.cs) | Validación con `try-catch`, captura de `FormatException` (texto alfabético), `OverflowException` (números que exceden Int32) y rangos laborales. |
 | **Servicios (`Infrastructure`)** | [`ClienteServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ClienteServiceTests.cs) | Aislamiento con `Mock<IUnitOfWork>`. Verifica que `DeleteAsync` arroje `InvalidOperationException` si el cliente tiene compras, y borre limpiamente si no las tiene. |
 | **Servicios (`Infrastructure`)** | [`ProductoServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ProductoServiceTests.cs) | Aislamiento con `Mock<IUnitOfWork>`. Valida que al eliminar un producto con ventas asociadas se aplique **Soft Delete** (`Activo = false`), y que `CreateAsync` registre y confirme cambios. |
+| **Servicios (`Infrastructure`)** | [`VentaServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/VentaServiceTests.cs) | Creación de ventas, cálculo financiero (Subtotal, IVA 19%, Total), descuento automático de existencias en inventario, validaciones de stock insuficiente y almacenamiento físico de comprobantes PDF. |
+| **Servicios (`Infrastructure`)** | [`ExportServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ExportServiceTests.cs) | Exportación a Excel (EPPlus) y PDF (QuestPDF) para productos, clientes y ventas, generación de bytes de recibo PDF y guardado físico en disco en `wwwroot/recibos/`. |
+| **Servicios (`Infrastructure`)** | [`ExcelImportServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ExcelImportServiceTests.cs) | Validación con EPPlus: normalización en memoria de columnas mixtas, deduplicación y vinculación de ventas/detalles, upsert de clientes y productos, detección de encabezados desplazados y log de inconsistencias. |
+| **Controladores (`Web`)** | [`VentasControllerTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Controllers/VentasControllerTests.cs) | Flujos MVC de `Index` con métricas, `Details`, `Create` GET/POST, exportaciones Excel/PDF y descarga de recibos con aislamiento de servicios. |
+| **Controladores (`Web`)** | [`ImportacionControllerTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Controllers/ImportacionControllerTests.cs) | Validación de archivos subidos, soporte `.xlsx`/`.xls`, procesamiento con opciones de importación y descarga de plantilla. |
 
 ### ⚡ Comando para Ejecutar las Pruebas:
 ```bash
@@ -554,7 +694,11 @@ Una vez levantado, accede desde tu navegador a:
 6. **¿Cómo se realiza el despliegue en Docker?**
    * *Respuesta:* Con un `Dockerfile` multi-stage que compila la SPA de Angular (Node.js) y la inyecta en el `wwwroot` de la aplicación .NET 10. `docker-compose.yml` orquesta la base de datos PostgreSQL con healthcheck y conecta el contenedor web en una red privada.
 7. **¿Cómo se aplican las pruebas unitarias con xUnit y Moq en el proyecto?**
-   * *Respuesta:* Mediante el proyecto `tests/Firmeza.UnitTests`, aplicando el patrón AAA (Arrange, Act, Assert). Se prueban entidades del dominio (cálculo de subtotales, reglas de stock), validadores de aplicación (`ValidadorEdad` con captura de excepciones) y servicios de infraestructura (`ClienteService`, `ProductoService`) aislando la base de datos con `Mock<IUnitOfWork>`.
+   * *Respuesta:* Mediante el proyecto `tests/Firmeza.UnitTests`, aplicando el patrón AAA (Arrange, Act, Assert). Se prueban entidades del dominio (cálculo de subtotales, reglas de stock), validadores de aplicación (`ValidadorEdad` con captura de excepciones) y servicios de infraestructura (`ClienteService`, `ProductoService`, `VentaService`, `ExportService`, `ExcelImportService`) aislando la base de datos con `Mock<IUnitOfWork>` y base en memoria.
+8. **¿Cómo funciona el motor de importación y normalización automática de Excel con EPPlus?**
+   * *Respuesta:* Utiliza `ExcelImportService` para procesar archivos `.xlsx` desorganizados o con columnas mezcladas. Detecta dinámicamente encabezados en las primeras 10 filas usando sinónimos y tokens; divide la fila en entidades relacionales (`Cliente`, `Producto`, `Venta`, `VentaDetalle`) en memoria; valida campos obligatorios y formatos (moneda, fechas, correo); ejecuta operaciones de *Upsert* (actualiza si existe o crea nuevo) y genera una bitácora clasificada por severidad (`Error`, `Advertencia`, `Info`).
+9. **¿Cómo funciona el módulo de exportación de datos y la generación automática de comprobantes de venta en PDF con QuestPDF y EPPlus?**
+   * *Respuesta:* A través de `ExportService` e `IVentaService`. Al registrar cualquier venta, `VentaService` calcula el subtotal y el IVA discriminado al 19%, descuenta inventario y solicita a `ExportService` generar un comprobante oficial con QuestPDF estructurado con encabezado de la empresa, datos del cliente, tabla de ítems y totales. El PDF se almacena automáticamente en `wwwroot/recibos/recibo_{id}.pdf` y queda disponible para descarga inmediata desde la interfaz web (`/Ventas/DescargarRecibo/{id}`) y API REST (`/api/ventas/{id}/recibo`). Adicionalmente, permite exportar catálogos completos de Productos, Clientes y Ventas tanto a Excel con estilos (EPPlus) como a reportes formales en PDF (QuestPDF).
 
 ---
 

@@ -35,6 +35,16 @@ RUN dotnet publish src/Firmeza.Web/Firmeza.Web.csproj -c Release -o /app/publish
 # Etapa 3: Runtime de Producción
 FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS final
 WORKDIR /app
+
+# Instalar dependencias para renderizado de fuentes y documentos PDF en Linux (QuestPDF / SkiaSharp)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libfontconfig1 \
+    fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+
+# Crear directorio de recibos persistente
+RUN mkdir -p /app/wwwroot/recibos
+
 COPY --from=build-backend /app/publish .
 
 ENV ASPNETCORE_ENVIRONMENT=Production
@@ -42,3 +52,4 @@ ENV ASPNETCORE_HTTP_PORTS=8080
 EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "Firmeza.Web.dll"]
+

@@ -1,0 +1,258 @@
+@using System.Globalization
+@model Firmeza.Web.Controllers.VentaCreateViewModel
+@{
+    ViewData["Title"] = "Registrar Nueva Venta - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+        <a asp-action="Index" class="btn btn-light rounded-circle shadow-sm p-2 border d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+            <i class="bi bi-arrow-left fs-5"></i>
+        </a>
+        <div>
+            <h2 class="fw-bold mb-0 text-dark">Registrar Nueva Venta</h2>
+            <p class="text-muted mb-0">Selecciona el cliente, agrega los materiales y genera el comprobante PDF.</p>
+        </div>
+    </div>
+</div>
+
+<form asp-action="Create" method="post" id="formVenta">
+    @Html.AntiForgeryToken()
+
+    <div class="row g-4">
+        <!-- Panel Izquierdo: Selección de Cliente y Datos de Despacho -->
+        <div class="col-lg-4">
+            <div class="card border-0 bg-white rounded-4 shadow-sm p-4 mb-4">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-person-badge me-2 text-primary"></i>Datos del Cliente</h5>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Cliente Receptor <span class="text-danger">*</span></label>
+                    <select name="ClienteId" id="selectCliente" class="form-select rounded-3" required>
+                        <option value="">-- Seleccionar Cliente --</option>
+                        @foreach (var c in Model.Clientes)
+                        {
+                            <option value="@c.Id" data-doc="@c.DocumentoIdentidad" data-tel="@c.Telefono" data-dir="@c.DireccionEnvio" data-email="@c.Email">
+                                @c.RazonSocial (@c.DocumentoIdentidad)
+                            </option>
+                        }
+                    </select>
+                </div>
+
+                <!-- Info rápida del cliente seleccionado -->
+                <div id="infoCliente" class="p-3 bg-light rounded-3 d-none">
+                    <div class="small fw-semibold text-dark mb-1" id="lblDoc"></div>
+                    <div class="small text-muted mb-1" id="lblTel"></div>
+                    <div class="small text-muted mb-1" id="lblDir"></div>
+                    <div class="small text-muted" id="lblEmail"></div>
+                </div>
+
+                <hr class="my-4" />
+
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-truck me-2 text-primary"></i>Estado de Despacho</h5>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">Estado de la Orden</label>
+                    <select name="EstadoDespacho" class="form-select rounded-3">
+                        <option value="Pendiente">Pendiente (En Alistamiento)</option>
+                        <option value="En Ruta">En Ruta (Despachado)</option>
+                        <option value="Entregado">Entregado a Conformidad</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Resumen Financiero -->
+            <div class="card border-0 bg-white rounded-4 shadow-sm p-4">
+                <h5 class="fw-bold text-dark mb-3"><i class="bi bi-calculator me-2 text-primary"></i>Liquidación Financiera</h5>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">Subtotal Base:</span>
+                    <span class="fw-semibold text-dark" id="txtSubtotal">$0</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted">IVA Estimado (19%):</span>
+                    <span class="fw-semibold text-dark" id="txtIva">$0</span>
+                </div>
+                <hr class="my-2" />
+                <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-primary bg-opacity-10 text-primary">
+                    <span class="fw-bold fs-6">TOTAL A PAGAR:</span>
+                    <span class="fw-bold fs-4" id="txtTotal">$0</span>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success rounded-pill px-4 py-2 w-100 fw-bold d-flex align-items-center justify-content-center gap-2 shadow-sm" id="btnGuardar">
+                        <i class="bi bi-receipt"></i>
+                        <span>Generar Venta & Recibo PDF</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Derecho: Ítems de la Venta (Materiales) -->
+        <div class="col-lg-8">
+            <div class="card border-0 bg-white rounded-4 shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                    <div>
+                        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-boxes me-2 text-primary"></i>Materiales y Productos de la Orden</h5>
+                        <small class="text-muted">Agrega los ítems que conformarán la orden de entrega.</small>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary rounded-pill btn-sm px-3 fw-semibold" id="btnAgregarFila">
+                        <i class="bi bi-plus-circle me-1"></i> Agregar Material
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle" id="tablaDetalles">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 40%;">Material / Producto</th>
+                                <th style="width: 15%;">U.M.</th>
+                                <th style="width: 15%;">Cantidad</th>
+                                <th style="width: 18%;">Precio Unitario</th>
+                                <th style="width: 12%; text-align: right;">Subtotal</th>
+                                <th style="width: 5%;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="detallesBody">
+                            <!-- Filas dinámicas generadas con JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="alertaVacio" class="text-center py-4 bg-light rounded-3">
+                    <i class="bi bi-cart-plus text-muted fs-2 d-block mb-1"></i>
+                    <span class="text-muted small">Haz clic en <strong>"Agregar Material"</strong> para incluir productos a la venta.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        // Catálogo de productos disponibles
+        const productosCatalogo = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Productos.Select(p => new {
+            id = p.Id,
+            nombre = p.Nombre,
+            precio = p.PrecioUnitario,
+            unidad = p.UnidadMedida,
+            stock = p.StockActual
+        })));
+
+        let itemIndex = 0;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectCliente = document.getElementById("selectCliente");
+            const infoCliente = document.getElementById("infoCliente");
+            const btnAgregarFila = document.getElementById("btnAgregarFila");
+            const detallesBody = document.getElementById("detallesBody");
+            const alertaVacio = document.getElementById("alertaVacio");
+
+            // Información dinámica del cliente
+            selectCliente.addEventListener("change", function () {
+                const opt = selectCliente.selectedOptions[0];
+                if (opt && opt.value) {
+                    document.getElementById("lblDoc").innerText = "NIT/Cédula: " + opt.dataset.doc;
+                    document.getElementById("lblTel").innerText = "Teléfono: " + (opt.dataset.tel || "N/A");
+                    document.getElementById("lblDir").innerText = "Envío: " + (opt.dataset.dir || "Bodega");
+                    document.getElementById("lblEmail").innerText = "Email: " + (opt.dataset.email || "N/A");
+                    infoCliente.classList.remove("d-none");
+                } else {
+                    infoCliente.classList.add("d-none");
+                }
+            });
+
+            // Agregar fila de material
+            function agregarFila() {
+                alertaVacio.classList.add("d-none");
+                const tr = document.createElement("tr");
+                tr.id = `row_${itemIndex}`;
+
+                let optionsHtml = `<option value="">-- Seleccione Material --</option>`;
+                productosCatalogo.forEach(p => {
+                    optionsHtml += `<option value="${p.id}" data-precio="${p.precio}" data-um="${p.unidad}" data-stock="${p.stock}">${p.nombre} (Stock: ${p.stock})</option>`;
+                });
+
+                tr.innerHTML = `
+                    <td>
+                        <select name="Detalles[${itemIndex}].ProductoId" class="form-select select-prod rounded-3" required>
+                            ${optionsHtml}
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control bg-light input-um" readonly value="-" />
+                    </td>
+                    <td>
+                        <input type="number" name="Detalles[${itemIndex}].Cantidad" class="form-control input-cant" min="1" value="1" required />
+                    </td>
+                    <td>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" name="Detalles[${itemIndex}].PrecioAplicado" class="form-control input-precio" min="0" step="0.01" value="0" required />
+                        </div>
+                    </td>
+                    <td class="text-end fw-bold row-subtotal">$0</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-danger btn-sm rounded-circle btn-del" title="Eliminar"><i class="bi bi-trash"></i></button>
+                    </td>
+                `;
+
+                detallesBody.appendChild(tr);
+
+                const sel = tr.querySelector(".select-prod");
+                const inpUm = tr.querySelector(".input-um");
+                const inpPrecio = tr.querySelector(".input-precio");
+                const inpCant = tr.querySelector(".input-cant");
+                const btnDel = tr.querySelector(".btn-del");
+
+                sel.addEventListener("change", function () {
+                    const opt = sel.selectedOptions[0];
+                    if (opt && opt.value) {
+                        inpUm.value = opt.dataset.um;
+                        inpPrecio.value = opt.dataset.precio;
+                    } else {
+                        inpUm.value = "-";
+                        inpPrecio.value = 0;
+                    }
+                    recalcular();
+                });
+
+                inpCant.addEventListener("input", recalcular);
+                inpPrecio.addEventListener("input", recalcular);
+
+                btnDel.addEventListener("click", function () {
+                    tr.remove();
+                    if (detallesBody.children.length === 0) {
+                        alertaVacio.classList.remove("d-none");
+                    }
+                    recalcular();
+                });
+
+                itemIndex++;
+                recalcular();
+            }
+
+            btnAgregarFila.addEventListener("click", agregarFila);
+
+            // Agregar la primera fila automáticamente
+            agregarFila();
+
+            function recalcular() {
+                let total = 0;
+                const rows = detallesBody.querySelectorAll("tr");
+                rows.forEach(r => {
+                    const cant = parseFloat(r.querySelector(".input-cant").value) || 0;
+                    const precio = parseFloat(r.querySelector(".input-precio").value) || 0;
+                    const sub = cant * precio;
+                    r.querySelector(".row-subtotal").innerText = "$" + sub.toLocaleString("es-CO");
+                    total += sub;
+                });
+
+                const subtotalBase = total / 1.19;
+                const iva = total - subtotalBase;
+
+                document.getElementById("txtSubtotal").innerText = "$" + Math.round(subtotalBase).toLocaleString("es-CO");
+                document.getElementById("txtIva").innerText = "$" + Math.round(iva).toLocaleString("es-CO");
+                document.getElementById("txtTotal").innerText = "$" + Math.round(total).toLocaleString("es-CO");
+            }
+        });
+    </script>
+}

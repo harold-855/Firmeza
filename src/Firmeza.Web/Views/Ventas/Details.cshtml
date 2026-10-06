@@ -1,0 +1,147 @@
+@using System.Globalization
+@model Firmeza.Application.DTOS.Ventas.VentaDto
+@{
+    ViewData["Title"] = $"Detalle de Venta {Model.NumeroComprobante} - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+}
+
+<!-- Header de Página -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+        <a asp-action="Index" class="btn btn-light rounded-circle shadow-sm p-2 border d-flex align-items-center justify-content-center" style="width: 42px; height: 42px;">
+            <i class="bi bi-arrow-left fs-5"></i>
+        </a>
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <h2 class="fw-bold mb-0 text-dark">Comprobante @Model.NumeroComprobante</h2>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-3 py-1">
+                    @Model.EstadoDespacho
+                </span>
+            </div>
+            <p class="text-muted mb-0">Emitido el @Model.FechaVenta.ToString("dddd, dd de MMMM de yyyy HH:mm", colCulture)</p>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="DescargarRecibo" asp-route-id="@Model.Id" class="btn btn-danger rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-file-earmark-pdf-fill fs-5"></i>
+            <span class="fw-bold">Descargar Recibo Oficial (PDF)</span>
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Información del Cliente y Orden -->
+    <div class="col-lg-4">
+        <!-- Tarjeta del Cliente -->
+        <div class="card border-0 bg-white rounded-4 shadow-sm p-4 mb-4">
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-person-check text-primary me-2"></i>Datos del Cliente</h5>
+            <div class="mb-3">
+                <span class="text-muted small d-block">Razón Social / Nombre:</span>
+                <span class="fw-bold text-dark fs-6">@Model.ClienteRazonSocial</span>
+            </div>
+            <div class="mb-3">
+                <span class="text-muted small d-block">Documento / NIT:</span>
+                <span class="fw-semibold text-dark">@Model.ClienteDocumento</span>
+            </div>
+            <div class="mb-3">
+                <span class="text-muted small d-block">Teléfono de Contacto:</span>
+                <span class="text-dark">@(string.IsNullOrWhiteSpace(Model.ClienteTelefono) ? "No especificado" : Model.ClienteTelefono)</span>
+            </div>
+            <div class="mb-3">
+                <span class="text-muted small d-block">Dirección de Entrega:</span>
+                <span class="text-dark">@(string.IsNullOrWhiteSpace(Model.ClienteDireccion) ? "Despacho en Bodega" : Model.ClienteDireccion)</span>
+            </div>
+            <div>
+                <span class="text-muted small d-block">Correo Electrónico:</span>
+                <span class="text-dark">@(string.IsNullOrWhiteSpace(Model.ClienteEmail) ? "No especificado" : Model.ClienteEmail)</span>
+            </div>
+        </div>
+
+        <!-- Tarjeta de Totales Financieros -->
+        <div class="card border-0 bg-white rounded-4 shadow-sm p-4">
+            <h5 class="fw-bold text-dark mb-3"><i class="bi bi-cash-stack text-success me-2"></i>Resumen Financiero</h5>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">Subtotal Base Gravable:</span>
+                <span class="fw-semibold text-dark">@Model.SubtotalBase.ToString("C0", colCulture)</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted">IVA Liquidado (19%):</span>
+                <span class="fw-semibold text-dark">@Model.Iva.ToString("C0", colCulture)</span>
+            </div>
+            <hr class="my-3" />
+            <div class="d-flex justify-content-between align-items-center p-3 rounded-3 bg-success bg-opacity-10 text-success">
+                <span class="fw-bold">TOTAL PAGADO:</span>
+                <span class="fw-bold fs-4">@Model.Total.ToString("C0", colCulture)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desglose de Productos Comprados -->
+    <div class="col-lg-8">
+        <div class="card border-0 bg-white rounded-4 shadow-sm p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-dark mb-0"><i class="bi bi-boxes text-primary me-2"></i>Materiales Facturados (@Model.TotalItems unidades)</h5>
+                <span class="badge bg-light text-dark border">@Model.Detalles.Count ítems distintos</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3">#</th>
+                            <th class="py-3">Material / Producto</th>
+                            <th class="py-3 text-center">U.M.</th>
+                            <th class="py-3 text-center">Cantidad</th>
+                            <th class="py-3 text-end">Precio Aplicado</th>
+                            <th class="py-3 text-end pe-3">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int idx = 1; }
+                        @foreach (var d in Model.Detalles)
+                        {
+                            <tr>
+                                <td class="fw-bold text-muted">@idx</td>
+                                <td>
+                                    <div class="fw-bold text-dark">@d.ProductoNombre</div>
+                                    <small class="text-muted">Cód: @d.ProductoId.ToString()[..8]</small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-muted border">@d.UnidadMedida</span>
+                                </td>
+                                <td class="text-center fw-semibold">
+                                    @d.Cantidad.ToString("N0")
+                                </td>
+                                <td class="text-end">
+                                    @d.PrecioAplicado.ToString("C0", colCulture)
+                                </td>
+                                <td class="text-end pe-3 fw-bold text-dark">
+                                    @d.Subtotal.ToString("C0", colCulture)
+                                </td>
+                            </tr>
+                            idx++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Visualizador / Info de Comprobante Almacenado -->
+        <div class="card border-0 bg-white rounded-4 shadow-sm p-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-3 bg-danger bg-opacity-10 text-danger rounded-4">
+                        <i class="bi bi-file-earmark-pdf fs-2"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold text-dark mb-1">Archivo de Comprobante PDF Almacenado</h6>
+                        <span class="text-muted small">Ubicación en servidor: <code>wwwroot/recibos/recibo_@(Model.Id).pdf</code></span>
+                    </div>
+                </div>
+                <a asp-action="DescargarRecibo" asp-route-id="@Model.Id" class="btn btn-outline-danger rounded-pill px-4 btn-sm fw-semibold">
+                    <i class="bi bi-download me-1"></i> Descargar PDF
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

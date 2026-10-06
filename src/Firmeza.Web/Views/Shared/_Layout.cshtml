@@ -57,6 +57,18 @@
                         <span>Clientes</span>
                     </a>
                 </li>
+                <li>
+                    <a asp-controller="Ventas" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Ventas" ? "active" : "")">
+                        <i class="bi bi-receipt"></i>
+                        <span>Ventas & Recibos</span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Importacion" asp-action="Index" class="sidebar-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Importacion" ? "active" : "")">
+                        <i class="bi bi-file-earmark-spreadsheet text-success"></i>
+                        <span>Importar Excel</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-heading">Acceso & Clientes</li>
                 <li>
@@ -115,6 +127,8 @@
                             <li><a class="dropdown-item" asp-controller="Home" asp-action="Dashboard"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
                             <li><a class="dropdown-item" asp-controller="Productos" asp-action="Index"><i class="bi bi-box-seam me-2"></i> Productos</a></li>
                             <li><a class="dropdown-item" asp-controller="Clientes" asp-action="Index"><i class="bi bi-people me-2"></i> Clientes</a></li>
+                            <li><a class="dropdown-item" asp-controller="Ventas" asp-action="Index"><i class="bi bi-receipt me-2"></i> Ventas & Recibos</a></li>
+                            <li><a class="dropdown-item" asp-controller="Importacion" asp-action="Index"><i class="bi bi-file-earmark-spreadsheet me-2 text-success"></i> Importar Excel</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form asp-controller="Account" asp-action="Logout" method="post" class="px-2">

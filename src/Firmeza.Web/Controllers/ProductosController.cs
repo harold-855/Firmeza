@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Firmeza.Web.Controllers;
 
 [Authorize(Roles = Roles.Administrador)]
-public class ProductosController(IProductoService productoService) : Controller
+public class ProductosController(IProductoService productoService, IExportService exportService) : Controller
 {
     // GET: /Productos
     public async Task<IActionResult> Index([FromQuery] ProductoFilterDto filter)
@@ -182,5 +182,43 @@ public class ProductosController(IProductoService productoService) : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // GET: /Productos/ExportarExcel
+    [HttpGet]
+    public async Task<IActionResult> ExportarExcel([FromQuery] ProductoFilterDto filter)
+    {
+        try
+        {
+            var bytes = await exportService.ExportarProductosExcelAsync(filter);
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Catalogo_Productos_Firmeza_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+        }
+        catch (Exception)
+        {
+            TempData["Error"] = "Error al exportar los productos a Excel.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    // GET: /Productos/ExportarPdf
+    [HttpGet]
+    public async Task<IActionResult> ExportarPdf([FromQuery] ProductoFilterDto filter)
+    {
+        try
+        {
+            var bytes = await exportService.ExportarProductosPdfAsync(filter);
+            return File(
+                bytes,
+                "application/pdf",
+                $"Catalogo_Productos_Firmeza_{DateTime.Now:yyyyMMdd_HHmm}.pdf");
+        }
+        catch (Exception)
+        {
+            TempData["Error"] = "Error al exportar los productos a PDF.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

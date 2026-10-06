@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Firmeza.Web.Controllers;
 
 [Authorize(Roles = Roles.Administrador)]
-public class ClientesController(IClienteService clienteService) : Controller
+public class ClientesController(IClienteService clienteService, IExportService exportService) : Controller
 {
     // GET: /Clientes
     public async Task<IActionResult> Index([FromQuery] ClienteFilterDto filter)
@@ -185,5 +185,43 @@ public class ClientesController(IClienteService clienteService) : Controller
         }
 
         return RedirectToAction(nameof(Index));
+    }
+
+    // GET: /Clientes/ExportarExcel
+    [HttpGet]
+    public async Task<IActionResult> ExportarExcel([FromQuery] ClienteFilterDto filter)
+    {
+        try
+        {
+            var bytes = await exportService.ExportarClientesExcelAsync(filter);
+            return File(
+                bytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Directorio_Clientes_Firmeza_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+        }
+        catch (Exception)
+        {
+            TempData["Error"] = "Error al exportar los clientes a Excel.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    // GET: /Clientes/ExportarPdf
+    [HttpGet]
+    public async Task<IActionResult> ExportarPdf([FromQuery] ClienteFilterDto filter)
+    {
+        try
+        {
+            var bytes = await exportService.ExportarClientesPdfAsync(filter);
+            return File(
+                bytes,
+                "application/pdf",
+                $"Directorio_Clientes_Firmeza_{DateTime.Now:yyyyMMdd_HHmm}.pdf");
+        }
+        catch (Exception)
+        {
+            TempData["Error"] = "Error al exportar los clientes a PDF.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

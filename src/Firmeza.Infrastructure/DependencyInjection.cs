@@ -48,6 +48,9 @@ public static class DependencyInjection
         services.AddScoped<IDashboardService, DashboardService>();
         services.AddScoped<IProductoService, ProductoService>();
         services.AddScoped<IClienteService, ClienteService>();
+        services.AddScoped<IVentaService, VentaService>();
+        services.AddScoped<IExportService, ExportService>();
+        services.AddScoped<IExcelImportService, ExcelImportService>();
 
         return services;
     }

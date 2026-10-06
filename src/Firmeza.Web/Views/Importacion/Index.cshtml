@@ -1,0 +1,377 @@
+@using Firmeza.Application.DTOS.Importacion
+@using System.Globalization
+@model Firmeza.Web.Controllers.ExcelImportViewModel
+@{
+    ViewData["Title"] = "Importación Inteligente Excel - Firmeza";
+    var colCulture = new CultureInfo("es-CO");
+}
+
+<!-- Notificaciones Flash -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-check-circle-fill me-2 fs-5 text-success"></i>
+            <div>@TempData["Success"]</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-5 text-warning"></i>
+            <div>@TempData["Warning"]</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm border-0 mb-4" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-x-circle-fill me-2 fs-5 text-danger"></i>
+            <div>@TempData["Error"]</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Encabezado Principal -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div class="d-flex align-items-center gap-3">
+        <div class="p-3 bg-success bg-opacity-10 text-success rounded-4 shadow-sm">
+            <i class="bi bi-file-earmark-spreadsheet-fill fs-2"></i>
+        </div>
+        <div>
+            <h2 class="fw-bold mb-1 text-dark">Importación Inteligente de Excel (EPPlus)</h2>
+            <p class="text-muted mb-0">Lectura y normalización automática en memoria de archivos con datos desorganizados y mezclados.</p>
+        </div>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="DescargarPlantilla" class="btn btn-outline-success rounded-pill px-4 py-2 d-flex align-items-center gap-2 shadow-sm">
+            <i class="bi bi-download"></i>
+            <span class="fw-semibold">Descargar Plantilla de Ejemplo</span>
+        </a>
+    </div>
+</div>
+
+<!-- Guía Informativa sobre Normalización Automática -->
+<div class="card border-0 bg-white rounded-4 p-4 shadow-sm mb-4">
+    <div class="row align-items-center g-3">
+        <div class="col-lg-8">
+            <h5 class="fw-bold text-dark mb-2"><i class="bi bi-magic text-primary me-2"></i>¿Cómo funciona el motor de normalización?</h5>
+            <p class="text-muted small mb-0">
+                El motor analiza la estructura del libro Excel hoja por hoja, detecta automáticamente la posición de encabezados de columnas (reconociendo sinónimos como <em>NIT, Cédula, Razón Social, Producto, Cantidad, Precio, Stock, Dirección, etc.</em>), divide la información mezclada en entidades independientes (<strong>Clientes, Productos, Ventas y Detalles</strong>), valida campos obligatorios e inserta o actualiza en la base de datos manteniendo la integridad relacional.
+            </p>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill me-1 mb-1">
+                <i class="bi bi-people me-1"></i> Clientes
+            </span>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill me-1 mb-1">
+                <i class="bi bi-box-seam me-1"></i> Productos
+            </span>
+            <span class="badge bg-info-subtle text-info border border-info-subtle px-3 py-2 rounded-pill mb-1">
+                <i class="bi bi-receipt me-1"></i> Ventas
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Formulario de Carga y Opciones -->
+<div class="card border-0 bg-white rounded-4 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <form asp-action="Procesar" method="post" enctype="multipart/form-data" id="formImportacion">
+            @Html.AntiForgeryToken()
+
+            <div class="row g-4">
+                <!-- Zona Drag & Drop / Selección de Archivo -->
+                <div class="col-lg-7">
+                    <label class="form-label fw-bold text-dark mb-2">Seleccionar Archivo Excel (.xlsx)</label>
+                    <div class="border border-2 border-dashed rounded-4 p-4 text-center bg-light position-relative" id="dropZone" style="cursor: pointer; border-color: #cbd5e1 !important;">
+                        <input type="file" name="archivoExcel" id="archivoExcel" accept=".xlsx,.xls" class="position-absolute top-0 start-0 w-100 h-100 opacity-0" style="cursor: pointer;" required />
+                        <div class="py-3">
+                            <i class="bi bi-cloud-arrow-up text-success fs-1 mb-2 d-block"></i>
+                            <h6 class="fw-bold text-dark mb-1" id="fileLabel">Arrastra tu archivo Excel aquí o haz clic para examinar</h6>
+                            <span class="text-muted small">Admite formatos .xlsx y .xls con datos desordenados o tablas mixtas</span>
+                        </div>
+                    </div>
+                    @if (!ViewData.ModelState.IsValid && ViewData.ModelState["ArchivoExcel"]?.Errors.Count > 0)
+                    {
+                        <div class="text-danger small mt-2">
+                            <i class="bi bi-exclamation-circle me-1"></i>@ViewData.ModelState["ArchivoExcel"]?.Errors[0].ErrorMessage
+                        </div>
+                    }
+                </div>
+
+                <!-- Opciones de Importación -->
+                <div class="col-lg-5">
+                    <h6 class="fw-bold text-dark mb-3"><i class="bi bi-sliders me-2 text-primary"></i>Reglas de Procesamiento</h6>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="optActualizar" name="options.ActualizarSiExiste" value="true" @(Model.Options.ActualizarSiExiste ? "checked" : "")>
+                        <input type="hidden" name="options.ActualizarSiExiste" value="false" />
+                        <label class="form-check-label text-dark fw-medium small" for="optActualizar">
+                            Actualizar datos si el cliente o producto ya existe (Upsert)
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="optVentas" name="options.CrearVentasSiHayDatos" value="true" @(Model.Options.CrearVentasSiHayDatos ? "checked" : "")>
+                        <input type="hidden" name="options.CrearVentasSiHayDatos" value="false" />
+                        <label class="form-check-label text-dark fw-medium small" for="optVentas">
+                            Registrar ventas y vincular detalles automáticamente si hay cantidades
+                        </label>
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input class="form-check-input" type="checkbox" role="switch" id="optStock" name="options.DescontarStockDeVentas" value="true" @(Model.Options.DescontarStockDeVentas ? "checked" : "")>
+                        <input type="hidden" name="options.DescontarStockDeVentas" value="false" />
+                        <label class="form-check-label text-dark fw-medium small" for="optStock">
+                            Descontar automáticamente el stock de inventario por ventas procesadas
+                        </label>
+                    </div>
+
+                    <div class="mt-4 pt-2">
+                        <button type="submit" class="btn btn-success rounded-pill px-4 py-2 w-100 fw-semibold d-flex align-items-center justify-content-center gap-2 shadow-sm" id="btnSubmit">
+                            <i class="bi bi-play-circle-fill"></i>
+                            <span>Procesar y Normalizar Archivo</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Resultados del Procesamiento -->
+@if (Model.Resultado != null)
+{
+    var res = Model.Resultado;
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="fw-bold text-dark mb-0"><i class="bi bi-bar-chart-line-fill text-primary me-2"></i>Informe de Normalización y Métricas</h4>
+        <span class="badge bg-light text-dark border px-3 py-2 rounded-pill">
+            Archivo: <strong>@(Model.NombreArchivo ?? "Importación Reciente")</strong>
+        </span>
+    </div>
+
+    <!-- Métricas en Tarjetas -->
+    <div class="row g-3 mb-4">
+        <!-- Clientes -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100 border-start border-primary border-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Clientes Procesados</span>
+                        <h3 class="fw-bold mb-0 text-dark">@(res.ClientesCreados + res.ClientesActualizados)</h3>
+                        <div class="small text-muted mt-1">
+                            <span class="text-success"><i class="bi bi-plus-circle"></i> +@res.ClientesCreados nuevos</span> |
+                            <span class="text-info"><i class="bi bi-arrow-repeat"></i> @res.ClientesActualizados act.</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-circle bg-primary bg-opacity-10 text-primary fs-4">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Productos -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100 border-start border-success border-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Productos Procesados</span>
+                        <h3 class="fw-bold mb-0 text-dark">@(res.ProductosCreados + res.ProductosActualizados)</h3>
+                        <div class="small text-muted mt-1">
+                            <span class="text-success"><i class="bi bi-plus-circle"></i> +@res.ProductosCreados nuevos</span> |
+                            <span class="text-info"><i class="bi bi-arrow-repeat"></i> @res.ProductosActualizados act.</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-circle bg-success bg-opacity-10 text-success fs-4">
+                        <i class="bi bi-box-seam-fill"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ventas -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100 border-start border-info border-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Ventas Registradas</span>
+                        <h3 class="fw-bold mb-0 text-dark">@res.VentasCreadas</h3>
+                        <div class="small text-muted mt-1">
+                            <span>@res.DetallesVentaCreados ítems vinculados</span>
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-circle bg-info bg-opacity-10 text-info fs-4">
+                        <i class="bi bi-receipt-cutoff"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monto Total / Estado -->
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card border-0 bg-white rounded-4 p-3 shadow-sm h-100 border-start border-warning border-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="text-muted small fw-semibold text-uppercase">Monto Ventas Normalizadas</span>
+                        <h3 class="fw-bold mb-0 text-dark">@res.MontoTotalVentasImportadas.ToString("C0", colCulture)</h3>
+                        <div class="small mt-1">
+                            @if (res.TotalErrores == 0)
+                            {
+                                <span class="text-success fw-semibold"><i class="bi bi-check2-all"></i> Sin errores críticos</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger fw-semibold"><i class="bi bi-exclamation-octagon"></i> @res.TotalErrores errores</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="p-3 rounded-circle bg-warning bg-opacity-10 text-warning fs-4">
+                        <i class="bi bi-cash-stack"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen Textual -->
+    @if (!string.IsNullOrWhiteSpace(res.Resumen))
+    {
+        <div class="card border-0 bg-white rounded-4 p-4 shadow-sm mb-4">
+            <h6 class="fw-bold text-dark mb-2"><i class="bi bi-info-circle text-primary me-2"></i>Resumen de Operación</h6>
+            <pre class="bg-light p-3 rounded-3 text-dark small mb-0" style="white-space: pre-wrap; font-family: inherit;">@res.Resumen</pre>
+        </div>
+    }
+
+    <!-- Log Detallado de Errores e Inconsistencias -->
+    <div class="card border-0 bg-white rounded-4 shadow-sm mb-4">
+        <div class="card-header bg-transparent border-0 pt-4 px-4 pb-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <h5 class="fw-bold text-dark mb-1"><i class="bi bi-journal-text me-2 text-primary"></i>Bitácora de Inconsistencias, Validaciones y Registro</h5>
+                <span class="text-muted small">Detalle por hoja, fila y campo con las correcciones, advertencias o fallos detectados.</span>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge bg-danger rounded-pill px-3 py-2"><i class="bi bi-x-circle me-1"></i>@res.TotalErrores Errores</span>
+                <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i class="bi bi-exclamation-triangle me-1"></i>@res.TotalAdvertencias Advertencias</span>
+                <span class="badge bg-info text-dark rounded-pill px-3 py-2"><i class="bi bi-info-circle me-1"></i>@res.Errores.Count(e => e.Nivel == NivelInconsistencia.Info) Info</span>
+            </div>
+        </div>
+
+        <div class="card-body px-4 pb-4">
+            @if (res.Errores.Count == 0)
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-shield-check text-success fs-1 mb-2 d-block"></i>
+                    <h6 class="fw-bold text-dark">¡Todo impecable!</h6>
+                    <p class="text-muted small mb-0">No se encontraron inconsistencias ni errores en el archivo importado.</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="py-3">Nivel</th>
+                                <th class="py-3">Hoja / Fila</th>
+                                <th class="py-3">Columna / Campo</th>
+                                <th class="py-3">Entidad</th>
+                                <th class="py-3">Valor Detectado</th>
+                                <th class="py-3">Detalle / Acción Tomada</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var err in res.Errores)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (err.Nivel == NivelInconsistencia.Error)
+                                        {
+                                            <span class="badge bg-danger rounded-pill px-2 py-1"><i class="bi bi-x-circle me-1"></i>Error</span>
+                                        }
+                                        else if (err.Nivel == NivelInconsistencia.Advertencia)
+                                        {
+                                            <span class="badge bg-warning text-dark rounded-pill px-2 py-1"><i class="bi bi-exclamation-triangle me-1"></i>Advertencia</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info text-dark rounded-pill px-2 py-1"><i class="bi bi-info-circle me-1"></i>Info</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold text-dark">@(string.IsNullOrWhiteSpace(err.Hoja) ? "General" : err.Hoja)</div>
+                                        <small class="text-muted">Fila @(err.Fila > 0 ? err.Fila.ToString() : "N/A")</small>
+                                    </td>
+                                    <td>
+                                        <div class="fw-medium">@err.Columna</div>
+                                        <small class="text-muted">@err.Campo</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-light text-dark border">@err.EntidadAfectada</span>
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(err.ValorInvalido))
+                                        {
+                                            <code class="text-danger small">@err.ValorInvalido</code>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted small">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="small text-dark">@err.Mensaje</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const dropZone = document.getElementById("dropZone");
+            const fileInput = document.getElementById("archivoExcel");
+            const fileLabel = document.getElementById("fileLabel");
+
+            if (fileInput && fileLabel) {
+                fileInput.addEventListener("change", function () {
+                    if (fileInput.files && fileInput.files.length > 0) {
+                        fileLabel.innerHTML = `<span class="text-success"><i class="bi bi-file-earmark-check me-1"></i> ${fileInput.files[0].name} (${(fileInput.files[0].size / 1024).toFixed(1)} KB)</span>`;
+                    }
+                });
+            }
+
+            if (dropZone && fileInput) {
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.add('bg-success', 'bg-opacity-10');
+                    }, false);
+                });
+
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        dropZone.classList.remove('bg-success', 'bg-opacity-10');
+                    }, false);
+                });
+            }
+        });
+    </script>
+}
