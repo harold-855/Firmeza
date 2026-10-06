@@ -1,0 +1,124 @@
+using Firmeza.Application.DTOS.Ventas;
+using Firmeza.Application.Interfaces;
+using Firmeza.Application.Interfaces.Repositories;
+using Firmeza.Domain.Entities;
+using Microsoft.Extensions.Logging;
+
+namespace Firmeza.Application.UseCases.Ventas;
+
+public class CrearVentaUseCase(
+    IUnitOfWork unitOfWork,
+    IExportService exportService,
+    ILogger<CrearVentaUseCase> logger)
+{
+    public async Task<VentaDto> ExecuteAsync(CreateVentaDto dto, string? wwwrootPath = null, CancellationToken cancellationToken = default)
+    {
+        if (dto.ClienteId == Guid.Empty)
+        {
+            throw new ArgumentException("Debe especificar un cliente válido para la venta.", nameof(dto));
+        }
+
+        var cliente = await unitOfWork.Clientes.GetByIdAsync(dto.ClienteId, cancellationToken)
+            ?? throw new KeyNotFoundException($"El cliente con Id '{dto.ClienteId}' no fue encontrado.");
+
+        if (dto.Detalles == null || dto.Detalles.Count == 0)
+        {
+            throw new ArgumentException("La orden de venta debe contener al menos un producto.", nameof(dto));
+        }
+
+        var venta = new Venta
+        {
+            Id = Guid.NewGuid(),
+            ClienteId = cliente.Id,
+            Cliente = cliente,
+            FechaVenta = DateTime.UtcNow,
+            EstadoDespacho = string.IsNullOrWhiteSpace(dto.EstadoDespacho) ? "Pendiente" : dto.EstadoDespacho.Trim(),
+            Total = 0
+        };
+
+        decimal totalVenta = 0;
+
+        foreach (var det in dto.Detalles)
+        {
+            if (det.Cantidad <= 0)
+            {
+                throw new ArgumentException("La cantidad de cada ítem debe ser mayor a 0.");
+            }
+
+            var producto = await unitOfWork.Productos.GetByIdAsync(det.ProductoId, cancellationToken)
+                ?? throw new KeyNotFoundException($"El producto con Id '{det.ProductoId}' no fue encontrado.");
+
+            decimal precioUnitarioAplicado = det.PrecioAplicado.HasValue && det.PrecioAplicado.Value >= 0
+                ? det.PrecioAplicado.Value
+                : producto.PrecioUnitario;
+
+            var detalle = new VentaDetalle
+            {
+                Id = Guid.NewGuid(),
+                VentaId = venta.Id,
+                Venta = venta,
+                ProductoId = producto.Id,
+                Producto = producto,
+                Cantidad = det.Cantidad,
+                PrecioAplicado = precioUnitarioAplicado
+            };
+
+            // Descontar inventario disponible
+            producto.StockActual = Math.Max(0, producto.StockActual - det.Cantidad);
+            await unitOfWork.Productos.UpdateAsync(producto, cancellationToken);
+
+            venta.Detalles.Add(detalle);
+            totalVenta += (det.Cantidad * precioUnitarioAplicado);
+        }
+
+        venta.Total = totalVenta;
+
+        await unitOfWork.Ventas.AddAsync(venta, cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        string? rutaRecibo = null;
+
+        // Generar y almacenar el comprobante en wwwroot/recibos si se proporciona la ruta web
+        if (!string.IsNullOrWhiteSpace(wwwrootPath))
+        {
+            try
+            {
+                rutaRecibo = await exportService.GuardarComprobanteReciboAsync(venta.Id, wwwrootPath, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "No se pudo guardar automáticamente el comprobante PDF para la venta {VentaId}", venta.Id);
+            }
+        }
+
+        var resultDto = MapToDto(venta);
+        resultDto.RutaArchivoRecibo = rutaRecibo;
+        return resultDto;
+    }
+
+    private static VentaDto MapToDto(Venta v)
+    {
+        return new VentaDto
+        {
+            Id = v.Id,
+            FechaVenta = v.FechaVenta,
+            Total = v.Total,
+            EstadoDespacho = v.EstadoDespacho,
+            ClienteId = v.ClienteId,
+            ClienteRazonSocial = v.Cliente?.RazonSocial ?? "Cliente General",
+            ClienteDocumento = v.Cliente?.DocumentoIdentidad ?? "",
+            ClienteTelefono = v.Cliente?.Telefono ?? "",
+            ClienteDireccion = v.Cliente?.DireccionEnvio ?? "",
+            ClienteEmail = v.Cliente?.Email ?? "",
+            Detalles = v.Detalles.Select(d => new VentaDetalleDto
+            {
+                Id = d.Id,
+                ProductoId = d.ProductoId,
+                ProductoNombre = d.Producto?.Nombre ?? "Material General",
+                UnidadMedida = d.Producto?.UnidadMedida ?? "UND",
+                Cantidad = d.Cantidad,
+                PrecioAplicado = d.PrecioAplicado
+            }).ToList()
+        };
+    }
+}

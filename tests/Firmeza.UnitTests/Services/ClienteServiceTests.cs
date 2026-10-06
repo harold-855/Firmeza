@@ -1,7 +1,8 @@
 using Firmeza.Application.DTOS.Clientes;
 using Firmeza.Application.Interfaces.Repositories;
+using Firmeza.Application.Services;
+using Firmeza.Application.UseCases.Clientes;
 using Firmeza.Domain.Entities;
-using Firmeza.Infrastructure.Services;
 using Moq;
 using Xunit;
 
@@ -19,7 +20,12 @@ public class ClienteServiceTests
         _mockClienteRepo = new Mock<IClienteRepository>();
 
         _mockUnitOfWork.Setup(u => u.Clientes).Returns(_mockClienteRepo.Object);
-        _clienteService = new ClienteService(_mockUnitOfWork.Object);
+        var obtenerUc = new ObtenerClientesUseCase(_mockUnitOfWork.Object);
+        var crearUc = new CrearClienteUseCase(_mockUnitOfWork.Object);
+        var actualizarUc = new ActualizarClienteUseCase(_mockUnitOfWork.Object);
+        var eliminarUc = new EliminarClienteUseCase(_mockUnitOfWork.Object);
+
+        _clienteService = new ClienteService(obtenerUc, crearUc, actualizarUc, eliminarUc);
     }
 
     [Fact]

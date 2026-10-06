@@ -1,3 +1,4 @@
+using Firmeza.Application;
 using Firmeza.Application.Interfaces;
 using Firmeza.Application.Interfaces.Repositories;
 using Firmeza.Infrastructure.Identity;
@@ -43,14 +44,13 @@ public static class DependencyInjection
         services.AddScoped<IVentaRepository, VentaRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        // Application Services
+        // Infrastructure external/technical services
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IDashboardService, DashboardService>();
-        services.AddScoped<IProductoService, ProductoService>();
-        services.AddScoped<IClienteService, ClienteService>();
-        services.AddScoped<IVentaService, VentaService>();
         services.AddScoped<IExportService, ExportService>();
         services.AddScoped<IExcelImportService, ExcelImportService>();
+
+        // Application Use Cases & Services
+        services.AddApplicationServices();
 
         return services;
     }

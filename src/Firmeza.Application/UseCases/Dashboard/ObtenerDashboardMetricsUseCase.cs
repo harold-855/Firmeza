@@ -1,25 +1,26 @@
 using Firmeza.Application.DTOS.Dashboard;
-using Firmeza.Application.Interfaces;
-using Firmeza.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
+using Firmeza.Application.Interfaces.Repositories;
 
-namespace Firmeza.Infrastructure.Services;
+namespace Firmeza.Application.UseCases.Dashboard;
 
-public class DashboardService(ApplicationDbContext context) : IDashboardService
+public class ObtenerDashboardMetricsUseCase(IUnitOfWork unitOfWork)
 {
-    public async Task<DashboardMetricsDto> GetDashboardMetricsAsync()
+    public async Task<DashboardMetricsDto> ExecuteAsync(CancellationToken cancellationToken = default)
     {
-        var totalProductos = await context.Productos.CountAsync();
-        var totalClientes = await context.Clientes.CountAsync();
-        var totalVentas = await context.Ventas.CountAsync();
-        var montoTotalVentas = await context.Ventas.SumAsync(v => (decimal?)v.Total) ?? 0m;
+        var productos = await unitOfWork.Productos.GetAllAsync(cancellationToken);
+        var clientes = await unitOfWork.Clientes.GetAllAsync(cancellationToken);
+        var ventas = (await unitOfWork.Ventas.GetAllWithDetailsAsync(cancellationToken)).ToList();
 
-        var pendientes = await context.Ventas.CountAsync(v => v.EstadoDespacho == "Pendiente");
-        var enRuta = await context.Ventas.CountAsync(v => v.EstadoDespacho == "En Ruta");
-        var entregados = await context.Ventas.CountAsync(v => v.EstadoDespacho == "Entregado");
+        var totalProductos = productos.Count;
+        var totalClientes = clientes.Count;
+        var totalVentas = ventas.Count;
+        var montoTotalVentas = ventas.Sum(v => v.Total);
 
-        var ventasRecientes = await context.Ventas
-            .Include(v => v.Cliente)
+        var pendientes = ventas.Count(v => v.EstadoDespacho.Equals("Pendiente", StringComparison.OrdinalIgnoreCase));
+        var enRuta = ventas.Count(v => v.EstadoDespacho.Equals("En Ruta", StringComparison.OrdinalIgnoreCase));
+        var entregados = ventas.Count(v => v.EstadoDespacho.Equals("Entregado", StringComparison.OrdinalIgnoreCase));
+
+        var ventasRecientes = ventas
             .OrderByDescending(v => v.FechaVenta)
             .Take(5)
             .Select(v => new VentaResumenDto
@@ -30,9 +31,9 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                 Total = v.Total,
                 EstadoDespacho = v.EstadoDespacho
             })
-            .ToListAsync();
+            .ToList();
 
-        var productosBajoStock = await context.Productos
+        var productosBajoStock = productos
             .Where(p => p.StockActual < 50)
             .OrderBy(p => p.StockActual)
             .Take(5)
@@ -44,7 +45,7 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                 PrecioUnitario = p.PrecioUnitario,
                 UnidadMedida = p.UnidadMedida
             })
-            .ToListAsync();
+            .ToList();
 
         return new DashboardMetricsDto
         {

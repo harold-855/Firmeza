@@ -7,25 +7,26 @@
 
 ## 📌 Tabla de Contenidos
 1. [Visión General del Proyecto](#-visión-general-del-proyecto)
-2. [Arquitectura de la Solución (Clean Architecture & SOLID)](#-arquitectura-de-la-solución-clean-architecture--solid)
-3. [Estructura del Proyecto y Capas](#-estructura-del-proyecto-y-capas)
-4. [Diagramas Técnicos de Arquitectura y Diseño](#-diagramas-técnicos-de-arquitectura-y-diseño)
-   * [Diagrama de Clases de la Solución](#diagrama-de-clases-de-la-solución)
+2. [Arquitectura de la Solución (Clean Architecture, Use Cases & SOLID)](#-arquitectura-de-la-solución-clean-architecture-use-cases--solid)
+3. [Capa de Aplicación y Casos de Uso (Use Cases)](#-capa-de-aplicación-y-casos-de-uso-use-cases)
+4. [Estructura del Proyecto y Capas](#-estructura-del-proyecto-y-capas)
+5. [Diagramas Técnicos de Arquitectura y Diseño](#-diagramas-técnicos-de-arquitectura-y-diseño)
+   * [Diagrama de Clases y Casos de Uso](#diagrama-de-clases-y-casos-de-uso)
    * [Diagrama Entidad-Relación (ER) Completo](#diagrama-entidad-relación-er-completo)
    * [Diagrama de Secuencia (Flujo de Autenticación y Dashboard)](#diagrama-de-secuencia-flujo-de-autenticación-y-dashboard)
-5. [Patrón Repository y Unit of Work (Acceso a Datos Desacoplado)](#-patrón-repository-y-unit-of-work-acceso-a-datos-desacoplado)
-6. [Módulo de Gestión de Productos (CRUD, ViewModels y Filtrado)](#-módulo-de-gestión-de-productos-crud-viewmodels-y-filtrado)
-7. [Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)](#-módulo-de-gestión-de-clientes-crud-validaciones-y-búsqueda)
-8. [Módulo de Importación y Normalización de Excel con EPPlus](#-módulo-de-importación-y-normalización-de-excel-con-epplus)
-9. [Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)](#-módulo-de-exportación-de-datos-y-comprobantes-pdf-questpdf--epplus)
-10. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
-11. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
-12. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
-13. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
-14. [Guía de Puesta en Marcha (Instalación y Ejecución Local)](#-guía-de-puesta-en-marcha-instalación-y-ejecución-local)
-15. [Despliegue y Ejecución con Docker y Docker Compose](#-despliegue-y-ejecución-con-docker-y-docker-compose)
-16. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
-17. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
+6. [Patrón Repository y Unit of Work (Acceso a Datos Desacoplado)](#-patrón-repository-y-unit-of-work-acceso-a-datos-desacoplado)
+7. [Módulo de Gestión de Productos (CRUD, ViewModels y Filtrado)](#-módulo-de-gestión-de-productos-crud-viewmodels-y-filtrado)
+8. [Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)](#-módulo-de-gestión-de-clientes-crud-validaciones-y-búsqueda)
+9. [Módulo de Importación y Normalización de Excel con EPPlus](#-módulo-de-importación-y-normalización-de-excel-con-epplus)
+10. [Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)](#-módulo-de-exportación-de-datos-y-comprobantes-pdf-questpdf--epplus)
+11. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
+12. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
+13. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
+14. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
+15. [Guía de Puesta en Marcha (Instalación y Ejecución Local)](#-guía-de-puesta-en-marcha-instalación-y-ejecución-local)
+16. [Despliegue y Ejecución con Docker y Docker Compose](#-despliegue-y-ejecución-con-docker-y-docker-compose)
+17. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
+18. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
 
 ---
 
@@ -40,14 +41,14 @@
 
 ---
 
-## 🏛️ Arquitectura de la Solución (Clean Architecture & SOLID)
+## 🏛️ Arquitectura de la Solución (Clean Architecture, Use Cases & SOLID)
 
-El proyecto sigue rigurosamente los principios de **Clean Architecture** (Arquitectura Limpia / Onion Architecture) y **Domain-Driven Design (DDD)** simplificado.
+El proyecto sigue rigurosamente los principios de **Clean Architecture** (Arquitectura Limpia / Onion Architecture) propuesta por Robert C. Martin y **Domain-Driven Design (DDD)** simplificado.
 
 ```mermaid
 graph TD
-    A["Capa de Presentación<br/>Firmeza.Web (MVC / API) + firmeza.client (Angular 22 SPA)"] --> B["Capa de Aplicación<br/>Firmeza.Application (DTOs, Interfaces, Repositorios, Validadores)"]
-    A --> C["Capa de Infraestructura<br/>Firmeza.Infrastructure (EF Core, Repositorios, PostgreSQL, Identity)"]
+    A["Capa de Presentación<br/>Firmeza.Web (MVC / API) + firmeza.client (Angular 22 SPA)"] --> B["Capa de Aplicación<br/>Firmeza.Application (Casos de Uso, DTOs, Fachadas, Validadores)"]
+    A --> C["Capa de Infraestructura<br/>Firmeza.Infrastructure (EF Core, Repositorios, PostgreSQL, Identity, QuestPDF, EPPlus)"]
     C --> B
     C --> D["Capa de Dominio<br/>Firmeza.Domain (Entidades, Reglas de Negocio, Constantes)"]
     B --> D
@@ -56,8 +57,33 @@ graph TD
 ### 🧠 Principios y Ventajas de la Arquitectura:
 1. **Independencia de Frameworks y Base de Datos:** Las reglas de negocio no conocen PostgreSQL ni ASP.NET; están aisladas en `Domain` y `Application`.
 2. **Inversión de Dependencias (DIP):** Las capas internas definen las interfaces (contratos de repositorios y servicios) y las capas externas (`Infrastructure`) las implementan.
-3. **Separación de Responsabilidades (SoC):** Cada proyecto resuelve una única preocupación técnica (Dominio, Casos de Uso, Persistencia o UI).
-4. **Alta Testabilidad (Mocking):** Los servicios consumen `IUnitOfWork` e `IRepository`, facilitando pruebas unitarias sin tocar la base de datos real.
+3. **Casos de Uso (Single Responsibility Principle):** Cada acción del usuario o flujo operativo está encapsulado en un Caso de Uso independiente y testeable.
+4. **Separación de Responsabilidades (SoC):** Cada proyecto resuelve una única preocupación técnica (Dominio, Casos de Uso, Persistencia o UI).
+5. **Alta Testabilidad (Mocking):** Los Casos de Uso y servicios consumen `IUnitOfWork` e `IRepository`, facilitando pruebas unitarias sin tocar la base de datos real.
+
+---
+
+## ⚡ Capa de Aplicación y Casos de Uso (Use Cases)
+
+Para garantizar un diseño limpio y **sin redundancias**, la lógica de aplicación se organiza en **Casos de Uso específicos por acción**, acompañados por servicios de aplicación (fachadas) que ofrecen compatibilidad y cohesión:
+
+### 🛠️ Casos de Uso Implementados:
+- **Productos (`Firmeza.Application.UseCases.Productos`):**
+  - `CrearProductoUseCase`: Crea productos, asigna identificadores únicos, normaliza campos de texto y persiste con `IUnitOfWork`.
+  - `ActualizarProductoUseCase`: Modifica precios, stock y datos descriptivos del catálogo.
+  - `EliminarProductoUseCase`: Aplica la regla de negocio: si el producto tiene ventas asociadas ejecuta un **Soft Delete** (`Activo = false`); si no tiene ventas, lo elimina físicamente.
+  - `ObtenerProductosUseCase`: Consultas filtradas, búsqueda por ID, verificación de existencia y catálogo de unidades de medida.
+- **Clientes (`Firmeza.Application.UseCases.Clientes`):**
+  - `CrearClienteUseCase`: Registro de nuevos clientes validando documento y datos de contacto.
+  - `ActualizarClienteUseCase`: Actualización de información de despacho y contacto.
+  - `EliminarClienteUseCase`: Valida que el cliente no tenga órdenes históricas antes de permitir la eliminación.
+  - `ObtenerClientesUseCase`: Consultas con acumulado de compras, filtrado y validación de unicidad de NIT/documento.
+- **Ventas (`Firmeza.Application.UseCases.Ventas`):**
+  - `CrearVentaUseCase`: Valida cliente e ítems, congela precios históricos, descuenta automáticamente existencias en stock, persiste la transacción atómica e invoca la generación de recibos PDF.
+  - `ObtenerVentasUseCase`: Consultas multi-criterio, búsqueda por cliente/material y ordenamientos.
+  - `ActualizarEstadoDespachoUseCase`: Actualización de trazabilidad (`Pendiente`, `En Ruta`, `Entregado`).
+- **Dashboard (`Firmeza.Application.UseCases.Dashboard`):**
+  - `ObtenerDashboardMetricsUseCase`: Cálculo de totales financieros, órdenes por estado y detección de alertas de bajo stock.
 
 ---
 
@@ -77,20 +103,25 @@ Firmeza/
 │   │   ├── Constants/           # Roles (Administrador, Cliente)
 │   │   └── Shared/              # BaseEntity (Id)
 │   │
-│   ├── Firmeza.Application/     # Casos de Uso, DTOs y Contratos
+│   ├── Firmeza.Application/     # Casos de Uso, DTOs, Fachadas e Interfaces
+│   │   ├── UseCases/            # Casos de Uso del Sistema (Arquitectura Limpia)
+│   │   │   ├── Productos/       # CrearProductoUseCase, ActualizarProductoUseCase, EliminarProductoUseCase, ObtenerProductosUseCase
+│   │   │   ├── Clientes/        # CrearClienteUseCase, ActualizarClienteUseCase, EliminarClienteUseCase, ObtenerClientesUseCase
+│   │   │   ├── Ventas/          # CrearVentaUseCase, ObtenerVentasUseCase, ActualizarEstadoDespachoUseCase
+│   │   │   └── Dashboard/       # ObtenerDashboardMetricsUseCase
+│   │   ├── Services/            # Fachadas de Aplicación (ProductoService, ClienteService, VentaService, DashboardService)
 │   │   ├── DTOS/                # Clientes, Productos, Ventas, Dashboard, Auth, Importacion
-│   │   │   ├── Ventas/          # VentaDto, VentaDetalleDto, CreateVentaDto, VentaFilterDto
-│   │   │   └── Importacion/     # ExcelImportOptionsDto, ExcelImportResultDto, ExcelImportErrorDto
 │   │   ├── Interfaces/          # IAuthService, IDashboardService, IClienteService, IProductoService, IVentaService, IExportService, IExcelImportService
 │   │   │   └── Repositories/    # IBaseRepository, IClienteRepository, IProductoRepository, IVentaRepository, IUnitOfWork
-│   │   └── Validators/          # ValidadorEdad (Validaciones con try-catch diferenciado)
+│   │   ├── Validators/          # ValidadorEdad (Validaciones defensivas)
+│   │   └── DependencyInjection.cs # Registro IoC de Use Cases y Servicios de Aplicación
 │   │
-│   ├── Firmeza.Infrastructure/  # Acceso a Datos, Repositorios y Servicios Externos
+│   ├── Firmeza.Infrastructure/  # Persistencia, Repositorios e Integraciones Externas
 │   │   ├── Persistence/         # ApplicationDbContext, DataSeeder, Configuraciones EF Core
 │   │   ├── Repositories/        # BaseRepository, ClienteRepository, ProductoRepository, VentaRepository, UnitOfWork
-│   │   ├── Services/            # ClienteService, ProductoService, VentaService, ExportService (QuestPDF/EPPlus), DashboardService, ExcelImportService (EPPlus)
+│   │   ├── Services/            # ExportService (QuestPDF/EPPlus), ExcelImportService (EPPlus)
 │   │   ├── Identity/            # IdentitySeeder, AuthService (ASP.NET Core Identity & RBAC)
-│   │   └── DependencyInjection.cs # Registro de dependencias en contenedor IoC
+│   │   └── DependencyInjection.cs # Configuración de DbContext, Repositorios e Identity
 │   │
 │   └── Firmeza.Web/             # Capa de Presentación Web (MVC y API REST)
 │       ├── Controllers/         # ClientesController, ProductosController, VentasController, HomeController, AccountController, ImportacionController
@@ -105,6 +136,7 @@ Firmeza/
 │   └── Firmeza.UnitTests/       # Proyecto de Pruebas Unitarias (xUnit & Moq)
 │       ├── Domain/              # ProductoEntityTests, VentaDetalleEntityTests
 │       ├── Application/         # ValidadorEdadTests
+│       ├── UseCases/            # ProductosUseCasesTests, ClientesUseCasesTests, VentasUseCasesTests
 │       ├── Services/            # ClienteServiceTests, ProductoServiceTests, VentaServiceTests, ExportServiceTests, ExcelImportServiceTests
 │       └── Controllers/         # VentasControllerTests, ImportacionControllerTests
 │
@@ -123,7 +155,7 @@ Firmeza/
 
 ## 📊 Diagramas Técnicos de Arquitectura y Diseño
 
-### Diagrama de Clases de la Solución
+### Diagrama de Clases y Casos de Uso
 
 ```mermaid
 classDiagram
@@ -208,6 +240,27 @@ classDiagram
     IUnitOfWork o-- IProductoRepository
     IUnitOfWork o-- IVentaRepository
 
+    class CrearProductoUseCase {
+        -IUnitOfWork _unitOfWork
+        +ExecuteAsync(dto)
+    }
+
+    class EliminarProductoUseCase {
+        -IUnitOfWork _unitOfWork
+        +ExecuteAsync(id)
+    }
+
+    class CrearVentaUseCase {
+        -IUnitOfWork _unitOfWork
+        -IExportService _exportService
+        +ExecuteAsync(dto, wwwrootPath)
+    }
+
+    class CrearClienteUseCase {
+        -IUnitOfWork _unitOfWork
+        +ExecuteAsync(dto)
+    }
+
     class IClienteService {
         <<interface>>
         +GetAllAsync()
@@ -227,17 +280,27 @@ classDiagram
     }
 
     class ClienteService {
-        -IUnitOfWork _unitOfWork
+        -ObtenerClientesUseCase _obtener
+        -CrearClienteUseCase _crear
+        -ActualizarClienteUseCase _actualizar
+        -EliminarClienteUseCase _eliminar
     }
 
     class ProductoService {
-        -IUnitOfWork _unitOfWork
+        -ObtenerProductosUseCase _obtener
+        -CrearProductoUseCase _crear
+        -ActualizarProductoUseCase _actualizar
+        -EliminarProductoUseCase _eliminar
     }
 
     IClienteService <|.. ClienteService
     IProductoService <|.. ProductoService
-    ClienteService --> IUnitOfWork
-    ProductoService --> IUnitOfWork
+    CrearProductoUseCase --> IUnitOfWork
+    EliminarProductoUseCase --> IUnitOfWork
+    CrearClienteUseCase --> IUnitOfWork
+    CrearVentaUseCase --> IUnitOfWork
+    ClienteService o-- CrearClienteUseCase
+    ProductoService o-- CrearProductoUseCase
 
     class ClientesController {
         -IClienteService _clienteService
@@ -562,7 +625,7 @@ Tanto en **ASP.NET Core Razor MVC** como en **Angular SPA**, la experiencia de u
 
 ## 🧪 Pruebas Unitarias Automatizadas (xUnit & Moq)
 
-El proyecto cuenta con una suite de **48 pruebas unitarias automatizadas** en [`tests/Firmeza.UnitTests/`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests) utilizando **xUnit** (framework de pruebas oficial y líder en el ecosistema .NET) y **Moq** (librería de aislamiento y dobles de prueba/mocking).
+El proyecto cuenta con una suite de **53 pruebas unitarias automatizadas** en [`tests/Firmeza.UnitTests/`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests) utilizando **xUnit** (framework de pruebas oficial y líder en el ecosistema .NET) y **Moq** (librería de aislamiento y dobles de prueba/mocking).
 
 ### 🎯 ¿Qué es xUnit y por qué se utiliza?
 * **xUnit.net** es un framework de pruebas moderno, extensible y orientado a la programación orientada a objetos para C# y .NET.
@@ -578,16 +641,19 @@ Cada método de prueba sigue el estándar internacional **AAA**:
 * **`[Fact]`:** Pruebas con condiciones e invariantes fijas que siempre deben cumplirse.
 * **`[Theory]`:** Pruebas parametrizadas ejecutadas con múltiples conjuntos de datos (`[InlineData(...)]`) para verificar casos límite, datos válidos y datos erróneos en una sola prueba.
 
-### 📦 Batería de Pruebas Implementadas (48 Pruebas):
+### 📦 Batería de Pruebas Implementadas (53 Pruebas):
 
 | Proyecto / Capa | Archivo de Prueba | Escenarios Validados |
 | :--- | :--- | :--- |
 | **Dominio (`Domain`)** | [`ProductoEntityTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Domain/ProductoEntityTests.cs) | Inicialización correcta de propiedades de producto y evaluación del umbral de alerta de bajo stock (`Stock < 50`). |
 | **Dominio (`Domain`)** | [`VentaDetalleEntityTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Domain/VentaDetalleEntityTests.cs) | Cálculo de subtotal histórico multiplicando `Cantidad * PrecioAplicado` congelado al momento de la venta. |
 | **Aplicación (`Application`)** | [`ValidadorEdadTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Application/ValidadorEdadTests.cs) | Validación con `try-catch`, captura de `FormatException` (texto alfabético), `OverflowException` (números que exceden Int32) y rangos laborales. |
-| **Servicios (`Infrastructure`)** | [`ClienteServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ClienteServiceTests.cs) | Aislamiento con `Mock<IUnitOfWork>`. Verifica que `DeleteAsync` arroje `InvalidOperationException` si el cliente tiene compras, y borre limpiamente si no las tiene. |
-| **Servicios (`Infrastructure`)** | [`ProductoServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ProductoServiceTests.cs) | Aislamiento con `Mock<IUnitOfWork>`. Valida que al eliminar un producto con ventas asociadas se aplique **Soft Delete** (`Activo = false`), y que `CreateAsync` registre y confirme cambios. |
-| **Servicios (`Infrastructure`)** | [`VentaServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/VentaServiceTests.cs) | Creación de ventas, cálculo financiero (Subtotal, IVA 19%, Total), descuento automático de existencias en inventario, validaciones de stock insuficiente y almacenamiento físico de comprobantes PDF. |
+| **Casos de Uso (`Application`)** | [`ProductosUseCasesTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/UseCases/ProductosUseCasesTests.cs) | Ejecución aislada de `CrearProductoUseCase` y `EliminarProductoUseCase` con regla de soft delete. |
+| **Casos de Uso (`Application`)** | [`ClientesUseCasesTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/UseCases/ClientesUseCasesTests.cs) | Ejecución de `CrearClienteUseCase` y validación de restricción de borrado en `EliminarClienteUseCase`. |
+| **Casos de Uso (`Application`)** | [`VentasUseCasesTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/UseCases/VentasUseCasesTests.cs) | Actualización de trazabilidad de entrega en `ActualizarEstadoDespachoUseCase`. |
+| **Servicios (`Application`)** | [`ClienteServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ClienteServiceTests.cs) | Aislamiento con `Mock<IUnitOfWork>`. Verifica que `DeleteAsync` arroje `InvalidOperationException` si el cliente tiene compras, y borre limpiamente si no las tiene. |
+| **Servicios (`Application`)** | [`ProductoServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ProductoServiceTests.cs) | Aislamiento con `Mock<IUnitOfWork>`. Valida que al eliminar un producto con ventas asociadas se aplique **Soft Delete** (`Activo = false`), y que `CreateAsync` registre y confirme cambios. |
+| **Servicios (`Application`)** | [`VentaServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/VentaServiceTests.cs) | Creación de ventas, cálculo financiero (Subtotal, IVA 19%, Total), descuento automático de existencias en inventario, validaciones de stock insuficiente y almacenamiento físico de comprobantes PDF. |
 | **Servicios (`Infrastructure`)** | [`ExportServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ExportServiceTests.cs) | Exportación a Excel (EPPlus) y PDF (QuestPDF) para productos, clientes y ventas, generación de bytes de recibo PDF y guardado físico en disco en `wwwroot/recibos/`. |
 | **Servicios (`Infrastructure`)** | [`ExcelImportServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ExcelImportServiceTests.cs) | Validación con EPPlus: normalización en memoria de columnas mixtas, deduplicación y vinculación de ventas/detalles, upsert de clientes y productos, detección de encabezados desplazados y log de inconsistencias. |
 | **Controladores (`Web`)** | [`VentasControllerTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Controllers/VentasControllerTests.cs) | Flujos MVC de `Index` con métricas, `Details`, `Create` GET/POST, exportaciones Excel/PDF y descarga de recibos con aislamiento de servicios. |

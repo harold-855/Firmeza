@@ -1,7 +1,8 @@
 using Firmeza.Application.DTOS.Productos;
 using Firmeza.Application.Interfaces.Repositories;
+using Firmeza.Application.Services;
+using Firmeza.Application.UseCases.Productos;
 using Firmeza.Domain.Entities;
-using Firmeza.Infrastructure.Services;
 using Moq;
 using Xunit;
 
@@ -19,7 +20,12 @@ public class ProductoServiceTests
         _mockProductoRepo = new Mock<IProductoRepository>();
 
         _mockUnitOfWork.Setup(u => u.Productos).Returns(_mockProductoRepo.Object);
-        _productoService = new ProductoService(_mockUnitOfWork.Object);
+        var obtenerUc = new ObtenerProductosUseCase(_mockUnitOfWork.Object);
+        var crearUc = new CrearProductoUseCase(_mockUnitOfWork.Object);
+        var actualizarUc = new ActualizarProductoUseCase(_mockUnitOfWork.Object);
+        var eliminarUc = new EliminarProductoUseCase(_mockUnitOfWork.Object);
+
+        _productoService = new ProductoService(obtenerUc, crearUc, actualizarUc, eliminarUc);
     }
 
     [Fact]
