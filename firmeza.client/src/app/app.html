@@ -1,15 +1,13 @@
-<div class="admin-wrapper d-flex min-vh-100">
-  <!-- Modular Sidebar Navigation -->
-  <app-sidebar></app-sidebar>
-
-  <!-- Main View Area (Header + Routed Content + Footer) -->
-  <div class="main-layout flex-grow-1 d-flex flex-column min-vh-100">
+<div class="d-flex flex-column min-vh-100 bg-light">
+  @if (authService.isAuthenticated()) {
     <app-header></app-header>
+  }
 
-    <main class="main-content flex-grow-1">
-      <router-outlet></router-outlet>
-    </main>
+  <main class="flex-grow-1">
+    <router-outlet></router-outlet>
+  </main>
 
+  @if (authService.isAuthenticated()) {
     <app-footer></app-footer>
-  </div>
+  }
 </div>

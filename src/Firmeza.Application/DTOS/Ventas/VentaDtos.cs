@@ -46,6 +46,7 @@ public class CreateVentaDto
 {
     public Guid ClienteId { get; set; }
     public string EstadoDespacho { get; set; } = "Pendiente";
+    public string? ClienteEmail { get; set; }
     public List<CreateVentaDetalleDto> Detalles { get; set; } = new();
 }
 
@@ -58,3 +59,9 @@ public class VentaFilterDto
     public string? EstadoDespacho { get; set; }
     public string? OrderBy { get; set; } = "fecha_desc";
 }
+
+public class ActualizarEstadoDespachoDto
+{
+    public string EstadoDespacho { get; set; } = string.Empty;
+}
+

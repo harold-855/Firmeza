@@ -1,7 +1,19 @@
-version: '3.8'
-
 services:
-  # Base de Datos PostgreSQL
+  # ==============================================================================
+  # 1. PASO OBLIGATORIO: Pruebas Unitarias Automatizadas (Tests)
+  # ==============================================================================
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile.tests
+    container_name: firmeza-tests
+    restart: "no"
+    networks:
+      - firmeza-network
+
+  # ==============================================================================
+  # 2. Base de Datos PostgreSQL
+  # ==============================================================================
   firmeza-db:
     image: postgres:16-alpine
     container_name: firmeza-postgres-db
@@ -22,27 +34,93 @@ services:
       timeout: 5s
       retries: 5
 
-  # Aplicación Web Backend ASP.NET Core & SPA Frontend Integrada
-  firmeza-web:
+  # ==============================================================================
+  # 3. Servicio REST API (Firmeza.API)
+  # Requiere: Tests completados exitosamente y Base de datos lista
+  # ==============================================================================
+  api:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: firmeza-web-app
+      dockerfile: Dockerfile.api
+    container_name: firmeza-api
     restart: unless-stopped
     depends_on:
+      tests:
+        condition: service_completed_successfully
       firmeza-db:
         condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__DefaultConnection=Host=firmeza-db;Port=5432;Database=firmeza_db;Username=firmeza_user;Password=FirmezaSecurePassword2026*
+      - Jwt__Key=Firmeza_Secret_Key_Super_Segura_2026_JWT_Token_Key_Materiales_Key_123456789!
+      - Jwt__Issuer=Firmeza.Api
+      - Jwt__Audience=Firmeza.ClientApp
+      - EmailSettings__SmtpServer=smtp.gmail.com
+      - EmailSettings__Port=587
+      - EmailSettings__EnableSsl=true
+      - EmailSettings__SenderName=FIRMEZA - Materiales
+      - EmailSettings__SenderEmail=notificaciones@firmeza.com
+      - EmailSettings__IsSimulationMode=true
     ports:
-      - "5000:8080"
+      - "5100:8080"
     volumes:
       - recibos_data:/app/wwwroot/recibos
     networks:
       - firmeza-network
 
+  # ==============================================================================
+  # 4. Panel de Administración (Firmeza.Admin - Razor Pages / MVC)
+  # Requiere: Tests completados exitosamente, Base de datos lista y API
+  # ==============================================================================
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile.admin
+    container_name: firmeza-admin
+    restart: unless-stopped
+    depends_on:
+      tests:
+        condition: service_completed_successfully
+      firmeza-db:
+        condition: service_healthy
+      api:
+        condition: service_started
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ConnectionStrings__DefaultConnection=Host=firmeza-db;Port=5432;Database=firmeza_db;Username=firmeza_user;Password=FirmezaSecurePassword2026*
+      - EmailSettings__IsSimulationMode=true
+    ports:
+      - "5281:8080"
+    volumes:
+      - recibos_data:/app/wwwroot/recibos
+    networks:
+      - firmeza-network
+
+  # ==============================================================================
+  # 5. Portal de Clientes (Firmeza.Client - Angular 22 SPA + Nginx)
+  # Requiere: Tests completados exitosamente y API iniciada
+  # ==============================================================================
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    container_name: firmeza-client
+    restart: unless-stopped
+    depends_on:
+      tests:
+        condition: service_completed_successfully
+      api:
+        condition: service_started
+    ports:
+      - "4200:80"
+    networks:
+      - firmeza-network
+
+# ==============================================================================
+# Redes y Volúmenes Persistentes
+# ==============================================================================
 networks:
   firmeza-network:
     driver: bridge

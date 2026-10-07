@@ -1,5 +1,6 @@
 using Firmeza.Application.DTOS.Ventas;
 using Firmeza.Application.Services;
+using Firmeza.Application.UseCases.Ventas;
 using Firmeza.Domain.Entities;
 using Firmeza.Infrastructure.Persistence;
 using Firmeza.Infrastructure.Repositories;
@@ -31,7 +32,10 @@ public class VentaServiceTests
         var ventaRepo = new VentaRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext, clienteRepo, productoRepo, ventaRepo);
         var exportService = new ExportService(unitOfWork);
-        var service = new VentaService(unitOfWork, exportService, NullLogger<VentaService>.Instance);
+        var obtenerUc = new ObtenerVentasUseCase(unitOfWork);
+        var crearUc = new CrearVentaUseCase(unitOfWork, exportService, NullLogger<CrearVentaUseCase>.Instance);
+        var actualizarUc = new ActualizarEstadoDespachoUseCase(unitOfWork);
+        var service = new VentaService(obtenerUc, crearUc, actualizarUc);
 
         var cliente = new Cliente
         {
@@ -123,7 +127,10 @@ public class VentaServiceTests
         var ventaRepo = new VentaRepository(dbContext);
         var unitOfWork = new UnitOfWork(dbContext, clienteRepo, productoRepo, ventaRepo);
         var exportService = new ExportService(unitOfWork);
-        var service = new VentaService(unitOfWork, exportService, NullLogger<VentaService>.Instance);
+        var obtenerUc = new ObtenerVentasUseCase(unitOfWork);
+        var crearUc = new CrearVentaUseCase(unitOfWork, exportService, NullLogger<CrearVentaUseCase>.Instance);
+        var actualizarUc = new ActualizarEstadoDespachoUseCase(unitOfWork);
+        var service = new VentaService(obtenerUc, crearUc, actualizarUc);
 
         var cliente1 = new Cliente { Id = Guid.NewGuid(), RazonSocial = "Empresa Alfa", DocumentoIdentidad = "111" };
         var cliente2 = new Cliente { Id = Guid.NewGuid(), RazonSocial = "Empresa Beta", DocumentoIdentidad = "222" };

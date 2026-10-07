@@ -1,6 +1,5 @@
 using Firmeza.Application.DTOS.Clientes;
 using Firmeza.Application.Interfaces;
-using Firmeza.Application.Interfaces.Repositories;
 using Firmeza.Application.UseCases.Clientes;
 
 namespace Firmeza.Application.Services;
@@ -11,15 +10,6 @@ public class ClienteService(
     ActualizarClienteUseCase actualizarClienteUseCase,
     EliminarClienteUseCase eliminarClienteUseCase) : IClienteService
 {
-    public ClienteService(IUnitOfWork unitOfWork)
-        : this(
-            new ObtenerClientesUseCase(unitOfWork),
-            new CrearClienteUseCase(unitOfWork),
-            new ActualizarClienteUseCase(unitOfWork),
-            new EliminarClienteUseCase(unitOfWork))
-    {
-    }
-
     public Task<IEnumerable<ClienteDto>> GetAllAsync(ClienteFilterDto? filter = null)
         => obtenerClientesUseCase.ExecuteGetAllAsync(filter);
 

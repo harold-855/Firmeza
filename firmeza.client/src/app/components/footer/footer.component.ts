@@ -6,13 +6,17 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <footer class="app-footer bg-white border-top px-4 py-3 d-flex justify-content-between align-items-center flex-wrap gap-2 text-muted small mt-auto">
-      <div>
-        &copy; 2026 <strong class="text-dark">Firmeza</strong> - Gestión y Despacho de Materiales Pesados.
-      </div>
-      <div class="d-flex align-items-center gap-3">
-        <span class="badge bg-light text-secondary border">Angular 22 SPA</span>
-        <a href="/Home/Privacy" class="text-decoration-none text-muted">Privacidad</a>
+    <footer class="bg-white border-top py-3 px-4 mt-auto">
+      <div class="container-fluid d-flex flex-column flex-sm-row justify-content-between align-items-center gap-2 small text-muted">
+        <div>
+          <strong>Firmeza S.A.S.</strong> &copy; 2026. Portal de Clientes y Gestión de Despachos.
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-3 py-1">
+            🔒 Conexión Segura JWT
+          </span>
+          <span>v1.0.0</span>
+        </div>
       </div>
     </footer>
   `

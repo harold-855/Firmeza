@@ -1,0 +1,45 @@
+# ==============================================================================
+# 🛡️ FIRMEZA.ADMIN - Dockerfile Producción (Raíz / Contexto de Solución)
+# ==============================================================================
+
+FROM node:20-alpine AS build-frontend
+WORKDIR /app/frontend
+COPY firmeza.client/package*.json ./
+RUN npm ci || npm install
+COPY firmeza.client/ ./
+RUN npx ng build --output-path=dist/browser --configuration production
+
+FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build-backend
+WORKDIR /src
+
+COPY Firmeza.slnx ./
+COPY src/Firmeza.Domain/*.csproj src/Firmeza.Domain/
+COPY src/Firmeza.Application/*.csproj src/Firmeza.Application/
+COPY src/Firmeza.Infrastructure/*.csproj src/Firmeza.Infrastructure/
+COPY src/Firmeza.Web/*.csproj src/Firmeza.Web/
+
+RUN dotnet restore src/Firmeza.Web/Firmeza.Web.csproj
+
+COPY src/ src/
+
+COPY --from=build-frontend /app/frontend/dist/browser/ src/Firmeza.Web/wwwroot/spa/
+
+RUN dotnet publish src/Firmeza.Web/Firmeza.Web.csproj -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS final
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libfontconfig1 \
+    fonts-liberation \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /app/wwwroot/recibos
+
+COPY --from=build-backend /app/publish .
+
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_HTTP_PORTS=8080
+EXPOSE 8080
+
+ENTRYPOINT ["dotnet", "Firmeza.Web.dll"]

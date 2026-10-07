@@ -10,23 +10,26 @@
 2. [Arquitectura de la Solución (Clean Architecture, Use Cases & SOLID)](#-arquitectura-de-la-solución-clean-architecture-use-cases--solid)
 3. [Capa de Aplicación y Casos de Uso (Use Cases)](#-capa-de-aplicación-y-casos-de-uso-use-cases)
 4. [Estructura del Proyecto y Capas](#-estructura-del-proyecto-y-capas)
-5. [Diagramas Técnicos de Arquitectura y Diseño](#-diagramas-técnicos-de-arquitectura-y-diseño)
+5. [Módulo ASP.NET Core Web API (Firmeza.Api)](#-módulo-aspnet-core-web-api-firmezaapi)
+6. [Diagramas Técnicos de Arquitectura y Diseño](#-diagramas-técnicos-de-arquitectura-y-diseño)
    * [Diagrama de Clases y Casos de Uso](#diagrama-de-clases-y-casos-de-uso)
    * [Diagrama Entidad-Relación (ER) Completo](#diagrama-entidad-relación-er-completo)
    * [Diagrama de Secuencia (Flujo de Autenticación y Dashboard)](#diagrama-de-secuencia-flujo-de-autenticación-y-dashboard)
-6. [Patrón Repository y Unit of Work (Acceso a Datos Desacoplado)](#-patrón-repository-y-unit-of-work-acceso-a-datos-desacoplado)
-7. [Módulo de Gestión de Productos (CRUD, ViewModels y Filtrado)](#-módulo-de-gestión-de-productos-crud-viewmodels-y-filtrado)
-8. [Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)](#-módulo-de-gestión-de-clientes-crud-validaciones-y-búsqueda)
-9. [Módulo de Importación y Normalización de Excel con EPPlus](#-módulo-de-importación-y-normalización-de-excel-con-epplus)
-10. [Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)](#-módulo-de-exportación-de-datos-y-comprobantes-pdf-questpdf--epplus)
-11. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
-12. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
-13. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
-14. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
-15. [Guía de Puesta en Marcha (Instalación y Ejecución Local)](#-guía-de-puesta-en-marcha-instalación-y-ejecución-local)
-16. [Despliegue y Ejecución con Docker y Docker Compose](#-despliegue-y-ejecución-con-docker-y-docker-compose)
-17. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
-18. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
+7. [Patrón Repository y Unit of Work (Acceso a Datos Desacoplado)](#-patrón-repository-y-unit-of-work-acceso-a-datos-desacoplado)
+8. [Módulo de Gestión de Productos (CRUD, ViewModels y Filtrado)](#-módulo-de-gestión-de-productos-crud-viewmodels-y-filtrado)
+9. [Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)](#-módulo-de-gestión-de-clientes-crud-validaciones-y-búsqueda)
+10. [Módulo de Importación y Normalización de Excel con EPPlus](#-módulo-de-importación-y-normalización-de-excel-con-epplus)
+11. [Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)](#-módulo-de-exportación-de-datos-y-comprobantes-pdf-questpdf--epplus)
+12. [Mapeo de Objetos y DTOs con AutoMapper](#-mapeo-de-objetos-y-dtos-con-automapper)
+13. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
+14. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
+15. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
+16. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
+17. [Guía de Puesta en Marcha (Instalación y Ejecución Local)](#-guía-de-puesta-en-marcha-instalación-y-ejecución-local)
+18. [Despliegue y Ejecución con Docker y Docker Compose](#-despliegue-y-ejecución-con-docker-y-docker-compose)
+19. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
+20. [Guía Paso a Paso para Pruebas de Extremo a Extremo (Validación E2E para Evaluadores y TL)](#-guía-paso-a-paso-para-pruebas-de-extremo-a-extremo-validación-e2e-para-evaluadores-y-tl)
+21. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
 
 ---
 
@@ -37,7 +40,7 @@
 - **Directorio de Clientes:** Gestión de empresas constructoras, contratistas y clientes particulares con validación estricta de Documento/NIT y protección de integridad referencial.
 - **Registro y Despacho de Ventas:** Trazabilidad de órdenes con estados de entrega (`Pendiente`, `En Ruta`, `Entregado`) y congelación de precios históricos de venta.
 - **Panel Administrativo (Dashboard):** Métricas operativas en tiempo real (facturación total acumulada, órdenes por estado y alertas de inventario bajo `< 50` unidades).
-- **Doble Experiencia de Usuario:** Interfaz web enriquecida con **ASP.NET Core Razor MVC** y cliente interactivo desacoplado en **Angular 22 (SPA)**.
+- **Múltiples Clientes y Servicios:** Servidor web **ASP.NET Core Razor MVC**, API REST desacoplada **ASP.NET Core Web API (`Firmeza.Api`)** y cliente interactivo **Angular 22 (SPA)**.
 
 ---
 
@@ -47,19 +50,24 @@ El proyecto sigue rigurosamente los principios de **Clean Architecture** (Arquit
 
 ```mermaid
 graph TD
-    A["Capa de Presentación<br/>Firmeza.Web (MVC / API) + firmeza.client (Angular 22 SPA)"] --> B["Capa de Aplicación<br/>Firmeza.Application (Casos de Uso, DTOs, Fachadas, Validadores)"]
-    A --> C["Capa de Infraestructura<br/>Firmeza.Infrastructure (EF Core, Repositorios, PostgreSQL, Identity, QuestPDF, EPPlus)"]
-    C --> B
-    C --> D["Capa de Dominio<br/>Firmeza.Domain (Entidades, Reglas de Negocio, Constantes)"]
-    B --> D
+    WEB["Firmeza.Web (MVC / Razor)"] --> APP["Firmeza.Application (Casos de Uso, DTOs, Mappings, Fachadas)"]
+    API["Firmeza.Api (ASP.NET Core Web API)"] --> APP
+    SPA["firmeza.client (Angular 22 SPA)"] --> API
+    SPA -.-> WEB
+    WEB --> INFRA["Firmeza.Infrastructure (EF Core, Repositorios, PostgreSQL, Identity, QuestPDF, EPPlus)"]
+    API --> INFRA
+    INFRA --> APP
+    INFRA --> DOM["Firmeza.Domain (Entidades, Constantes)"]
+    APP --> DOM
 ```
 
 ### 🧠 Principios y Ventajas de la Arquitectura:
 1. **Independencia de Frameworks y Base de Datos:** Las reglas de negocio no conocen PostgreSQL ni ASP.NET; están aisladas en `Domain` y `Application`.
 2. **Inversión de Dependencias (DIP):** Las capas internas definen las interfaces (contratos de repositorios y servicios) y las capas externas (`Infrastructure`) las implementan.
 3. **Casos de Uso (Single Responsibility Principle):** Cada acción del usuario o flujo operativo está encapsulado en un Caso de Uso independiente y testeable.
-4. **Separación de Responsabilidades (SoC):** Cada proyecto resuelve una única preocupación técnica (Dominio, Casos de Uso, Persistencia o UI).
-5. **Alta Testabilidad (Mocking):** Los Casos de Uso y servicios consumen `IUnitOfWork` e `IRepository`, facilitando pruebas unitarias sin tocar la base de datos real.
+4. **Múltiples Puntos de Entrada:** Tanto la Web MVC (`Firmeza.Web`) como la API REST (`Firmeza.Api`) reutilizan los mismos Casos de Uso y la misma base de datos PostgreSQL.
+5. **Separación de Responsabilidades (SoC):** Cada proyecto resuelve una única preocupación técnica (Dominio, Casos de Uso, Persistencia o UI).
+6. **Alta Testabilidad (Mocking):** Los Casos de Uso y servicios consumen `IUnitOfWork` e `IRepository`, facilitando pruebas unitarias sin tocar la base de datos real.
 
 ---
 
@@ -92,8 +100,11 @@ Para garantizar un diseño limpio y **sin redundancias**, la lógica de aplicaci
 ```text
 Firmeza/
 │
-├── Dockerfile                   # Dockerfile Multi-stage (Node/Angular + .NET 10 Runtime)
-├── docker-compose.yml           # Orquestación de Contenedores (Web + PostgreSQL 16)
+├── Dockerfile.tests             # Dockerfile para ejecución de pruebas unitarias (xUnit)
+├── Dockerfile.admin             # Dockerfile en producción para Firmeza.Admin (Razor Pages)
+├── Dockerfile.api               # Dockerfile en producción para Firmeza.Api (ASP.NET Core Web API)
+├── Dockerfile.client            # Dockerfile en producción para Firmeza.Client (Angular 22 + Nginx)
+├── docker-compose.yml           # Orquestación Multi-Contenedor (tests gate + db + api + admin + client)
 ├── Firmeza.slnx                 # Archivo de solución .NET
 ├── README.md                    # Documentación oficial y manual técnico
 │
@@ -103,18 +114,19 @@ Firmeza/
 │   │   ├── Constants/           # Roles (Administrador, Cliente)
 │   │   └── Shared/              # BaseEntity (Id)
 │   │
-│   ├── Firmeza.Application/     # Casos de Uso, DTOs, Fachadas e Interfaces
+│   ├── Firmeza.Application/     # Casos de Uso, DTOs, Mappings, Fachadas e Interfaces
 │   │   ├── UseCases/            # Casos de Uso del Sistema (Arquitectura Limpia)
 │   │   │   ├── Productos/       # CrearProductoUseCase, ActualizarProductoUseCase, EliminarProductoUseCase, ObtenerProductosUseCase
 │   │   │   ├── Clientes/        # CrearClienteUseCase, ActualizarClienteUseCase, EliminarClienteUseCase, ObtenerClientesUseCase
 │   │   │   ├── Ventas/          # CrearVentaUseCase, ObtenerVentasUseCase, ActualizarEstadoDespachoUseCase
 │   │   │   └── Dashboard/       # ObtenerDashboardMetricsUseCase
+│   │   ├── Mappings/            # Perfiles de AutoMapper (ProductoMappingProfile, ClienteMappingProfile, VentaMappingProfile)
 │   │   ├── Services/            # Fachadas de Aplicación (ProductoService, ClienteService, VentaService, DashboardService)
 │   │   ├── DTOS/                # Clientes, Productos, Ventas, Dashboard, Auth, Importacion
 │   │   ├── Interfaces/          # IAuthService, IDashboardService, IClienteService, IProductoService, IVentaService, IExportService, IExcelImportService
 │   │   │   └── Repositories/    # IBaseRepository, IClienteRepository, IProductoRepository, IVentaRepository, IUnitOfWork
 │   │   ├── Validators/          # ValidadorEdad (Validaciones defensivas)
-│   │   └── DependencyInjection.cs # Registro IoC de Use Cases y Servicios de Aplicación
+│   │   └── DependencyInjection.cs # Registro IoC de Use Cases, AutoMapper y Servicios
 │   │
 │   ├── Firmeza.Infrastructure/  # Persistencia, Repositorios e Integraciones Externas
 │   │   ├── Persistence/         # ApplicationDbContext, DataSeeder, Configuraciones EF Core
@@ -123,13 +135,19 @@ Firmeza/
 │   │   ├── Identity/            # IdentitySeeder, AuthService (ASP.NET Core Identity & RBAC)
 │   │   └── DependencyInjection.cs # Configuración de DbContext, Repositorios e Identity
 │   │
+│   ├── Firmeza.Api/             # API REST Externa (ASP.NET Core Web API)
+│   │   ├── Controllers/         # ProductosApiController, ClientesApiController, VentasApiController, DashboardApiController, ImportacionApiController, AuthApiController
+│   │   ├── Properties/          # launchSettings.json (Puertos 5100 / 7100)
+│   │   ├── appsettings.json     # Conexión compartida a PostgreSQL
+│   │   └── Program.cs           # OpenAPI, CORS, IoC y Middleware REST
+│   │
 │   └── Firmeza.Web/             # Capa de Presentación Web (MVC y API REST)
 │       ├── Controllers/         # ClientesController, ProductosController, VentasController, HomeController, AccountController, ImportacionController
-│       ├── Controllers/Api/     # ClientesApiController, ProductosApiController, VentasApiController, DashboardApiController, ImportacionApiController
+│       ├── Controllers/Api/     # Endpoints API complementarios para Razor/SPA
 │       ├── Views/               # Vistas Razor (Clientes, Productos, Ventas, Importacion, Home, Account)
 │       ├── Models/              # ViewModels (ClienteIndexViewModel, ProductoIndexViewModel)
 │       ├── wwwroot/             # Archivos estáticos, CSS/JS, recibos (/wwwroot/recibos) y SPA Angular (/wwwroot/spa)
-│       ├── appsettings.json     # Conexión a PostgreSQL e Identity
+│       ├── appsettings.json     # Conexión compartida a PostgreSQL
 │       └── Program.cs           # Pipeline HTTP, CORS, Autenticación y Middleware
 │
 ├── tests/                       # Pruebas Automatizadas
@@ -140,16 +158,64 @@ Firmeza/
 │       ├── Services/            # ClienteServiceTests, ProductoServiceTests, VentaServiceTests, ExportServiceTests, ExcelImportServiceTests
 │       └── Controllers/         # VentasControllerTests, ImportacionControllerTests
 │
-└── firmeza.client/              # Frontend Desacoplado (Angular 22 SPA)
+└── firmeza.client/              # Frontend Desacoplado (Angular 22 SPA - Portal Clientes)
     ├── src/
     │   ├── app/
-    │   │   ├── components/      # SidebarComponent, HeaderComponent, FooterComponent
-    │   │   ├── pages/           # Dashboard, Productos, Clientes, Ventas
-    │   │   ├── services/        # DashboardService (Cliente HTTP hacia APIs REST)
-    │   │   └── app.routes.ts    # Enrutamiento de la SPA
+    │   │   ├── guards/          # authGuard (protección JWT), guestGuard
+    │   │   ├── interceptors/    # authInterceptor (inyección Bearer Token y manejo de 401)
+    │   │   ├── models/          # auth.model.ts, producto.model.ts, venta.model.ts
+    │   │   ├── services/        # auth.service.ts, cliente-api.service.ts, cart.service.ts
+    │   │   ├── pages/
+    │   │   │   ├── auth/        # LoginComponent, RegisterComponent
+    │   │   │   ├── catalogo/    # CatalogoComponent (Catálogo de Materiales para Clientes)
+    │   │   │   ├── carrito/     # CarritoComponent (Resumen, IVA y Creación de Venta)
+    │   │   │   └── mis-pedidos/ # MisPedidosComponent (Historial y Descarga de Recibos PDF)
+    │   │   ├── components/      # HeaderComponent, FooterComponent
+    │   │   └── app.routes.ts    # Enrutamiento protegido de la SPA
     │   └── main.ts              # Bootstrap de Angular
     └── package.json             # Dependencias del cliente web
 ```
+
+---
+
+## 🌐 Módulo ASP.NET Core Web API (`Firmeza.Api`)
+
+El proyecto **`Firmeza.Api`** expone todos los Casos de Uso del sistema mediante una interfaz **RESTful** desacoplada, permitiendo la integración con la SPA de Angular, aplicaciones móviles o servicios de terceros.
+
+### 🔌 Endpoints Principales:
+
+| Módulo | Método | Endpoint | Caso de Uso Inyectado | Descripción |
+| :--- | :--- | :--- | :--- | :--- |
+| **Productos** | `GET` | `/api/productos` | `ObtenerProductosUseCase` | Listado filtrado y paginado de materiales. |
+| **Productos** | `GET` | `/api/productos/{id}` | `ObtenerProductosUseCase` | Detalle de un producto por ID. |
+| **Productos** | `POST` | `/api/productos` | `CrearProductoUseCase` | Registro de un nuevo material. |
+| **Productos** | `PUT` | `/api/productos/{id}` | `ActualizarProductoUseCase` | Actualización de precio, stock y datos. |
+| **Productos** | `DELETE` | `/api/productos/{id}` | `EliminarProductoUseCase` | Borrado físico o Soft Delete si tiene ventas. |
+| **Clientes** | `GET` | `/api/clientes` | `ObtenerClientesUseCase` | Directorio de clientes con acumulado de compras. |
+| **Clientes** | `POST` | `/api/clientes` | `CrearClienteUseCase` | Registro con validación única de NIT/Documento. |
+| **Clientes** | `PUT` | `/api/clientes/{id}` | `ActualizarClienteUseCase` | Edición de información de cliente. |
+| **Clientes** | `DELETE` | `/api/clientes/{id}` | `EliminarClienteUseCase` | Eliminación con protección de historial contable. |
+| **Ventas** | `GET` | `/api/ventas` | `ObtenerVentasUseCase` | Listado de órdenes históricas con filtros. |
+| **Ventas** | `POST` | `/api/ventas` | `CrearVentaUseCase` | Registro de venta, descuento de stock y PDF. |
+| **Ventas** | `PATCH` | `/api/ventas/{id}/estado` | `ActualizarEstadoDespachoUseCase` | Cambio de estado (`Pendiente`, `En Ruta`, `Entregado`). |
+| **Ventas** | `GET` | `/api/ventas/{id}/recibo` | `IExportService` | Descarga de comprobante oficial en PDF. |
+| **Dashboard**| `GET` | `/api/dashboard/metrics` | `ObtenerDashboardMetricsUseCase` | KPIs financieros y alertas de inventario. |
+| **Importación**| `POST` | `/api/importacion/excel` | `IExcelImportService` | Carga masiva de archivos `.xlsx` desorganizados. |
+| **Autenticación**| `POST` | `/api/auth/login` | `IAuthService` | Autenticación y control de acceso RBAC. |
+
+### 📖 Documentación Interactiva con Swagger (Swashbuckle) y Autenticación JWT
+
+`Firmeza.Api` incorpora **Swagger UI (Swashbuckle)** para la exploración, prueba y documentación interactiva de todos los endpoints REST:
+
+* **URL de Acceso a Swagger UI:** `http://localhost:5100/swagger` (o `https://localhost:7100/swagger`)
+* **Autenticación JWT en Swagger:**
+  1. Haz clic en el botón verde **"Authorize"** en la parte superior derecha de la interfaz de Swagger.
+  2. En el campo de texto ingresa el token con el prefijo `Bearer`:
+     ```text
+     Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+     ```
+  3. Haz clic en **Authorize** y luego **Close**.
+  4. Todos los endpoints protegidos con roles (`RequireAdminRole`, `RequireClienteRole` o `RequireAnyRole`) se ejecutarán automáticamente enviando el header `Authorization: Bearer <token>`.
 
 ---
 
@@ -454,12 +520,47 @@ La carpeta **`Repositories`** (ubicada en `Firmeza.Infrastructure/Repositories`)
 
 ---
 
-## 👥 Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)
+## 👥 Módulo de Gestión de Clientes (CRUD, Validaciones, Búsqueda y Notificaciones SMTP)
 
 * **Crear (`Create`):** Registro de constructoras y clientes con validación estricta de formato y unicidad de Documento/NIT.
+  - **Disparador Automático de Bienvenida:** Envía automáticamente un correo electrónico en formato HTML responsivo con la bienvenida corporativa al cliente a través de [`IEmailService`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Application/Interfaces/IEmailService.cs).
 * **Consultar (`Index` y `Details`):** Listado con canales de contacto, dirección de despacho y acumulado histórico de facturación.
 * **Actualizar (`Edit`):** Edición de información de contacto validando que no se duplique el NIT con otro cliente.
 * **Eliminar (`Delete`):** Protección referencial. Si el cliente tiene ventas registradas (`totalCompras > 0`), el sistema **bloquea la eliminación** para salvaguardar la trazabilidad fiscal.
+
+### 📧 Servicio de Notificaciones por Correo Electrónico (SMTP Gmail & Corporativo)
+
+El sistema implementa un motor desacoplado de notificaciones por correo electrónico diseñado bajo el **Principio de Inversión de Dependencias (DIP)**:
+
+```mermaid
+flowchart LR
+    UC["Casos de Uso<br/>(CrearClienteUseCase / CrearVentaUseCase)"] --> INTER["IEmailService<br/>(Firmeza.Application)"]
+    INTER --> IMPL["SmtpEmailService<br/>(Firmeza.Infrastructure)"]
+    IMPL --> GMAIL["Gmail SMTP Server<br/>(smtp.gmail.com:587 TLS)"]
+    IMPL -.-> CORP["Servidor SMTP Empresarial<br/>(Exchange, SendGrid, Amazon SES)"]
+```
+
+#### 🎯 Características y Flexibilidad Arquitectónica:
+1. **Desacoplamiento Total:** La capa de aplicación (`Application`) solo conoce la interfaz `IEmailService`. No depende de librerías SMTP ni de proveedores específicos.
+2. **Sustitución en Caliente (Hot-Swappable):** Cambiar de Gmail a un servidor SMTP corporativo (Microsoft 365, AWS SES, SendGrid o relay interno) se logra modificando únicamente la sección `EmailSettings` en `appsettings.json` **sin tocar una sola línea de código**.
+3. **Plantillas HTML Profesionales:**
+   * **Notificación de Bienvenida / Registro:** Saludo personalizado, resumen de beneficios y botón de acceso a la plataforma.
+   * **Confirmación de Compra:** Desglose financiero, estado de despacho y **adjunto automático del comprobante en PDF (`recibo_venta_{id}.pdf`)** generado en tiempo real.
+4. **Resiliencia y Modo Simulación (`IsSimulationMode`):** Si las credenciales no están configuradas o el flag de simulación está activo, el servicio registra la salida en el log de auditoría sin interrumpir las transacciones comerciales en base de datos.
+
+#### ⚙️ Configuración en `appsettings.json`:
+```json
+"EmailSettings": {
+  "SmtpServer": "smtp.gmail.com",
+  "Port": 587,
+  "EnableSsl": true,
+  "SenderName": "FIRMEZA - Materiales de Construcción",
+  "SenderEmail": "tu_correo@gmail.com",
+  "Username": "tu_correo@gmail.com",
+  "Password": "tu_app_password_de_gmail",
+  "IsSimulationMode": false
+}
+```
 
 ---
 
@@ -593,6 +694,33 @@ flowchart TD
 
 ---
 
+## 🔄 Mapeo de Objetos y DTOs con AutoMapper
+
+Para mantener el desacoplamiento entre las entidades de dominio y los contratos de datos expuestos hacia la Web MVC, APIs REST o la SPA, el sistema utiliza **AutoMapper** configurado en la capa `Firmeza.Application`.
+
+```mermaid
+flowchart LR
+    DOM["Entidades de Dominio<br/>(Producto, Cliente, Venta, VentaDetalle)"] <--> MAP["AutoMapper Profiles<br/>(Firmeza.Application/Mappings)"]
+    MAP <--> DTO["Data Transfer Objects (DTOs)<br/>(ProductoDto, ClienteDto, VentaDto)"]
+    DTO <--> API["Casos de Uso & Controladores<br/>(Firmeza.Api / Firmeza.Web)"]
+```
+
+### 🎯 Beneficios del uso de AutoMapper & DTOs:
+1. **Encapsulamiento del Dominio:** Evita exponer las entidades de base de datos directamente al exterior, previniendo sobre-exposición de campos internos o modificaciones no autorizadas.
+2. **Transformaciones y Agregaciones Automáticas:** Calcula propiedades calculadas automáticamente (por ejemplo, `TotalCompras` y `MontoTotalComprado` a partir de la colección de ventas de un cliente, o nombres descriptivos de productos en los detalles de venta).
+3. **Limpieza y Sanitización de Entrada:** Aplica `.Trim()` y `.ToLower()` en cadenas de texto durante la conversión de `CreateDto`/`UpdateDto` hacia la entidad de dominio.
+4. **Registro Centralizado en IoC:** Se registra con `services.AddAutoMapper(typeof(DependencyInjection).Assembly)` en `Firmeza.Application/DependencyInjection.cs`, descubriendo automáticamente todos los perfiles de mapeo en el ensamblado.
+
+### 📋 Perfiles de Mapeo Implementados:
+
+| Perfil de AutoMapper | Ubicación | Entidad Origen / Destino | DTOs Mapeados | Transformaciones Clave |
+| :--- | :--- | :--- | :--- | :--- |
+| **`ProductoMappingProfile`** | `Application/Mappings/` | `Producto` | `ProductoDto`<br/>`CreateProductoDto`<br/>`UpdateProductoDto` | - Asignación automática de nuevo `Guid`.<br/>- Sanitización con `.Trim()` en Nombre, Descripción y Unidad de Medida. |
+| **`ClienteMappingProfile`** | `Application/Mappings/` | `Cliente` | `ClienteDto`<br/>`CreateClienteDto`<br/>`UpdateClienteDto` | - Conteo de órdenes: `TotalCompras = Ventas.Count`.<br/>- Suma monetaria: `MontoTotalComprado = Ventas.Sum(Total)`.<br/>- Normalización en minúsculas para el `Email`. |
+| **`VentaMappingProfile`** | `Application/Mappings/` | `Venta`<br/>`VentaDetalle` | `VentaDto`<br/>`VentaDetalleDto`<br/>`CreateVentaDto` | - Resolución de `ClienteRazonSocial` y `ClienteDocumento`.<br/>- Resolución de `ProductoNombre` y `UnidadMedida` en detalles.<br/>- Estado de despacho por defecto `Pendiente` y timestamp `UtcNow`. |
+
+---
+
 ## 🛡️ Manejo de Errores con Try-Catch y Validaciones de Entrada
 
 La capa de aplicación implementa manejo defensivo de excepciones mediante [`ValidadorEdad`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Application/Validators/ValidadorEdad.cs), aplicando bloques `try-catch` con captura de excepciones tipadas:
@@ -602,22 +730,90 @@ La capa de aplicación implementa manejo defensivo de excepciones mediante [`Val
 
 ---
 
-## 🔐 Seguridad y Control de Acceso (RBAC)
+## 🔐 Seguridad y Control de Acceso (RBAC & JWT)
 
-* **Rol `Administrador`:** Acceso exclusivo al panel administrativo Razor MVC (`/Home/Dashboard`, `/Productos`, `/Clientes`, `/Ventas`, `/Importacion`).
-* **Rol `Cliente`:** Diseñado para compras desde la aplicación cliente. Si un usuario con rol `Cliente` intenta ingresar al panel administrativo, [`AuthService`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Infrastructure/Identity/AuthService.cs) activa la bandera `IsClientBlockedFromAdmin = true` y bloquea el acceso de inmediato.
+El sistema implementa una arquitectura híbrida y robusta de autenticación y autorización basada en roles (RBAC) y tokens criptográficos:
+
+```mermaid
+flowchart TD
+    subgraph ClientApp ["Frontend Angular (firmeza.client - Rol Cliente)"]
+        UI["Login / Register / Catálogo / Carrito / Mis Pedidos"] --> AS["AuthService (Signals & LocalStorage)"]
+        AS --> HTTP["HttpClient"]
+        HTTP --> INT["authInterceptor (Authorization: Bearer <token>)"]
+    end
+
+    subgraph API ["ASP.NET Core Web API (Firmeza.Api)"]
+        INT --> AUTH_EP["POST /api/auth/login | register"]
+        INT --> PROD_EP["GET /api/productos"]
+        INT --> VENT_EP["POST /api/ventas"]
+        INT --> REC_EP["GET /api/ventas/{id}/recibo"]
+        
+        AUTH_EP --> JWT_SRV["AuthService (Generación JWT HmacSha256)"]
+        PROD_EP --> POL1["[AllowAnonymous] / [RequireAnyRole]"]
+        VENT_EP --> POL2["[Authorize(Policy = 'RequireAnyRole')]"]
+        REC_EP --> POL3["[Authorize(Policy = 'RequireAnyRole')]"]
+    end
+
+    subgraph AdminOnly ["Endpoints de Administración (Inaccesibles desde Frontend)"]
+        ADMIN_PROD["POST/PUT/DELETE /api/productos [RequireAdminRole]"]
+        ADMIN_CLI["CRUD /api/clientes [RequireAdminRole]"]
+        ADMIN_DASH["GET /api/dashboard/metrics [RequireAdminRole]"]
+    end
+```
+
+### 1. Modelos de Autenticación Soportados:
+* **Tokens JWT Bearer (ASP.NET Core Web API):** Utilizado por el portal Angular (`firmeza.client`) y aplicaciones cliente externas. Los tokens se firman mediante el algoritmo `HmacSha256` e integran claims de identidad (`NameIdentifier`, `Email`, `Role`, `Jti`) con un tiempo de expiración configurable (7 días).
+* **Cookies de Sesión Seguras (Razor MVC):** Utilizado por el panel administrativo interno en `Firmeza.Web` con expiración deslizante, protección contra CSRF (`ValidateAntiForgeryToken`) y redirección a `/Account/Login`.
+
+### 2. Flujo de Autenticación JWT en Frontend Angular:
+1. **Inicio de Sesión y Registro (`AuthService`):**
+   - El usuario envía credenciales a `POST /api/auth/login` o completa el formulario de registro en `POST /api/auth/register` (asignando automáticamente el rol `Cliente`).
+   - Al responder la API con éxito, el token JWT y los datos de sesión se almacenan en `LocalStorage` (`firmeza_jwt_token` y `firmeza_user_session`).
+   - El estado de autenticación se gestiona reactivamente mediante **Angular Signals** (`currentUser`, `isAuthenticated`, `isCliente`).
+2. **Inyección Automática de Cabeceras (`authInterceptor`):**
+   - Interceptor funcional de Angular (`HttpInterceptorFn`) que clona las solicitudes HTTP e inyecta la cabecera:
+     ```http
+     Authorization: Bearer <token_jwt>
+     ```
+3. **Manejo de Expiración y Redirección:**
+   - Si el servidor retorna un error `401 Unauthorized` o el método `isTokenExpired()` detecta que el timestamp de expiración del token fue superado, el interceptor limpia el almacenamiento local y redirige inmediatamente al usuario a `/login` con el mensaje de sesión expirada.
+4. **Guardias de Navegación (`authGuard` y `guestGuard`):**
+   - `authGuard`: Protege las rutas privadas del portal (`/productos`, `/carrito`, `/mis-pedidos`), verificando la validez del token antes de permitir la activación de la ruta.
+   - `guestGuard`: Evita que un cliente ya autenticado acceda innecesariamente a `/login` o `/register`, redirigiéndolo al catálogo.
+
+### 3. Segregación Estricta de Roles (RBAC) y Aislamiento de Endpoints:
+* **Rol `Cliente` (Frontend SPA):**
+  - **Endpoints Habilitados:** Registro (`POST /api/auth/register`), Autenticación (`POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/logout`), Consulta de catálogo de productos (`GET /api/productos`), Creación de órdenes de venta (`POST /api/ventas`), Consulta de orden (`GET /api/ventas/{id}`) y Descarga de comprobantes oficiales en PDF (`GET /api/ventas/{id}/recibo`).
+  - **Endpoints Administrativos Bloqueados:** Las operaciones de creación/edición/eliminación de inventario (`POST/PUT/DELETE /api/productos`), gestión de clientes (`/api/clientes`) y métricas globales (`/api/dashboard/metrics`) están protegidas con la política `RequireAdminRole` y no son accesibles desde el frontend.
+* **Rol `Administrador` (Panel Razor MVC):**
+  - Acceso total a la administración de usuarios, importación masiva en Excel, métricas financieras del dashboard y mantenimiento de catálogo.
 
 ---
 
-## 🎨 Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)
+## 🎨 Diseño Visual, UI/UX y Frontend (Razor MVC & Angular 22 SPA)
 
-Tanto en **ASP.NET Core Razor MVC** como en **Angular SPA**, la experiencia de usuario mantiene un diseño profesional y coherente:
-1. **Encabezado Superior (Header):** Identidad del sistema, estado en tiempo real del servidor (`Servidor / API Conectada`), avatar del usuario y menú desplegable de perfil.
-2. **Navegación Lateral (Sidebar):** Menú lateral estilizado con fondo oscuro (`#0f172a`), íconos vectoriales modernos, enlaces activos en azul corporativo (`#2563eb`), acceso directo a ventas, reportes e importación Excel y toggle responsivo para dispositivos móviles.
-3. **Pie de Página (Footer):** Barra de cierre con información legal, políticas y versión del sistema.
-4. **Paleta de Colores y Tipografía:**
+Tanto en **ASP.NET Core Razor MVC** como en el **Portal Angular SPA (`firmeza.client`)**, la experiencia de usuario mantiene un diseño profesional, reactivo y moderno:
+
+### 1. Arquitectura del Frontend Angular (`firmeza.client`):
+* **Componentes Standalone:** Arquitectura modular en Angular 22 basada en componentes independientes:
+  - **`LoginComponent` (`/login`):** Formulario de autenticación con visualización de contraseña, botón de carga rápida de credenciales demo (`cliente@firmeza.com`) y feedback de errores.
+  - **`RegisterComponent` (`/register`):** Registro de nuevos clientes con validación de edad mínima (18 años), confirmación de contraseña y asignación del rol `Cliente`.
+  - **`CatalogoComponent` (`/productos`):** Catálogo de materiales con stock en tiempo real, precios unitarios en COP, selector de cantidad y botón para añadir al carrito.
+  - **`CarritoComponent` (`/carrito`):** Resumen de pedido con cálculo dinámico de Subtotal, IVA discriminado (19%), confirmación de orden (`POST /api/ventas`) y botón de **Descarga Inmediata de Comprobante PDF**.
+  - **`MisPedidosComponent` (`/mis-pedidos`):** Historial de compras con estado de despacho (`Pendiente`, `En Ruta`, `Entregado`) y botón para descargar el recibo oficial en PDF.
+  - **`HeaderComponent` & `FooterComponent`:** Barra de navegación superior con badge reactivo del carrito, información del cliente autenticado y botón de cierre de sesión.
+* **Gestión de Estado Reactivo (`CartService`):** Manejo del carrito de compras en memoria y persistencia local (`firmeza_cart_items`) mediante Signals calculadas (`totalCount`, `totalAmount`, `subtotalBase`, `ivaAmount`).
+* **Cliente HTTP y Proxy de Desarrollo (`proxy.conf.json`):**
+  - En desarrollo independiente (`http://localhost:4200`), las llamadas a `/api/*` se canalizan mediante proxy hacia la API REST (`http://localhost:5100`).
+  - En producción, el comando `npm run build` compila el paquete distribuible directamente hacia `src/Firmeza.Web/wwwroot/spa`.
+
+### 2. Elementos Visuales y UI:
+1. **Encabezado Superior (Header):** Identidad del sistema, estado en tiempo real de la sesión, badge de ítems en carrito, avatar del usuario y acción de logout.
+2. **Pie de Página (Footer):** Barra de cierre con información de seguridad JWT y versión del sistema.
+3. **Paleta de Colores y Tipografía:**
    * Primario: `#2563eb` (Royal Blue)
-   * Superficies Oscuras: `#0f172a` y `#1e293b`
+   * Éxito: `#10b981` (Emerald)
+   * Superficies Oscuras: `#0f172a` y `#111827`
    * Fondo de Contenido: `#f8fafc` (Slate 50)
    * Tipografía: `system-ui`, `-apple-system`, `Roboto`, `Helvetica Neue`.
 
@@ -625,7 +821,7 @@ Tanto en **ASP.NET Core Razor MVC** como en **Angular SPA**, la experiencia de u
 
 ## 🧪 Pruebas Unitarias Automatizadas (xUnit & Moq)
 
-El proyecto cuenta con una suite de **53 pruebas unitarias automatizadas** en [`tests/Firmeza.UnitTests/`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests) utilizando **xUnit** (framework de pruebas oficial y líder en el ecosistema .NET) y **Moq** (librería de aislamiento y dobles de prueba/mocking).
+El proyecto cuenta con una suite de **67 pruebas unitarias automatizadas** en [`tests/Firmeza.UnitTests/`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests) utilizando **xUnit** (framework de pruebas oficial y líder en el ecosistema .NET) y **Moq** (librería de aislamiento y dobles de prueba/mocking).
 
 ### 🎯 ¿Qué es xUnit y por qué se utiliza?
 * **xUnit.net** es un framework de pruebas moderno, extensible y orientado a la programación orientada a objetos para C# y .NET.
@@ -641,13 +837,14 @@ Cada método de prueba sigue el estándar internacional **AAA**:
 * **`[Fact]`:** Pruebas con condiciones e invariantes fijas que siempre deben cumplirse.
 * **`[Theory]`:** Pruebas parametrizadas ejecutadas con múltiples conjuntos de datos (`[InlineData(...)]`) para verificar casos límite, datos válidos y datos erróneos en una sola prueba.
 
-### 📦 Batería de Pruebas Implementadas (53 Pruebas):
+### 📦 Batería de Pruebas Implementadas (67 Pruebas):
 
 | Proyecto / Capa | Archivo de Prueba | Escenarios Validados |
 | :--- | :--- | :--- |
 | **Dominio (`Domain`)** | [`ProductoEntityTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Domain/ProductoEntityTests.cs) | Inicialización correcta de propiedades de producto y evaluación del umbral de alerta de bajo stock (`Stock < 50`). |
 | **Dominio (`Domain`)** | [`VentaDetalleEntityTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Domain/VentaDetalleEntityTests.cs) | Cálculo de subtotal histórico multiplicando `Cantidad * PrecioAplicado` congelado al momento de la venta. |
 | **Aplicación (`Application`)** | [`ValidadorEdadTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Application/ValidadorEdadTests.cs) | Validación con `try-catch`, captura de `FormatException` (texto alfabético), `OverflowException` (números que exceden Int32) y rangos laborales. |
+| **Aplicación (`Application`)** | [`AutoMapperProfilesTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Application/AutoMapperProfilesTests.cs) | Validez integral de configuración de AutoMapper y mapeos bidireccionales de Productos, Clientes y Ventas/Detalles con agregaciones calculadas. |
 | **Casos de Uso (`Application`)** | [`ProductosUseCasesTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/UseCases/ProductosUseCasesTests.cs) | Ejecución aislada de `CrearProductoUseCase` y `EliminarProductoUseCase` con regla de soft delete. |
 | **Casos de Uso (`Application`)** | [`ClientesUseCasesTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/UseCases/ClientesUseCasesTests.cs) | Ejecución de `CrearClienteUseCase` y validación de restricción de borrado en `EliminarClienteUseCase`. |
 | **Casos de Uso (`Application`)** | [`VentasUseCasesTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/UseCases/VentasUseCasesTests.cs) | Actualización de trazabilidad de entrega en `ActualizarEstadoDespachoUseCase`. |
@@ -656,8 +853,10 @@ Cada método de prueba sigue el estándar internacional **AAA**:
 | **Servicios (`Application`)** | [`VentaServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/VentaServiceTests.cs) | Creación de ventas, cálculo financiero (Subtotal, IVA 19%, Total), descuento automático de existencias en inventario, validaciones de stock insuficiente y almacenamiento físico de comprobantes PDF. |
 | **Servicios (`Infrastructure`)** | [`ExportServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ExportServiceTests.cs) | Exportación a Excel (EPPlus) y PDF (QuestPDF) para productos, clientes y ventas, generación de bytes de recibo PDF y guardado físico en disco en `wwwroot/recibos/`. |
 | **Servicios (`Infrastructure`)** | [`ExcelImportServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/ExcelImportServiceTests.cs) | Validación con EPPlus: normalización en memoria de columnas mixtas, deduplicación y vinculación de ventas/detalles, upsert de clientes y productos, detección de encabezados desplazados y log de inconsistencias. |
+| **Servicios (`Infrastructure`)** | [`EmailServiceTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Services/EmailServiceTests.cs) | Notificaciones SMTP, modo simulación, validación defensiva de emails, generación de plantillas HTML de bienvenida y confirmación de órdenes con recibo PDF adjunto. |
 | **Controladores (`Web`)** | [`VentasControllerTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Controllers/VentasControllerTests.cs) | Flujos MVC de `Index` con métricas, `Details`, `Create` GET/POST, exportaciones Excel/PDF y descarga de recibos con aislamiento de servicios. |
 | **Controladores (`Web`)** | [`ImportacionControllerTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Controllers/ImportacionControllerTests.cs) | Validación de archivos subidos, soporte `.xlsx`/`.xls`, procesamiento con opciones de importación y descarga de plantilla. |
+| **Controladores REST (`Api`)** | [`ApiControllersTests.cs`](file:///home/cohorte-5/Escritorio/Firmeza/tests/Firmeza.UnitTests/Controllers/ApiControllersTests.cs) | Operaciones CRUD RESTful (`GET`, `POST`, `PUT`, `DELETE`), códigos HTTP (`200 OK`, `201 CreatedAtAction`, `204 NoContent`), respuestas basadas en DTOs y validación de esquemas. |
 
 ### ⚡ Comando para Ejecutar las Pruebas:
 ```bash
@@ -675,57 +874,94 @@ dotnet test
 - **PostgreSQL (v14+)** en ejecución.
 
 ### 1. Configurar la Conexión a Base de Datos
-Edita `src/Firmeza.Web/appsettings.json`:
+Edita `src/Firmeza.Web/appsettings.json` y `src/Firmeza.Api/appsettings.json`:
 ```json
 "ConnectionStrings": {
   "DefaultConnection": "Host=localhost;Port=5432;Database=firmeza_db;Username=postgres;Password=tu_password"
 }
 ```
 
-### 2. Ejecutar el Backend (.NET Web API & MVC)
+### 2. Ejecutar el Servidor Web (Razor MVC / Panel Administrativo)
 ```bash
-cd src/Firmeza.Web
-dotnet run
+dotnet run --project src/Firmeza.Web/Firmeza.Web.csproj
 ```
-> **Nota:** Al iniciar, [`Program.cs`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Web/Program.cs) ejecuta automáticamente `dbContext.Database.MigrateAsync()` y si la base de datos está vacía, sembrará los roles, usuarios y el catálogo de prueba.
+> **URL:** `http://localhost:5281` (o `https://localhost:7091`)  
+> **Nota:** Al iniciar, [`Program.cs`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Web/Program.cs) ejecuta automáticamente las migraciones y sembrado si la base de datos es nueva.
 
-### 3. Ejecutar el Frontend Angular en Modo Desarrollo (Opcional)
+### 3. Ejecutar el Servidor REST API (`Firmeza.Api`)
+```bash
+dotnet run --project src/Firmeza.Api/Firmeza.Api.csproj
+```
+> **URL Base:** `http://localhost:5100` (o `https://localhost:7100`)  
+> **Swagger UI (Documentación Interactiva & JWT):** `http://localhost:5100/swagger`
+
+### 4. Ejecutar el Frontend Angular SPA de Forma Independiente
 ```bash
 cd firmeza.client
 npm install
 npm start
 ```
-El cliente estará disponible en `http://localhost:4200/`.
+> **URL SPA:** `http://localhost:4200`  
+> *(Las peticiones `/api/*` se redirigen automáticamente a la API REST mediante `proxy.conf.json`).*
 
 ---
 
 ## 🐳 Despliegue y Ejecución con Docker y Docker Compose
 
-El proyecto incluye soporte nativo para contenedores mediante un **`Dockerfile` multi-stage** y un archivo **`docker-compose.yml`** que orquesta el backend web y la base de datos PostgreSQL en un entorno aislado.
+El proyecto incluye soporte integral de contenedorización con orquestación mediante **`docker-compose.yml`**, implementando un orden de inicio estricto donde **las pruebas unitarias son el primer paso obligatorio**:
 
-### 1. Estructura de Contenedores
-* **`firmeza-postgres-db`:** Servidor PostgreSQL 16 Alpine con volumen persistente (`postgres_data`) y healthcheck automático.
-* **`firmeza-web-app`:** Contenedor .NET 10 en producción con la SPA de Angular precompilada y servida internamente en el puerto `8080` (mapeado a `5000` en el host).
-
-### 2. Comandos de Despliegue con Docker Compose
-
-```bash
-# 1. Construir imágenes y levantar servicios en segundo plano
-docker-compose up --build -d
-
-# 2. Verificar el estado de los contenedores
-docker-compose ps
-
-# 3. Ver los logs en tiempo real del backend y la base de datos
-docker-compose logs -f firmeza-web
-
-# 4. Detener los servicios
-docker-compose down
+```mermaid
+flowchart TD
+    TESTS["1. Servicio 'tests' (Dockerfile.tests)<br/>Ejecuta dotnet test"] -->|service_completed_successfully| DB_WAIT["Validación de Tests Exitosa"]
+    DB["2. Servicio 'firmeza-db'<br/>(PostgreSQL 16 Alpine)"] -->|service_healthy| DB_READY["Base de Datos Lista"]
+    
+    DB_WAIT --> API["3. Servicio 'api' (Dockerfile.api)<br/>ASP.NET Core REST API :5100"]
+    DB_READY --> API
+    
+    API -->|service_started| ADMIN["4. Servicio 'admin' (Dockerfile.admin)<br/>Panel Razor Pages :5281"]
+    API -->|service_started| CLIENT["5. Servicio 'client' (Dockerfile.client)<br/>Portal Clientes Angular / Nginx :4200"]
 ```
 
-Una vez levantado, accede desde tu navegador a:
-* **Panel Web Administrativo:** `http://localhost:5000`
-* **Cliente SPA Angular:** `http://localhost:5000/spa/index.html`
+### 1. Servicios Definidos en `docker-compose.yml`:
+1. **`tests` (Paso Obligatorio Inicial):**
+   - Construido con [`Dockerfile.tests`](file:///home/cohorte-5/Escritorio/Firmeza/Dockerfile.tests).
+   - Ejecuta `dotnet test` sobre la batería completa de pruebas unitarias. Si alguna prueba falla, el proceso finaliza con código de error ($\ne 0$) y detiene el levantamiento de los demás contenedores.
+2. **`firmeza-db` (Base de Datos):**
+   - Imagen oficial `postgres:16-alpine` con volumen persistente (`postgres_data`), credenciales seguras y healthcheck mediante `pg_isready`.
+3. **`api` (Firmeza.API):**
+   - Construido con [`Dockerfile.api`](file:///home/cohorte-5/Escritorio/Firmeza/Dockerfile.api).
+   - Expone la API REST en el puerto `5100` (`http://localhost:5100/swagger`).
+   - Depende de: `tests` (`service_completed_successfully`) y `firmeza-db` (`service_healthy`).
+4. **`admin` (Firmeza.Admin - Panel Razor Pages):**
+   - Construido con [`Dockerfile.admin`](file:///home/cohorte-5/Escritorio/Firmeza/Dockerfile.admin).
+   - Expone el panel administrativo en el puerto `5281` (`http://localhost:5281`).
+   - Depende de: `tests`, `firmeza-db` y `api`.
+5. **`client` (Firmeza.Client - Portal Angular SPA):**
+   - Construido con [`Dockerfile.client`](file:///home/cohorte-5/Escritorio/Firmeza/Dockerfile.client).
+   - Servido mediante Nginx Alpine de alto rendimiento en el puerto `4200` (`http://localhost:4200`).
+   - Depende de: `tests` y `api`.
+
+### 2. Comandos de Ejecución:
+
+```bash
+# 1. Construir imágenes y ejecutar todo el ecosistema (ejecutando tests primero de forma obligatoria)
+docker compose up --build
+
+# 2. Ejecutar únicamente la suite de pruebas automatizadas en contenedor
+docker compose run --rm tests
+
+# 3. Ver los logs en tiempo real de todos los servicios
+docker compose logs -f
+
+# 4. Detener y limpiar contenedores, volúmenes y redes
+docker compose down
+```
+
+Una vez levantado todo el ecosistema con `docker compose up --build`, accede desde tu navegador a:
+* **Portal Cliente (Angular SPA):** `http://localhost:4200`
+* **Panel Web Administrativo (Razor Pages):** `http://localhost:5281`
+* **API REST & Swagger UI:** `http://localhost:5100/swagger`
+* **Base de Datos PostgreSQL:** Puerto `5432` (`localhost:5432`)
 
 ---
 
@@ -742,6 +978,129 @@ Una vez levantado, accede desde tu navegador a:
 * **Varilla Corrugada 1/2"** (Unidad - $45,000 COP)
 * **Ladrillo Estructurado Arcilla 10x20x40** (Millar - $1,200,000 COP)
 * **Arena Lavada de Río (M3)** (M3 - $85,000 COP)
+
+---
+
+## 🧭 Guía Paso a Paso para Pruebas de Extremo a Extremo (Validación E2E para Evaluadores y TL)
+
+Esta guía describe el procedimiento secuencial para verificar **cada uno de los criterios de aceptación y funcionalidades del sistema** sin necesidad de abrir ningún IDE ni ejecutar comandos complejos:
+
+```mermaid
+flowchart LR
+    STEP1["1. docker compose up --build"] --> STEP2["2. Pruebas Automáticas Superadas"]
+    STEP2 --> STEP3["3. Portal Clientes Angular (:4200)"]
+    STEP2 --> STEP4["4. Panel Admin Razor (:5281)"]
+    STEP2 --> STEP5["5. REST API & Swagger (:5100)"]
+```
+
+---
+
+### 🔹 Paso 1: Despliegue con Comando Único
+
+Abre una terminal en la raíz del proyecto y ejecuta:
+
+```bash
+docker compose up --build
+```
+
+**¿Qué validará automáticamente el sistema?**
+1. Construirá la imagen `Dockerfile.tests` y ejecutará `dotnet test`.
+2. Si las pruebas pasan (67/67 tests exitosos), la compuerta `service_completed_successfully` se satisface y arranca el contenedor de base de datos PostgreSQL (`firmeza-db`).
+3. Una vez saludable (`service_healthy`), se inician en paralelo la **API REST** (`api`), el **Panel Admin** (`admin`) y el **Portal Cliente** (`client`).
+
+---
+
+### 🔹 Paso 2: Flujo Completo del Cliente (Portal Angular SPA)
+
+Abre tu navegador en: 👉 **`http://localhost:4200`**
+
+1. **Registro de Nuevo Cliente:**
+   * Haz clic en **"¿No tienes cuenta? Regístrate aquí"** (o accede a `http://localhost:4200/#/register`).
+   * Diligencia el formulario: Documento / NIT, Razón Social o Nombre, Teléfono, Correo electrónico, Dirección de despacho, Edad (mínimo 18 años) y Contraseña.
+   * Al registrarte, el sistema:
+     - Guarda el usuario con rol `Cliente` en base de datos.
+     - Dispara automáticamente el **correo de bienvenida en HTML** a través del servicio SMTP.
+     - Redirige al inicio de sesión con notificación de éxito.
+2. **Inicio de Sesión con JWT:**
+   * Ingresa las credenciales del nuevo usuario (o usa el botón **"Rellenar Cliente Demo"** para cargar `cliente@firmeza.com` / `Cliente123*`).
+   * Haz clic en **"Iniciar Sesión"**. El sistema generará el token JWT, lo almacenará en `LocalStorage` y activará los Signals reactivos de sesión.
+   * Serás redirigido inmediatamente al Catálogo de Materiales (`/#/productos`).
+3. **Exploración de Catálogo y Carrito:**
+   * Observa el catálogo con precios en COP, unidades de medida y stock en tiempo real.
+   * Selecciona la cantidad deseada para uno o varios materiales y pulsa **"Añadir"**.
+   * Observa cómo el **badge del carrito en la barra superior** se actualiza en tiempo real.
+4. **Liquidación Financiera y Confirmación de Compra:**
+   * Haz clic en el icono del **Carrito** (o navega a `/#/carrito`).
+   * Revisa la tabla del pedido:
+     - Modifica cantidades con los botones `+` / `-` o elimina ítems.
+     - Verifica el cálculo automático y discriminado: **Subtotal Base**, **IVA (19%)** y **Total a Pagar**.
+   * Haz clic en **"Confirmar y Realizar Pedido"**.
+   * **El sistema ejecutará automáticamente:**
+     - Creación de la orden en base de datos (`POST /api/ventas`).
+     - Descuento inmediato de existencias en el inventario.
+     - Generación del documento oficial en PDF con QuestPDF.
+     - Envío del correo electrónico de confirmación con el **PDF adjunto** vía SMTP.
+     - Visualización del banner de éxito con el botón **"Descargar Recibo Oficial (PDF)"**.
+5. **Historial de Órdenes y Descarga de Recibos:**
+   * Haz clic en **"Mis Pedidos"** en la barra superior (o accede a `/#/mis-pedidos`).
+   * Verás el listado de tus órdenes con su consecutivo (`#VENTA-{id}`), fecha, estado de entrega (`Pendiente`, `En Ruta`, `Entregado`) y valor total.
+   * Haz clic en el botón **"Descargar Recibo (PDF)"** para obtener el comprobante fiscal generado.
+6. **Cierre de Sesión:**
+   * Haz clic en el botón **"Cerrar Sesión"** en la esquina superior derecha. El token JWT y el carrito se limpiarán de la memoria y serás redirigido a `/login`.
+
+---
+
+### 🔹 Paso 3: Flujo Administrativo Completo (ASP.NET Core Razor MVC)
+
+Abre tu navegador en: 👉 **`http://localhost:5281`**
+
+1. **Inicio de Sesión Administrativo:**
+   * Inicia sesión con las credenciales maestras:
+     - **Email:** `admin@firmeza.com`
+     - **Contraseña:** `Admin123*`
+2. **Dashboard Operativo en Tiempo Real (`/`):**
+   * Visualiza las tarjetas de KPIs: Facturación total acumulada, total de clientes registrados, inventario global y alertas de stock bajo (`< 50` unidades).
+   * Monitorea el desglose de órdenes por estado de despacho y la lista de las últimas ventas.
+3. **Gestión de Materiales y Productos (`/Productos`):**
+   * **Crear Material:** Pulsa "Nuevo Producto", ingresa nombre, descripción, unidad de medida, precio y existencias.
+   * **Filtros y Búsqueda:** Filtra por unidad de medida o materiales con stock bajo.
+   * **Regla de Integridad (Soft Delete):** Intenta eliminar un producto que ya tenga ventas registradas. El sistema aplicará automáticamente **Soft Delete** (`Activo = false`) preservando los registros contables históricos.
+   * **Exportación:** Descarga el catálogo en **Excel (.xlsx)** o **PDF (.pdf)** con un solo clic.
+4. **Gestión de Clientes (`/Clientes`):**
+   * Consulta el directorio de constructoras y clientes con su acumulado total de compras.
+   * **Protección Fiscal:** Si intentas eliminar un cliente con historial de compras (`totalCompras > 0`), el sistema **bloqueará la eliminación** para garantizar la trazabilidad legal.
+   * Exporta el directorio a Excel o PDF.
+5. **Módulo de Importación y Normalización Masiva de Excel (`/Importacion`):**
+   * Descarga la **Plantilla de Ejemplo** con columnas heterogéneas y tablas combinadas.
+   * Sube el archivo Excel en la zona Drag & Drop con las opciones deseadas (*Upsert*, *Registrar ventas*, *Descontar inventario*).
+   * Pulsa **"Procesar y Normalizar Archivo"** y observa el resumen de entidades creadas/actualizadas junto con la bitácora clasificada por severidad (Errores 🔴, Advertencias 🟡, Info 🔵).
+
+---
+
+### 🔹 Paso 4: Exploración de API REST & Documentación Swagger
+
+Abre tu navegador en: 👉 **`http://localhost:5100/swagger`**
+
+1. Revisa todos los endpoints documentados organizados por módulos: `Auth`, `Productos`, `Clientes`, `Ventas`, `Dashboard` e `Importacion`.
+2. Pulsa en el botón verde **"Authorize"** en la parte superior derecha e ingresa tu token JWT generado (`Bearer <tu_token>`) para probar endpoints protegidos interactivamente.
+3. Comprueba que las operaciones de modificación administrativa (`POST/PUT/DELETE /api/productos`) rechazan accesos con rol `Cliente` y requieren token con rol `Administrador`.
+
+---
+
+### 🔹 Paso 5: Ejecución Manual de Pruebas Unitarias
+
+Si deseas ejecutar las suites de pruebas de forma individual:
+
+```bash
+# 1. Pruebas Backend (.NET 10 - xUnit & Moq - 67 pruebas)
+dotnet test
+
+# 2. Pruebas Frontend (Angular 22 - Vitest - 3 pruebas)
+cd firmeza.client && npx vitest run
+
+# 3. Pruebas en Contenedor Docker Aislado
+docker compose run --rm tests
+```
 
 ---
 

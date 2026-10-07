@@ -12,27 +12,30 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        // 1. Registrar Casos de Uso (Use Cases) de Productos
+        // 1. Registrar AutoMapper con los perfiles de mapeo del ensamblado Application
+        services.AddAutoMapper(typeof(DependencyInjection).Assembly);
+
+        // 2. Registrar Casos de Uso (Use Cases) de Productos
         services.AddScoped<CrearProductoUseCase>();
         services.AddScoped<ActualizarProductoUseCase>();
         services.AddScoped<EliminarProductoUseCase>();
         services.AddScoped<ObtenerProductosUseCase>();
 
-        // 2. Registrar Casos de Uso (Use Cases) de Clientes
+        // 3. Registrar Casos de Uso (Use Cases) de Clientes
         services.AddScoped<CrearClienteUseCase>();
         services.AddScoped<ActualizarClienteUseCase>();
         services.AddScoped<EliminarClienteUseCase>();
         services.AddScoped<ObtenerClientesUseCase>();
 
-        // 3. Registrar Casos de Uso (Use Cases) de Ventas
+        // 4. Registrar Casos de Uso (Use Cases) de Ventas
         services.AddScoped<CrearVentaUseCase>();
         services.AddScoped<ObtenerVentasUseCase>();
         services.AddScoped<ActualizarEstadoDespachoUseCase>();
 
-        // 4. Registrar Casos de Uso (Use Cases) de Dashboard
+        // 5. Registrar Casos de Uso (Use Cases) de Dashboard
         services.AddScoped<ObtenerDashboardMetricsUseCase>();
 
-        // 5. Registrar Fachadas / Servicios de Aplicación
+        // 6. Registrar Fachadas / Servicios de Aplicación
         services.AddScoped<IProductoService, ProductoService>();
         services.AddScoped<IClienteService, ClienteService>();
         services.AddScoped<IVentaService, VentaService>();

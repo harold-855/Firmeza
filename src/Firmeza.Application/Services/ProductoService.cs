@@ -1,6 +1,5 @@
 using Firmeza.Application.DTOS.Productos;
 using Firmeza.Application.Interfaces;
-using Firmeza.Application.Interfaces.Repositories;
 using Firmeza.Application.UseCases.Productos;
 
 namespace Firmeza.Application.Services;
@@ -11,15 +10,6 @@ public class ProductoService(
     ActualizarProductoUseCase actualizarProductoUseCase,
     EliminarProductoUseCase eliminarProductoUseCase) : IProductoService
 {
-    public ProductoService(IUnitOfWork unitOfWork)
-        : this(
-            new ObtenerProductosUseCase(unitOfWork),
-            new CrearProductoUseCase(unitOfWork),
-            new ActualizarProductoUseCase(unitOfWork),
-            new EliminarProductoUseCase(unitOfWork))
-    {
-    }
-
     public Task<IEnumerable<ProductoDto>> GetAllAsync(ProductoFilterDto? filter = null)
         => obtenerProductosUseCase.ExecuteGetAllAsync(filter);
 

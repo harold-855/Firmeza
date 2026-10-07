@@ -1,10 +1,11 @@
+using AutoMapper;
 using Firmeza.Application.DTOS.Ventas;
 using Firmeza.Application.Interfaces.Repositories;
 using Firmeza.Domain.Entities;
 
 namespace Firmeza.Application.UseCases.Ventas;
 
-public class ObtenerVentasUseCase(IUnitOfWork unitOfWork)
+public class ObtenerVentasUseCase(IUnitOfWork unitOfWork, IMapper? mapper = null)
 {
     public async Task<IEnumerable<VentaDto>> ExecuteGetAllAsync(VentaFilterDto? filter = null, CancellationToken cancellationToken = default)
     {
@@ -53,13 +54,25 @@ public class ObtenerVentasUseCase(IUnitOfWork unitOfWork)
             };
         }
 
+        if (mapper != null)
+        {
+            return mapper.Map<IEnumerable<VentaDto>>(ventas);
+        }
+
         return ventas.Select(MapToDto).ToList();
     }
 
     public async Task<VentaDto?> ExecuteGetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var venta = await unitOfWork.Ventas.GetByIdWithDetailsAsync(id, cancellationToken);
-        return venta == null ? null : MapToDto(venta);
+        if (venta == null) return null;
+
+        if (mapper != null)
+        {
+            return mapper.Map<VentaDto>(venta);
+        }
+
+        return MapToDto(venta);
     }
 
     private static VentaDto MapToDto(Venta v)

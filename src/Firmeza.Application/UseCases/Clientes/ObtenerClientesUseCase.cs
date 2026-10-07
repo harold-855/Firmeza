@@ -1,13 +1,19 @@
+using AutoMapper;
 using Firmeza.Application.DTOS.Clientes;
 using Firmeza.Application.Interfaces.Repositories;
 
 namespace Firmeza.Application.UseCases.Clientes;
 
-public class ObtenerClientesUseCase(IUnitOfWork unitOfWork)
+public class ObtenerClientesUseCase(IUnitOfWork unitOfWork, IMapper? mapper = null)
 {
     public async Task<IEnumerable<ClienteDto>> ExecuteGetAllAsync(ClienteFilterDto? filter = null, CancellationToken cancellationToken = default)
     {
         var clientes = await unitOfWork.Clientes.GetAllWithVentasAsync(filter, cancellationToken);
+
+        if (mapper != null)
+        {
+            return mapper.Map<IEnumerable<ClienteDto>>(clientes);
+        }
 
         return clientes.Select(c => new ClienteDto
         {
@@ -27,6 +33,11 @@ public class ObtenerClientesUseCase(IUnitOfWork unitOfWork)
         var c = await unitOfWork.Clientes.GetByIdWithVentasAsync(id, cancellationToken);
         if (c == null) return null;
 
+        if (mapper != null)
+        {
+            return mapper.Map<ClienteDto>(c);
+        }
+
         return new ClienteDto
         {
             Id = c.Id,
@@ -44,6 +55,11 @@ public class ObtenerClientesUseCase(IUnitOfWork unitOfWork)
     {
         var c = await unitOfWork.Clientes.GetByDocumentoAsync(documento, cancellationToken);
         if (c == null) return null;
+
+        if (mapper != null)
+        {
+            return mapper.Map<ClienteDto>(c);
+        }
 
         return new ClienteDto
         {
