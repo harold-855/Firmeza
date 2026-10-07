@@ -7,29 +7,30 @@
 
 ## 📌 Tabla de Contenidos
 1. [Visión General del Proyecto](#-visión-general-del-proyecto)
-2. [Arquitectura de la Solución (Clean Architecture, Use Cases & SOLID)](#-arquitectura-de-la-solución-clean-architecture-use-cases--solid)
-3. [Capa de Aplicación y Casos de Uso (Use Cases)](#-capa-de-aplicación-y-casos-de-uso-use-cases)
-4. [Estructura del Proyecto y Capas](#-estructura-del-proyecto-y-capas)
-5. [Módulo ASP.NET Core Web API (Firmeza.Api)](#-módulo-aspnet-core-web-api-firmezaapi)
-6. [Diagramas Técnicos de Arquitectura y Diseño](#-diagramas-técnicos-de-arquitectura-y-diseño)
+2. [Glosario de Conceptos Clave y Lenguaje Técnico (Para Principiantes)](#-glosario-de-conceptos-clave-y-lenguaje-técnico-para-principiantes)
+3. [Arquitectura de la Solución (Clean Architecture, Use Cases & SOLID)](#-arquitectura-de-la-solución-clean-architecture-use-cases--solid)
+4. [Capa de Aplicación y Casos de Uso (Use Cases)](#-capa-de-aplicación-y-casos-de-uso-use-cases)
+5. [Estructura del Proyecto y Capas](#-estructura-del-proyecto-y-capas)
+6. [Módulo ASP.NET Core Web API (Firmeza.Api)](#-módulo-aspnet-core-web-api-firmezaapi)
+7. [Diagramas Técnicos de Arquitectura y Diseño](#-diagramas-técnicos-de-arquitectura-y-diseño)
    * [Diagrama de Clases y Casos de Uso](#diagrama-de-clases-y-casos-de-uso)
    * [Diagrama Entidad-Relación (ER) Completo](#diagrama-entidad-relación-er-completo)
    * [Diagrama de Secuencia (Flujo de Autenticación y Dashboard)](#diagrama-de-secuencia-flujo-de-autenticación-y-dashboard)
-7. [Patrón Repository y Unit of Work (Acceso a Datos Desacoplado)](#-patrón-repository-y-unit-of-work-acceso-a-datos-desacoplado)
-8. [Módulo de Gestión de Productos (CRUD, ViewModels y Filtrado)](#-módulo-de-gestión-de-productos-crud-viewmodels-y-filtrado)
-9. [Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)](#-módulo-de-gestión-de-clientes-crud-validaciones-y-búsqueda)
-10. [Módulo de Importación y Normalización de Excel con EPPlus](#-módulo-de-importación-y-normalización-de-excel-con-epplus)
-11. [Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)](#-módulo-de-exportación-de-datos-y-comprobantes-pdf-questpdf--epplus)
-12. [Mapeo de Objetos y DTOs con AutoMapper](#-mapeo-de-objetos-y-dtos-con-automapper)
-13. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
-14. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
-15. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
-16. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
-17. [Guía de Puesta en Marcha (Instalación y Ejecución Local)](#-guía-de-puesta-en-marcha-instalación-y-ejecución-local)
-18. [Despliegue y Ejecución con Docker y Docker Compose](#-despliegue-y-ejecución-con-docker-y-docker-compose)
-19. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
-20. [Guía Paso a Paso para Pruebas de Extremo a Extremo (Validación E2E para Evaluadores y TL)](#-guía-paso-a-paso-para-pruebas-de-extremo-a-extremo-validación-e2e-para-evaluadores-y-tl)
-21. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
+8. [Patrón Repository y Unit of Work (Acceso a Datos Desacoplado)](#-patrón-repository-y-unit-of-work-acceso-a-datos-desacoplado)
+9. [Módulo de Gestión de Productos (CRUD, ViewModels y Filtrado)](#-módulo-de-gestión-de-productos-crud-viewmodels-y-filtrado)
+10. [Módulo de Gestión de Clientes (CRUD, Validaciones y Búsqueda)](#-módulo-de-gestión-de-clientes-crud-validaciones-y-búsqueda)
+11. [Módulo de Importación y Normalización de Excel con EPPlus](#-módulo-de-importación-y-normalización-de-excel-con-epplus)
+12. [Módulo de Exportación de Datos y Comprobantes PDF (QuestPDF & EPPlus)](#-módulo-de-exportación-de-datos-y-comprobantes-pdf-questpdf--epplus)
+13. [Mapeo de Objetos y DTOs con AutoMapper](#-mapeo-de-objetos-y-dtos-con-automapper)
+14. [Manejo de Errores con Try-Catch y Validaciones de Entrada](#-manejo-de-errores-con-try-catch-y-validaciones-de-entrada)
+15. [Seguridad y Control de Acceso (RBAC)](#-seguridad-y-control-de-acceso-rbac)
+16. [Diseño Visual, UI/UX y Frontend (Header, Sidebar y Footer)](#-diseño-visual-uiux-y-frontend-header-sidebar-y-footer)
+17. [Pruebas Unitarias Automatizadas (xUnit & Moq)](#-pruebas-unitarias-automatizadas-xunit--moq)
+18. [Guía de Descarga, Instalación y Despliegue (Paso a Paso desde GitHub)](#-guía-de-descarga-instalación-y-despliegue-paso-a-paso-desde-github)
+19. [Despliegue y Orquestación con Docker y Docker Compose](#-despliegue-y-orquestación-con-docker-y-docker-compose)
+20. [Cuentas y Datos Semilla por Defecto (Seeders)](#-cuentas-y-datos-semilla-por-defecto-seeders)
+21. [Guía Paso a Paso para Pruebas de Extremo a Extremo (Validación E2E para Evaluadores y TL)](#-guía-paso-a-paso-para-pruebas-de-extremo-a-extremo-validación-e2e-para-evaluadores-y-tl)
+22. [Banco de Preguntas Clave para Sustentación y Estudio](#-banco-de-preguntas-clave-para-sustentación-y-estudio)
 
 ---
 
@@ -41,6 +42,65 @@
 - **Registro y Despacho de Ventas:** Trazabilidad de órdenes con estados de entrega (`Pendiente`, `En Ruta`, `Entregado`) y congelación de precios históricos de venta.
 - **Panel Administrativo (Dashboard):** Métricas operativas en tiempo real (facturación total acumulada, órdenes por estado y alertas de inventario bajo `< 50` unidades).
 - **Múltiples Clientes y Servicios:** Servidor web **ASP.NET Core Razor MVC**, API REST desacoplada **ASP.NET Core Web API (`Firmeza.Api`)** y cliente interactivo **Angular 22 (SPA)**.
+
+---
+
+## 📚 Glosario de Conceptos Clave y Lenguaje Técnico (Para Principiantes)
+
+Para comprender fácilmente toda la arquitectura, código y documentación de este proyecto, a continuación se explican los conceptos técnicos fundamentales en **lenguaje sencillo, amigable y con analogías de la vida real**:
+
+### 1. 🏛️ Arquitectura y Patrones de Software
+
+| Concepto Técnico | ¿Qué es en palabras sencillas? | Analogía de la Vida Real | ¿Cómo se usa en FIRMEZA? |
+| :--- | :--- | :--- | :--- |
+| **Clean Architecture (Arquitectura Limpia)** | Una forma de organizar el código en capas concéntricas (Dominio, Aplicación, Infraestructura, Presentación) para que las reglas de negocio sean independientes de la base de datos o la interfaz visual. | Como un hospital: los médicos (reglas de negocio) toman decisiones de salud sin importar si el hospital usa computadores de marca A o B o si las recetas se imprimen o se envían por app. | Las entidades y casos de uso están en `Domain` y `Application`, libres de dependencias de ASP.NET o PostgreSQL. |
+| **SOLID (Principios)** | Un conjunto de 5 reglas doradas de la programación orientada a objetos para escribir código limpio, modular, fácil de mantener y que no se rompa al agregar nuevas funciones. | Como piezas de LEGO: cada ficha encaja perfectamente y tiene una función precisa sin interferir con las demás. | Cada caso de uso tiene una única responsabilidad (SRP) y las capas dependen de interfaces y no de clases concretas (DIP). |
+| **Caso de Uso (Use Case)** | Una clase específica que realiza una única acción del negocio (ej. "Crear Producto", "Registrar Venta"). | Como una receta de cocina individual: describe los pasos exactos para preparar un único plato específico. | Implementados en `Firmeza.Application/UseCases` (ej. `CrearVentaUseCase`, `EliminarProductoUseCase`). |
+| **Patrón Repository (Repositorio)** | Una capa intermedia que actúa como encargado de acceso a datos, ocultando las consultas directas a la base de datos. | Como el bibliotecario de una biblioteca: tú le pides un libro por título y él se encarga de buscarlo en las estanterías sin que tú tengas que entrar al depósito. | `ClienteRepository`, `ProductoRepository`, etc., que implementan `IBaseRepository<T>`. |
+| **Unit of Work (Unidad de Trabajo)** | Un patrón que agrupa múltiples operaciones de guardado y las confirma todas juntas en una sola transacción atómica (`SaveChangesAsync`). | Como la caja registradora de un supermercado: pasa todos los productos de tu carrito y al final cobras todo en un solo ticket. Si tu tarjeta es rechazada, ningún producto se procesa. | `IUnitOfWork` coordina que al registrar una venta, se guarde la orden, sus detalles y se descuente el inventario al mismo tiempo. |
+| **Inyección de Dependencias (DI / IoC)** | Técnica donde un objeto recibe sus herramientas desde afuera a través del constructor, en lugar de crearlas él mismo con `new`. | Como un cirujano en el quirófano: el cirujano pide *"bisturí"* y el instrumentador se lo entrega en la mano listo para usar. | Todos los controladores y casos de uso reciben sus repositorios y servicios inyectados en el constructor. |
+| **DTO (Data Transfer Object)** | Un objeto plano diseñado exclusivamente para transportar datos entre la API y la interfaz de usuario, sin exponer la estructura interna de la base de datos. | Como un pasaporte o carnet: solo muestra los datos esenciales que el guardia necesita ver, sin revelar todo tu historial médico privado. | `ProductoDto`, `CreateVentaDto`, `ClienteDto`, etc. |
+| **AutoMapper** | Una herramienta que copia y transforma propiedades de un objeto a otro automáticamente. | Como un traductor simultáneo: convierte al instante un documento en un idioma a otro formato predeterminado. | Mapea automáticamente entidades de base de datos a DTOs (`ProductoMappingProfile`, etc.). |
+
+---
+
+### 2. 🌐 Servicios Web, API y Seguridad
+
+| Concepto Técnico | ¿Qué es en palabras sencillas? | Analogía de la Vida Real | ¿Cómo se usa en FIRMEZA? |
+| :--- | :--- | :--- | :--- |
+| **API REST (RESTful API)** | Un conjunto de direcciones web (Endpoints) que permiten a diferentes programas comunicarse e intercambiar información en formato JSON. | Como el menú de un restaurante: tú (cliente) miras el menú, haces un pedido al mesero (API) y la cocina (servidor) te entrega el plato (JSON). | Expuesta en `Firmeza.Api` bajo el prefijo `/api/*` (`/api/productos`, `/api/ventas`, etc.). |
+| **Verbos HTTP (GET, POST, PUT, DELETE)** | Instrucciones estándar de la web para indicar qué acción se desea ejecutar. | - `GET`: Ver/Leer.<br/>- `POST`: Crear nuevo.<br/>- `PUT`/`PATCH`: Modificar.<br/>- `DELETE`: Eliminar o desactivar. | Usados en todos los controladores REST y llamadas desde Angular. |
+| **JWT (JSON Web Token)** | Un pase digital seguro y firmado criptográficamente que el servidor entrega al usuario cuando inicia sesión. | Como una manilla o brazalete VIP en un festival: demuestra tu identidad y qué zonas puedes visitar sin tener que mostrar tu cédula en cada puerta. | Generado en `POST /api/auth/login` y enviado en la cabecera `Authorization: Bearer <token>` por el cliente Angular. |
+| **RBAC (Role-Based Access Control)** | Control de acceso que autoriza o restringe acciones según el rol asignado al usuario. | Como los permisos en un banco: los clientes pueden ver su cuenta y retirar dinero, pero solo el gerente (Admin) puede abrir la bóveda y ver auditorías. | Rol `Administrador` (panel completo) vs Rol `Cliente` (solo catálogo, carrito, compras y recibos propios). |
+| **SMTP (Simple Mail Transfer Protocol)** | Protocolo estándar de internet utilizado para enviar correos electrónicos de forma confiable. | Como el cartero o servicio de mensajería postal que recoge tu carta y la entrega en el buzón del destinatario. | Implementado en `SmtpEmailService` para enviar bienvenidas y confirmaciones de compra con PDF adjunto. |
+| **Soft Delete (Borrado Lógico)** | En lugar de eliminar físicamente una fila de la base de datos, se le cambia un campo a inactivo (`Activo = false`). | Como archivar un documento en una carpeta de "inactivos" en lugar de quemarlo en la trituradora. | Si un producto tiene ventas históricas, no se puede borrar de la base de datos para no alterar balances contables pasados. |
+
+---
+
+### 3. 💻 Frontend y Tecnologías Web
+
+| Concepto Técnico | ¿Qué es en palabras sencillas? | Analogía de la Vida Real | ¿Cómo se usa en FIRMEZA? |
+| :--- | :--- | :--- | :--- |
+| **SPA (Single Page Application)** | Aplicación web que carga un solo archivo HTML y actualiza la pantalla dinámicamente sin recargar la página completa en el navegador. | Como una aplicación de smartphone: al tocar botones la pantalla cambia suavemente y al instante sin parpadear en blanco. | El frontend en `firmeza.client` desarrollado con Angular 22. |
+| **Componentes Standalone (Angular)** | Bloques independientes y autocontenidos de interfaz gráfica (HTML + CSS + TypeScript) que no requieren módulos complejos. | Como bloques de construcción individuales que puedes montar y mover fácilmente donde quieras. | `LoginComponent`, `CatalogoComponent`, `CarritoComponent`, etc. |
+| **Signals (Señales Reactivas)** | Mecanismo ultra-eficiente de Angular para rastrear datos que cambian y refrescar la pantalla automáticamente. | Como una alarma de luces: cuando se detecta un cambio, se ilumina al instante exactamente el foco que corresponde. | Usado en `CartService` para recalcular al vuelo el subtotal, el 19% de IVA y el total del pedido. |
+| **Interceptor HTTP** | Un intermediario que intercepta todas las peticiones que salen del navegador antes de que lleguen a la red. | Como un asistente que le pega automáticamente un sello oficial a cada sobre antes de que el mensajero salga a la calle. | `authInterceptor` inyecta el token Bearer JWT en cada petición y redirige a `/login` si la sesión expiró. |
+| **Nginx** | Servidor web extremadamente rápido y eficiente para servir archivos estáticos (HTML, CSS, JS) en producción. | Como un distribuidor express en ventanilla que despacha pedidos a la máxima velocidad posible. | Servidor de producción en el contenedor `Dockerfile.client` en el puerto 4200. |
+
+---
+
+### 4. 🐳 Contenedores, Pruebas y Base de Datos
+
+| Concepto Técnico | ¿Qué es en palabras sencillas? | Analogía de la Vida Real | ¿Cómo se usa en FIRMEZA? |
+| :--- | :--- | :--- | :--- |
+| **Docker (Contenedor)** | Un paquete ligero y aislado que incluye el código y todo lo necesario (runtime, librerías, dependencias) para que el programa funcione exactamente igual en cualquier máquina. | Como un contenedor de carga marítimo estándar: cabe en cualquier barco, tren o camión del mundo sin importar lo que lleve adentro. | Cada proyecto (`api`, `admin`, `client`, `tests`, `db`) corre en su propio contenedor Docker aislado. |
+| **Docker Compose** | Herramienta para definir y ejecutar aplicaciones multi-contenedor con un solo archivo (`docker-compose.yml`) y un solo comando. | Como el director de una orquesta sinfónica: le da la entrada a cada instrumento en el orden exacto para que toquen en armonía. | Permite levantar todo FIRMEZA con `docker compose up --build`. |
+| **Prueba Unitaria (Unit Test) & xUnit** | Un fragmento de código que ejecuta una función específica con datos simulados para comprobar que devuelva la respuesta correcta. | Como el control de calidad en una fábrica que prueba una tuerca antes de montarla en el automóvil. | 67 pruebas automatizadas en `tests/Firmeza.UnitTests` ejecutadas con `dotnet test`. |
+| **Moq (Mocking)** | Librería que crea objetos "simulados o de mentira" para aislar la prueba de dependencias externas. | Como los maniquíes de pruebas de choque (Crash Test Dummies) usados para probar la seguridad de un auto sin poner personas reales en riesgo. | Se simula `Mock<IUnitOfWork>` para probar casos de uso sin tocar una base de datos real. |
+| **Patrón AAA (Arrange, Act, Assert)** | Estándar universal para estructurar pruebas:<br/>1. **Arrange:** Preparar datos.<br/>2. **Act:** Ejecutar la acción.<br/>3. **Assert:** Verificar el resultado. | Como hornear un pastel:<br/>1. Preparar ingredientes.<br/>2. Hornear.<br/>3. Probar el sabor para verificar que quedó bien. | Estructura de todas las pruebas en xUnit y Vitest del proyecto. |
+| **ORM & Entity Framework Core** | Herramienta que traduce automáticamente tablas y filas de la base de datos a objetos y listas de C#. | Como un traductor que te permite hablar en español (C#) con alguien que solo entiende francés (SQL). | `ApplicationDbContext` que gestiona las tablas en PostgreSQL. |
+| **PostgreSQL** | Motor de base de datos relacional de código abierto, reconocido por su robustez, velocidad y seguridad. | Como una gran bóveda de archivos bancarios hiper-segura y organizada. | Base de datos principal de FIRMEZA corriendo en el contenedor `firmeza-db`. |
+| **Seeders (Sembradores de Datos)** | Rutinas que insertan automáticamente datos iniciales o de prueba la primera vez que se inicia la aplicación. | Como amueblar y surtir una tienda antes de abrir sus puertas al público por primera vez. | `DataSeeder` e `IdentitySeeder` que crean los usuarios demo y materiales básicos. |
 
 ---
 
@@ -866,47 +926,159 @@ dotnet test
 
 ---
 
-## 🚀 Guía de Puesta en Marcha (Instalación y Ejecución Local)
+## 🚀 Guía de Descarga, Instalación y Despliegue (Paso a Paso desde GitHub)
 
-### Requisitos Previos:
-- **.NET SDK 10.0** (o versión superior compatible).
-- **Node.js (v18+)** y **npm**.
-- **PostgreSQL (v14+)** en ejecución.
-
-### 1. Configurar la Conexión a Base de Datos
-Edita `src/Firmeza.Web/appsettings.json` y `src/Firmeza.Api/appsettings.json`:
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Host=localhost;Port=5432;Database=firmeza_db;Username=postgres;Password=tu_password"
-}
-```
-
-### 2. Ejecutar el Servidor Web (Razor MVC / Panel Administrativo)
-```bash
-dotnet run --project src/Firmeza.Web/Firmeza.Web.csproj
-```
-> **URL:** `http://localhost:5281` (o `https://localhost:7091`)  
-> **Nota:** Al iniciar, [`Program.cs`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Web/Program.cs) ejecuta automáticamente las migraciones y sembrado si la base de datos es nueva.
-
-### 3. Ejecutar el Servidor REST API (`Firmeza.Api`)
-```bash
-dotnet run --project src/Firmeza.Api/Firmeza.Api.csproj
-```
-> **URL Base:** `http://localhost:5100` (o `https://localhost:7100`)  
-> **Swagger UI (Documentación Interactiva & JWT):** `http://localhost:5100/swagger`
-
-### 4. Ejecutar el Frontend Angular SPA de Forma Independiente
-```bash
-cd firmeza.client
-npm install
-npm start
-```
-> **URL SPA:** `http://localhost:4200`  
-> *(Las peticiones `/api/*` se redirigen automáticamente a la API REST mediante `proxy.conf.json`).*
+Esta sección está diseñada con instrucciones claras y detalladas para que **cualquier persona, incluso un principiante o recién iniciado en informática**, pueda descargar, instalar y poner en marcha todo el sistema de manera rápida y sin complicaciones.
 
 ---
 
-## 🐳 Despliegue y Ejecución con Docker y Docker Compose
+### 📋 Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalado en tu computadora:
+
+| Herramienta | ¿Para qué sirve? | ¿Dónde descargarla? / ¿Cómo verificarla? |
+| :--- | :--- | :--- |
+| **Git** | Para descargar (clonar) el código fuente desde GitHub. | [git-scm.com](https://git-scm.com/downloads) &bull; Verificar en terminal: `git --version` |
+| **Docker & Docker Desktop** *(Recomendado)* | Permite ejecutar todo el sistema (Base de datos, API, Web, Cliente y Pruebas) con **un solo comando**, sin necesidad de instalar .NET, Node.js ni PostgreSQL manualmente. | [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) &bull; Verificar en terminal: `docker --version` |
+| **.NET SDK 10.0** *(Opcional, solo para ejecución manual)* | Entorno de desarrollo para compilar y ejecutar C# / ASP.NET Core. | [dotnet.microsoft.com/download](https://dotnet.microsoft.com/download) &bull; Verificar: `dotnet --version` |
+| **Node.js (v18+) y npm** *(Opcional, solo para ejecución manual)* | Entorno de ejecución para el frontend Angular. | [nodejs.org](https://nodejs.org/) &bull; Verificar: `node --version` y `npm --version` |
+| **PostgreSQL 14+** *(Opcional, solo para ejecución manual)* | Motor de base de datos relacional. | [postgresql.org/download](https://www.postgresql.org/download/) |
+
+> [!TIP]
+> **Recomendación para principiantes:** Utiliza el **Método 1 (Docker Compose)**. Solo necesitas tener instalado **Git** y **Docker Desktop**; Docker se encargará de compilar el código, ejecutar las pruebas y levantar la base de datos automáticamente.
+
+---
+
+### 📥 Paso 1: Descargar el Proyecto desde GitHub
+
+Abre tu terminal (Símbolo del sistema, PowerShell o Terminal de Linux/Mac) y ejecuta los siguientes comandos:
+
+```bash
+# 1. Clonar el repositorio oficial desde GitHub
+git clone https://github.com/harold-855/Firmeza.git
+
+# 2. Entrar a la carpeta del proyecto
+cd Firmeza
+```
+
+*(Si no tienes Git instalado, también puedes ingresar a [https://github.com/harold-855/Firmeza.git](https://github.com/harold-855/Firmeza.git), hacer clic en el botón verde **Code** y seleccionar **Download ZIP**, luego descomprimir el archivo y abrir la carpeta en tu terminal).*
+
+---
+
+### ⚡ Método 1: Despliegue con Docker (Recomendado - 1 Solo Comando)
+
+Este es el método estándar para producción y evaluación. No requiere configurar bases de datos ni instalar dependencias de desarrollo.
+
+#### 1. Iniciar Docker Desktop
+Asegúrate de que la aplicación **Docker Desktop** esté abierta y ejecutándose en tu computador (observa el icono de la ballena verde en la barra de tareas).
+
+#### 2. Ejecutar el Comando de Despliegue
+En tu terminal, ubicado dentro de la carpeta `Firmeza`, ejecuta:
+
+```bash
+docker compose up --build
+```
+
+#### 3. ¿Qué hace este comando automáticamente?
+1. **Ejecuta la suite de pruebas unitarias (`tests`):** Compila la solución y corre 67 pruebas automatizadas.
+2. **Valida la compuerta de calidad:** Si las pruebas pasan con éxito, continúa con el despliegue.
+3. **Inicia la Base de Datos (`firmeza-db`):** Levanta PostgreSQL 16 con usuario y contraseñas configuradas y volumen persistente.
+4. **Inicia la API REST (`api`):** Compila y ejecuta el backend REST en modo Release.
+5. **Inicia el Panel Administrativo (`admin`):** Compila y expone las vistas Razor MVC.
+6. **Inicia el Portal de Clientes (`client`):** Compila la SPA Angular 22 y la sirve mediante Nginx de alto rendimiento.
+
+#### 4. Acceder a las Aplicaciones
+Una vez finalizado el proceso de carga en la terminal, abre tu navegador web y visita cualquiera de las siguientes direcciones:
+
+* 👉 **Portal Cliente (Angular SPA):** [http://localhost:4200](http://localhost:4200)
+* 👉 **Panel Administrativo (Razor Pages):** [http://localhost:5281](http://localhost:5281)
+* 👉 **API REST & Documentación Swagger:** [http://localhost:5100/swagger](http://localhost:5100/swagger)
+* 👉 **Base de Datos PostgreSQL:** Puerto `5432` (`localhost:5432`)
+
+#### 5. Detener la Aplicación
+Cuando desees apagar todos los contenedores y liberar recursos, presiona `Ctrl + C` en la terminal o ejecuta:
+
+```bash
+docker compose down
+```
+
+---
+
+### 🛠️ Método 2: Instalación y Ejecución Manual en Entorno Local (Sin Docker)
+
+Si prefieres ejecutar el código directamente en tu máquina host sin contenedores, sigue estos sencillos pasos:
+
+#### 1. Configurar la Base de Datos PostgreSQL
+Asegúrate de que tu servicio local de PostgreSQL esté activo y crea una base de datos llamada `firmeza_db`. Luego, verifica o edita la cadena de conexión en los archivos [`src/Firmeza.Web/appsettings.json`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Web/appsettings.json) y [`src/Firmeza.Api/appsettings.json`](file:///home/cohorte-5/Escritorio/Firmeza/src/Firmeza.Api/appsettings.json):
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Host=localhost;Port=5432;Database=firmeza_db;Username=postgres;Password=tu_contraseña_aqui"
+}
+```
+
+#### 2. Ejecutar las Pruebas Unitarias
+Para validar que todo el código base esté íntegro y funcional:
+
+```bash
+dotnet test
+```
+> *(Deberás ver un mensaje verde indicando que las 67 pruebas fueron superadas).*
+
+#### 3. Iniciar el Servidor REST API (`Firmeza.Api`)
+Abre una terminal y ejecuta:
+
+```bash
+dotnet run --project src/Firmeza.Api/Firmeza.Api.csproj
+```
+> **URL Base:** `http://localhost:5100`  
+> **Swagger UI:** `http://localhost:5100/swagger`
+
+#### 4. Iniciar el Panel Administrativo (`Firmeza.Web`)
+Abre una **segunda terminal** y ejecuta:
+
+```bash
+dotnet run --project src/Firmeza.Web/Firmeza.Web.csproj
+```
+> **URL Panel Admin:** `http://localhost:5281`  
+> *(Al iniciar por primera vez, el sistema creará automáticamente las tablas y sembrará los datos y usuarios demo).*
+
+#### 5. Iniciar el Portal Cliente (Angular 22)
+Abre una **tercera terminal**, instala las dependencias de Node.js y arranca el servidor de desarrollo:
+
+```bash
+# Entrar a la carpeta del cliente
+cd firmeza.client
+
+# Instalar dependencias
+npm install
+
+# Iniciar el servidor interactivo de Angular
+npm start
+```
+> **URL Portal Cliente:** `http://localhost:4200`  
+> *(El proxy preconfigurado redirigirá todas las llamadas `/api/*` hacia la API en el puerto 5100).*
+
+---
+
+### ❓ Solución de Problemas Frecuentes (FAQ para Principiantes)
+
+1. **Error: "Cannot connect to the Docker daemon. Is the docker daemon running?"**
+   * *Causa:* Docker Desktop está cerrado o aún no ha terminado de iniciar.
+   * *Solución:* Abre la aplicación Docker Desktop en tu sistema operativo, espera a que el icono cambie a color verde indicando "Engine Running" y vuelve a ejecutar `docker compose up --build`.
+
+2. **Error: "Port 5432, 5100, 5281 or 4200 is already in use"**
+   * *Causa:* Tienes otro programa (como una instancia local de PostgreSQL o un servidor web previo) ocupando alguno de los puertos.
+   * *Solución:* Detén el servicio local en conflicto o detén contenedores antiguos ejecutando `docker compose down`.
+
+3. **¿Cuáles son las credenciales para probar el sistema?**
+   * **Administrador:** Correo `admin@firmeza.com` / Contraseña `Admin123*` (ingreso en `http://localhost:5281`).
+   * **Cliente Demo:** Correo `cliente@firmeza.com` / Contraseña `Cliente123*` (ingreso en `http://localhost:4200` con botón de autollenado disponible).
+   * **Nuevo Cliente:** Puedes hacer clic en *"Regístrate aquí"* en el portal Angular para crear tu propio usuario y recibir el correo de bienvenida.
+
+---
+
+## 🐳 Despliegue y Orquestación con Docker y Docker Compose
 
 El proyecto incluye soporte integral de contenedorización con orquestación mediante **`docker-compose.yml`**, implementando un orden de inicio estricto donde **las pruebas unitarias son el primer paso obligatorio**:
 
@@ -941,7 +1113,7 @@ flowchart TD
    - Servido mediante Nginx Alpine de alto rendimiento en el puerto `4200` (`http://localhost:4200`).
    - Depende de: `tests` y `api`.
 
-### 2. Comandos de Ejecución:
+### 2. Comandos de Ejecución Rápidos:
 
 ```bash
 # 1. Construir imágenes y ejecutar todo el ecosistema (ejecutando tests primero de forma obligatoria)
