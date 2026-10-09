@@ -361,37 +361,11 @@ export class CarritoComponent {
         this.isSubmitting.set(false);
         if (err.error?.mensaje) {
           this.errorMessage.set(err.error.mensaje);
+        } else if (err.error?.errors && typeof err.error.errors === 'object') {
+          const details = Object.values(err.error.errors).flat().join(', ');
+          this.errorMessage.set(details || 'Error de validación al procesar la orden.');
         } else {
-          // Local fallback
-          const localOrder: VentaDto = {
-            id: crypto.randomUUID ? crypto.randomUUID() : 'venta-' + Date.now(),
-            numeroComprobante: 'REC-' + Math.random().toString(36).substring(2, 10).toUpperCase(),
-            fechaVenta: new Date().toISOString(),
-            total: this.cartService.totalAmount(),
-            subtotalBase: this.cartService.subtotalBase(),
-            iva: this.cartService.ivaAmount(),
-            estadoDespacho: 'Pendiente',
-            clienteId: clienteId,
-            clienteRazonSocial: this.authService.currentUser()?.email || 'Cliente Autenticado',
-            clienteDocumento: 'NIT-900888777-1',
-            clienteTelefono: '3001234567',
-            clienteDireccion: 'Dirección del Cliente',
-            clienteEmail: emailToSend,
-            detalles: this.cartService.items().map(item => ({
-              id: crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(),
-              productoId: item.producto.id,
-              productoNombre: item.producto.nombre,
-              unidadMedida: item.producto.unidadMedida,
-              cantidad: item.cantidad,
-              precioAplicado: item.producto.precioUnitario,
-              subtotal: item.producto.precioUnitario * item.cantidad
-            })),
-            totalItems: this.cartService.totalCount()
-          };
-
-          this.createdOrder.set(localOrder);
-          this.saveOrderLocally(localOrder);
-          this.cartService.clearCart();
+          this.errorMessage.set('Ocurrió un error al procesar la orden en el servidor. Verifique la conexión.');
         }
       }
     });
@@ -405,7 +379,7 @@ export class CarritoComponent {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `comprobante_venta_${ventaId}.pdf`;
+        a.download = `comprobante_venta_${ventaId.substring(0, 8).toUpperCase()}.pdf`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -413,7 +387,7 @@ export class CarritoComponent {
       },
       error: () => {
         this.isDownloading.set(false);
-        alert('El comprobante se generará una vez procesada la orden en el servidor.');
+        this.errorMessage.set('No se pudo descargar el comprobante en este momento. Verifique la conexión con el servidor.');
       }
     });
   }

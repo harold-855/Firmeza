@@ -44,6 +44,7 @@ export class AuthService {
   register(data: RegisterDto): Observable<AuthResponse> {
     const payload: RegisterDto = {
       ...data,
+      edad: data.edad != null ? String(data.edad) : '',
       role: 'Cliente' // Client role enforced
     };
     return this.http.post<AuthResponse>('/api/auth/register', payload).pipe(

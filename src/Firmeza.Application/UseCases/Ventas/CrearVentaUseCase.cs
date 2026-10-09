@@ -40,13 +40,39 @@ public class CrearVentaUseCase
 
     public async Task<VentaDto> ExecuteAsync(CreateVentaDto dto, string? wwwrootPath = null, CancellationToken cancellationToken = default)
     {
-        if (dto.ClienteId == Guid.Empty)
+        Cliente? cliente = null;
+
+        if (dto.ClienteId != Guid.Empty)
         {
-            throw new ArgumentException("Debe especificar un cliente válido para la venta.", nameof(dto));
+            cliente = await _unitOfWork.Clientes.GetByIdAsync(dto.ClienteId, cancellationToken);
         }
 
-        var cliente = await _unitOfWork.Clientes.GetByIdAsync(dto.ClienteId, cancellationToken)
-            ?? throw new KeyNotFoundException($"El cliente con Id '{dto.ClienteId}' no fue encontrado.");
+        if (cliente == null && !string.IsNullOrWhiteSpace(dto.ClienteEmail))
+        {
+            var allClientes = await _unitOfWork.Clientes.GetAllAsync(cancellationToken: cancellationToken);
+            cliente = allClientes.FirstOrDefault(c => string.Equals(c.Email, dto.ClienteEmail, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (cliente == null)
+        {
+            var clienteId = dto.ClienteId != Guid.Empty ? dto.ClienteId : Guid.NewGuid();
+            var email = !string.IsNullOrWhiteSpace(dto.ClienteEmail) ? dto.ClienteEmail.Trim() : "cliente@firmeza.com";
+            var rawName = email.Contains('@') ? email.Split('@')[0] : "Cliente Web";
+            var formattedName = char.ToUpper(rawName[0]) + (rawName.Length > 1 ? rawName[1..] : "");
+
+            cliente = new Cliente
+            {
+                Id = clienteId,
+                DocumentoIdentidad = "NIT-" + clienteId.ToString()[..8].ToUpperInvariant(),
+                RazonSocial = formattedName,
+                Email = email,
+                Telefono = "3001234567",
+                DireccionEnvio = "Dirección de Despacho Principal"
+            };
+
+            await _unitOfWork.Clientes.AddAsync(cliente, cancellationToken);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+        }
 
         if (dto.Detalles == null || dto.Detalles.Count == 0)
         {

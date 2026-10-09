@@ -17,6 +17,9 @@
                 Líderes en distribución de materiales pesados, ferretería industrial y logística de despachos directos a tu obra con puntualidad y garantía garantizada.
             </p>
             <div class="d-flex flex-wrap gap-3 align-items-center">
+                <a href="/spa/" class="btn btn-primary btn-lg fw-bold px-4 py-3 shadow-sm rounded-pill d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-cart3 fs-5"></i> Tienda & Catálogo Virtual
+                </a>
                 @if (User.Identity?.IsAuthenticated == true && User.IsInRole("Administrador"))
                 {
                     <a asp-controller="Home" asp-action="Dashboard" class="btn btn-warning btn-lg fw-bold px-4 py-3 shadow-sm rounded-pill d-inline-flex align-items-center gap-2">

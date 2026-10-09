@@ -24,6 +24,24 @@ public class VentasApiController(
         return Ok(ventas);
     }
 
+    [HttpGet("mis-pedidos")]
+    [Authorize(Policy = "RequireAnyRole")]
+    public async Task<IActionResult> GetMisPedidos(CancellationToken cancellationToken)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        Guid.TryParse(userIdStr, out var userId);
+
+        var ventas = await obtenerVentasUseCase.ExecuteGetAllAsync(cancellationToken: cancellationToken);
+        var misVentas = ventas.Where(v =>
+            (userId != Guid.Empty && v.ClienteId == userId) ||
+            (!string.IsNullOrWhiteSpace(email) && string.Equals(v.ClienteEmail, email, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrWhiteSpace(email) && v.ClienteRazonSocial.Contains(email.Split('@')[0], StringComparison.OrdinalIgnoreCase))
+        ).OrderByDescending(v => v.FechaVenta).ToList();
+
+        return Ok(misVentas);
+    }
+
     [HttpGet("{id:guid}")]
     [Authorize(Policy = "RequireAnyRole")]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)

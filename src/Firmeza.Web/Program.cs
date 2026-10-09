@@ -9,6 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Registrar servicios de infraestructura (DbContext, Identity, AuthService)
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+// Autenticación JWT y Autorización RBAC para la SPA y APIs
+builder.Services.AddJwtAuthenticationAndAuthorization(builder.Configuration);
+
 // Configuración de la cookie de autenticación para Razor
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -17,6 +20,18 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.SlidingExpiration = true;
+});
+
+// Configuración de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowClientApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200", "http://localhost:5281", "https://localhost:7091")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
 // Add services to the container.
@@ -54,6 +69,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("AllowClientApp");
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -65,5 +81,9 @@ app.MapControllers();
 app.MapControllerRoute(
         name: "default",
         pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Redirigir rutas de Angular SPA bajo /spa
+app.MapFallbackToFile("/spa", "spa/index.html");
+app.MapFallbackToFile("/spa/{*path:nonfile}", "spa/index.html");
 
 app.Run();

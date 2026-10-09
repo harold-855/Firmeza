@@ -18,7 +18,7 @@
       </PackageReference>
     </ItemGroup>
 
-    <Target Name="BuildSpa" BeforeTargets="Build" Condition="!Exists('wwwroot/spa/main.js')">
+    <Target Name="BuildSpa" BeforeTargets="Build" Condition="!Exists('wwwroot/spa/index.html')">
       <Exec Command="npm run build" WorkingDirectory="..\..\firmeza.client" />
     </Target>
 

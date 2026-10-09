@@ -20,6 +20,7 @@
               "base": "../src/Firmeza.Web/wwwroot/spa",
               "browser": ""
             },
+            "deleteOutputPath": true,
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "assets": [

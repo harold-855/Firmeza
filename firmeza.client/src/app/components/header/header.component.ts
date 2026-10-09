@@ -34,6 +34,16 @@ import { CartService } from '../../services/cart.service';
           <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-1 ms-lg-4">
             <li class="nav-item">
               <a
+                href="/"
+                (click)="isMenuOpen.set(false)"
+                class="nav-link px-3 rounded-pill text-light d-flex align-items-center gap-2"
+              >
+                <i class="bi bi-house-door"></i>
+                <span>Inicio (Home)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
                 routerLink="/productos"
                 routerLinkActive="active"
                 (click)="isMenuOpen.set(false)"
@@ -72,6 +82,16 @@ import { CartService } from '../../services/cart.service';
 
           <!-- User Info & Session Options -->
           <div class="d-flex align-items-center gap-3 flex-wrap mt-2 mt-lg-0">
+            <!-- Link to ASP.NET Core MVC Admin Panel -->
+            <a
+              href="/Home/Dashboard"
+              class="btn btn-outline-warning btn-sm rounded-pill px-3 d-flex align-items-center gap-2 shadow-sm"
+              title="Ir al Panel de Administración MVC de Firmeza"
+            >
+              <i class="bi bi-speedometer2"></i>
+              <span class="fw-semibold">Panel Admin</span>
+            </a>
+
             @if (authService.currentUser(); as user) {
               <div class="user-pill d-flex align-items-center bg-secondary bg-opacity-25 rounded-pill px-3 py-1 border border-secondary border-opacity-25 gap-2 shadow-sm">
                 <div class="avatar-sm rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 0.85rem;">

@@ -4,6 +4,7 @@ using Firmeza.Application.DTOS.Productos;
 using Firmeza.Application.DTOS.Ventas;
 using Firmeza.Application.Mappings;
 using Firmeza.Domain.Entities;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Firmeza.UnitTests.Application;
@@ -14,15 +15,16 @@ public class AutoMapperProfilesTests
 
     public AutoMapperProfilesTests()
     {
-        var config = new MapperConfiguration(cfg =>
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddAutoMapper(cfg =>
         {
             cfg.AddProfile<ProductoMappingProfile>();
             cfg.AddProfile<ClienteMappingProfile>();
             cfg.AddProfile<VentaMappingProfile>();
         });
-
-        config.AssertConfigurationIsValid();
-        _mapper = config.CreateMapper();
+        var sp = services.BuildServiceProvider();
+        _mapper = sp.GetRequiredService<IMapper>();
     }
 
     [Fact]

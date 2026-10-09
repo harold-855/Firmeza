@@ -12,7 +12,17 @@ import { RegisterDto } from '../../../models/auth.model';
   template: `
     <div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100 p-3">
       <div class="card border-0 shadow-lg rounded-4 overflow-hidden auth-card" style="max-width: 480px; width: 100%;">
-        <div class="card-header bg-dark text-white p-4 text-center border-0">
+        <div class="card-header bg-dark text-white p-4 text-center border-0 position-relative">
+          <!-- Botón Regresar al Home -->
+          <a
+            href="/"
+            class="btn btn-sm btn-outline-light rounded-pill position-absolute start-0 top-0 m-3 d-inline-flex align-items-center gap-1 shadow-sm"
+            title="Regresar a la página de Inicio (Home)"
+          >
+            <i class="bi bi-arrow-left"></i>
+            <span>Regresar al Inicio</span>
+          </a>
+
           <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle mb-3 p-3 shadow" style="width: 54px; height: 54px;">
             <i class="bi bi-person-plus-fill fs-3"></i>
           </div>
@@ -213,6 +223,9 @@ export class RegisterComponent {
           this.errorMessage.set(err.error.mensaje);
         } else if (err.error?.errores && err.error.errores.length > 0) {
           this.errorMessage.set(err.error.errores.join(', '));
+        } else if (err.error?.errors && typeof err.error.errors === 'object') {
+          const details = Object.values(err.error.errors).flat().join(', ');
+          this.errorMessage.set(details || 'Error en los datos ingresados.');
         } else {
           this.errorMessage.set('Ocurrió un error al procesar el registro. Intente nuevamente.');
         }

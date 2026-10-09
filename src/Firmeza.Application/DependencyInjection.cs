@@ -13,7 +13,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         // 1. Registrar AutoMapper con los perfiles de mapeo del ensamblado Application
-        services.AddAutoMapper(typeof(DependencyInjection).Assembly);
+        services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DependencyInjection).Assembly));
 
         // 2. Registrar Casos de Uso (Use Cases) de Productos
         services.AddScoped<CrearProductoUseCase>();

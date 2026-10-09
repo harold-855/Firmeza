@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Firmeza.Application.DTOS.Ventas;
 using Firmeza.Application.Interfaces;
 using Firmeza.Domain.Constants;
@@ -8,7 +9,6 @@ namespace Firmeza.Web.Controllers.Api;
 
 [ApiController]
 [Route("api/ventas")]
-[Authorize(Roles = Roles.Administrador)]
 public class VentasApiController(
     IVentaService ventaService,
     IExportService exportService,
@@ -19,13 +19,33 @@ public class VentasApiController(
     private readonly IWebHostEnvironment _environment = environment;
 
     [HttpGet]
+    [Authorize(Roles = Roles.Administrador)]
     public async Task<IActionResult> GetAll([FromQuery] VentaFilterDto filter, CancellationToken cancellationToken)
     {
         var ventas = await _ventaService.GetAllAsync(filter, cancellationToken);
         return Ok(ventas);
     }
 
+    [HttpGet("mis-pedidos")]
+    [Authorize]
+    public async Task<IActionResult> GetMisPedidos(CancellationToken cancellationToken)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        Guid.TryParse(userIdStr, out var userId);
+
+        var ventas = await _ventaService.GetAllAsync(cancellationToken: cancellationToken);
+        var misVentas = ventas.Where(v =>
+            (userId != Guid.Empty && v.ClienteId == userId) ||
+            (!string.IsNullOrWhiteSpace(email) && string.Equals(v.ClienteEmail, email, StringComparison.OrdinalIgnoreCase)) ||
+            (!string.IsNullOrWhiteSpace(email) && v.ClienteRazonSocial.Contains(email.Split('@')[0], StringComparison.OrdinalIgnoreCase))
+        ).OrderByDescending(v => v.FechaVenta).ToList();
+
+        return Ok(misVentas);
+    }
+
     [HttpGet("{id:guid}")]
+    [Authorize]
     public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
     {
         var venta = await _ventaService.GetByIdAsync(id, cancellationToken);
@@ -34,6 +54,7 @@ public class VentasApiController(
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateVentaDto dto, CancellationToken cancellationToken)
     {
         if (dto.Detalles == null || dto.Detalles.Count == 0)
@@ -54,6 +75,7 @@ public class VentasApiController(
     }
 
     [HttpGet("{id:guid}/recibo")]
+    [Authorize]
     public async Task<IActionResult> DescargarRecibo(Guid id, CancellationToken cancellationToken)
     {
         try

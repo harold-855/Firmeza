@@ -6,9 +6,9 @@
 FROM node:20-alpine AS build-frontend
 WORKDIR /app/frontend
 COPY firmeza.client/package*.json ./
-RUN npm install
+RUN npm ci || npm install
 COPY firmeza.client/ ./
-RUN npm run build
+RUN npx ng build --output-path=dist/browser --configuration production
 
 # Etapa 2: Compilación y Ejecución de Pruebas Unitarias Automatizadas
 FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS test-runner
@@ -22,8 +22,8 @@ RUN dotnet test tests/Firmeza.UnitTests/Firmeza.UnitTests.csproj -c Release --lo
 # Etapa 3: Publicación de Backend .NET
 FROM test-runner AS build-backend
 WORKDIR /src
-# Copiar los artefactos del frontend compilado al wwwroot de la aplicación web
-COPY --from=build-frontend /app/frontend/dist/firmeza.client/browser/ src/Firmeza.Web/wwwroot/spa/
+# Copiar los artefactos del frontend compilado al wwwroot/spa de la aplicación web
+COPY --from=build-frontend /app/frontend/dist/browser/ src/Firmeza.Web/wwwroot/spa/
 RUN dotnet publish src/Firmeza.Web/Firmeza.Web.csproj -c Release -o /app/publish /p:UseAppHost=false
 
 # Etapa 4: Runtime de Producción

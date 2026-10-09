@@ -12,7 +12,17 @@ import { LoginDto } from '../../../models/auth.model';
   template: `
     <div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100 p-3">
       <div class="card border-0 shadow-lg rounded-4 overflow-hidden auth-card" style="max-width: 440px; width: 100%;">
-        <div class="card-header bg-dark text-white p-4 text-center border-0">
+        <div class="card-header bg-dark text-white p-4 text-center border-0 position-relative">
+          <!-- Botón Regresar al Home -->
+          <a
+            href="/"
+            class="btn btn-sm btn-outline-light rounded-pill position-absolute start-0 top-0 m-3 d-inline-flex align-items-center gap-1 shadow-sm"
+            title="Regresar a la página de Inicio (Home)"
+          >
+            <i class="bi bi-arrow-left"></i>
+            <span>Regresar al Inicio</span>
+          </a>
+
           <div class="d-inline-flex align-items-center justify-content-center bg-primary text-white rounded-circle mb-3 p-3 shadow" style="width: 54px; height: 54px;">
             <i class="bi bi-shield-lock fs-3"></i>
           </div>
@@ -135,6 +145,16 @@ import { LoginDto } from '../../../models/auth.model';
             ¿No tienes una cuenta de cliente?
             <a routerLink="/register" class="text-primary fw-semibold text-decoration-none ms-1">
               Regístrate aquí
+            </a>
+          </div>
+
+          <div class="d-flex justify-content-center gap-3 mt-3 pt-2 border-top">
+            <a routerLink="/productos" class="text-muted small text-decoration-none d-inline-flex align-items-center gap-1">
+              <i class="bi bi-box-seam"></i> Catálogo de Productos
+            </a>
+            <span class="text-muted small">•</span>
+            <a href="/" class="text-muted small text-decoration-none d-inline-flex align-items-center gap-1">
+              <i class="bi bi-house-door"></i> Inicio (Home)
             </a>
           </div>
         </div>

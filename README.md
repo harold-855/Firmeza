@@ -255,13 +255,15 @@ El proyecto **`Firmeza.Api`** expone todos los Casos de Uso del sistema mediante
 | **Clientes** | `POST` | `/api/clientes` | `CrearClienteUseCase` | Registro con validación única de NIT/Documento. |
 | **Clientes** | `PUT` | `/api/clientes/{id}` | `ActualizarClienteUseCase` | Edición de información de cliente. |
 | **Clientes** | `DELETE` | `/api/clientes/{id}` | `EliminarClienteUseCase` | Eliminación con protección de historial contable. |
-| **Ventas** | `GET` | `/api/ventas` | `ObtenerVentasUseCase` | Listado de órdenes históricas con filtros. |
+| **Ventas** | `GET` | `/api/ventas` | `ObtenerVentasUseCase` | Listado de órdenes históricas con filtros (Admin). |
+| **Ventas** | `GET` | `/api/ventas/mis-pedidos` | `ObtenerVentasUseCase` | Historial de pedidos del cliente autenticado. |
 | **Ventas** | `POST` | `/api/ventas` | `CrearVentaUseCase` | Registro de venta, descuento de stock y PDF. |
 | **Ventas** | `PATCH` | `/api/ventas/{id}/estado` | `ActualizarEstadoDespachoUseCase` | Cambio de estado (`Pendiente`, `En Ruta`, `Entregado`). |
 | **Ventas** | `GET` | `/api/ventas/{id}/recibo` | `IExportService` | Descarga de comprobante oficial en PDF. |
 | **Dashboard**| `GET` | `/api/dashboard/metrics` | `ObtenerDashboardMetricsUseCase` | KPIs financieros y alertas de inventario. |
 | **Importación**| `POST` | `/api/importacion/excel` | `IExcelImportService` | Carga masiva de archivos `.xlsx` desorganizados. |
-| **Autenticación**| `POST` | `/api/auth/login` | `IAuthService` | Autenticación y control de acceso RBAC. |
+| **Autenticación**| `POST` | `/api/auth/login` | `IAuthService` | Autenticación y emisión de token JWT Bearer. |
+| **Autenticación**| `POST` | `/api/auth/register` | `IAuthService` | Auto-registro de clientes con rol y ficha en base de datos. |
 
 ### 📖 Documentación Interactiva con Swagger (Swashbuckle) y Autenticación JWT
 
@@ -864,7 +866,7 @@ Tanto en **ASP.NET Core Razor MVC** como en el **Portal Angular SPA (`firmeza.cl
   - **`HeaderComponent` & `FooterComponent`:** Barra de navegación superior con badge reactivo del carrito, información del cliente autenticado y botón de cierre de sesión.
 * **Gestión de Estado Reactivo (`CartService`):** Manejo del carrito de compras en memoria y persistencia local (`firmeza_cart_items`) mediante Signals calculadas (`totalCount`, `totalAmount`, `subtotalBase`, `ivaAmount`).
 * **Cliente HTTP y Proxy de Desarrollo (`proxy.conf.json`):**
-  - En desarrollo independiente (`http://localhost:4200`), las llamadas a `/api/*` se canalizan mediante proxy hacia la API REST (`http://localhost:5100`).
+  - En desarrollo independiente (`http://localhost:4200`), las llamadas a `/api/*` se canalizan mediante proxy hacia el backend (`http://localhost:5281`).
   - En producción, el comando `npm run build` compila el paquete distribuible directamente hacia `src/Firmeza.Web/wwwroot/spa`.
 
 ### 2. Elementos Visuales y UI:
@@ -990,8 +992,11 @@ docker compose up --build
 #### 4. Acceder a las Aplicaciones
 Una vez finalizado el proceso de carga en la terminal, abre tu navegador web y visita cualquiera de las siguientes direcciones:
 
-* 👉 **Portal Cliente (Angular SPA):** [http://localhost:4200](http://localhost:4200)
-* 👉 **Panel Administrativo (Razor Pages):** [http://localhost:5281](http://localhost:5281)
+* 👉 **Aplicación Web Principal (Home / Admin / Tienda Integrada):** [http://localhost:5281](http://localhost:5281)
+  * **Página de Inicio (Home):** `http://localhost:5281`
+  * **Tienda y Catálogo Virtual:** `http://localhost:5281/spa/`
+  * **Panel de Control Administrativo:** `http://localhost:5281/Home/Dashboard`
+* 👉 **Portal Cliente Standalone (Angular SPA en Nginx):** [http://localhost:4200](http://localhost:4200)
 * 👉 **API REST & Documentación Swagger:** [http://localhost:5100/swagger](http://localhost:5100/swagger)
 * 👉 **Base de Datos PostgreSQL:** Puerto `5432` (`localhost:5432`)
 
@@ -1034,17 +1039,19 @@ dotnet run --project src/Firmeza.Api/Firmeza.Api.csproj
 > **URL Base:** `http://localhost:5100`  
 > **Swagger UI:** `http://localhost:5100/swagger`
 
-#### 4. Iniciar el Panel Administrativo (`Firmeza.Web`)
+#### 4. Iniciar la Aplicación Web Integrada (`Firmeza.Web`)
 Abre una **segunda terminal** y ejecuta:
 
 ```bash
 dotnet run --project src/Firmeza.Web/Firmeza.Web.csproj
 ```
-> **URL Panel Admin:** `http://localhost:5281`  
+> **Página Principal (Home):** `http://localhost:5281`  
+> **Tienda & Catálogo Clientes (Angular Integrado):** `http://localhost:5281/spa/`  
+> **Panel Administrativo (Razor):** `http://localhost:5281/Home/Dashboard`  
 > *(Al iniciar por primera vez, el sistema creará automáticamente las tablas y sembrará los datos y usuarios demo).*
 
-#### 5. Iniciar el Portal Cliente (Angular 22)
-Abre una **tercera terminal**, instala las dependencias de Node.js y arranca el servidor de desarrollo:
+#### 5. Iniciar el Portal Cliente Standalone (Angular 22 en Desarrollo) - Opcional
+Si deseas trabajar con recarga en caliente (Hot Reload) en el cliente de Angular de forma independiente:
 
 ```bash
 # Entrar a la carpeta del cliente
@@ -1056,8 +1063,8 @@ npm install
 # Iniciar el servidor interactivo de Angular
 npm start
 ```
-> **URL Portal Cliente:** `http://localhost:4200`  
-> *(El proxy preconfigurado redirigirá todas las llamadas `/api/*` hacia la API en el puerto 5100).*
+> **URL Portal Cliente Independiente:** `http://localhost:4200`  
+> *(El proxy preconfigurado redirigirá todas las llamadas `/api/*` hacia el backend en el puerto 5281).*
 
 ---
 
@@ -1130,8 +1137,8 @@ docker compose down
 ```
 
 Una vez levantado todo el ecosistema con `docker compose up --build`, accede desde tu navegador a:
-* **Portal Cliente (Angular SPA):** `http://localhost:4200`
-* **Panel Web Administrativo (Razor Pages):** `http://localhost:5281`
+* **Aplicación Web Principal (Home / Admin / Tienda Integrada):** `http://localhost:5281`
+* **Portal Cliente Standalone (Angular SPA en Nginx):** `http://localhost:4200`
 * **API REST & Swagger UI:** `http://localhost:5100/swagger`
 * **Base de Datos PostgreSQL:** Puerto `5432` (`localhost:5432`)
 
@@ -1184,19 +1191,19 @@ docker compose up --build
 
 ### 🔹 Paso 2: Flujo Completo del Cliente (Portal Angular SPA)
 
-Abre tu navegador en: 👉 **`http://localhost:4200`**
+Abre tu navegador en: 👉 **`http://localhost:5281/spa/`** (o en `http://localhost:4200` si ejecutas Angular por separado)
 
 1. **Registro de Nuevo Cliente:**
-   * Haz clic en **"¿No tienes cuenta? Regístrate aquí"** (o accede a `http://localhost:4200/#/register`).
-   * Diligencia el formulario: Documento / NIT, Razón Social o Nombre, Teléfono, Correo electrónico, Dirección de despacho, Edad (mínimo 18 años) y Contraseña.
+   * Haz clic en **"¿No tienes cuenta? Regístrate aquí"** (o accede a `/register`).
+   * Diligencia el formulario: Correo electrónico, Edad (mínimo 18 años) y Contraseña.
    * Al registrarte, el sistema:
-     - Guarda el usuario con rol `Cliente` en base de datos.
+     - Guarda el usuario con rol `Cliente` y sincroniza su ficha en la tabla `Clientes` de la base de datos.
      - Dispara automáticamente el **correo de bienvenida en HTML** a través del servicio SMTP.
-     - Redirige al inicio de sesión con notificación de éxito.
-2. **Inicio de Sesión con JWT:**
-   * Ingresa las credenciales del nuevo usuario (o usa el botón **"Rellenar Cliente Demo"** para cargar `cliente@firmeza.com` / `Cliente123*`).
+     - Autentica automáticamente la sesión e ingresa directamente al Catálogo de Materiales (`/productos`).
+2. **Inicio de Sesión con JWT (Para Usuarios Existentes):**
+   * Ingresa las credenciales del usuario (o usa el botón **"Rellenar Cliente Demo"** para cargar `cliente@firmeza.com` / `Cliente123*`).
    * Haz clic en **"Iniciar Sesión"**. El sistema generará el token JWT, lo almacenará en `LocalStorage` y activará los Signals reactivos de sesión.
-   * Serás redirigido inmediatamente al Catálogo de Materiales (`/#/productos`).
+   * Serás redirigido inmediatamente al Catálogo de Materiales (`/productos`).
 3. **Exploración de Catálogo y Carrito:**
    * Observa el catálogo con precios en COP, unidades de medida y stock en tiempo real.
    * Selecciona la cantidad deseada para uno o varios materiales y pulsa **"Añadir"**.

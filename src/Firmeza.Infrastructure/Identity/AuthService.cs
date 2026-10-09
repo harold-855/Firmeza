@@ -4,11 +4,13 @@ using System.Text;
 using Firmeza.Application.DTOS.Auth;
 using Firmeza.Application.Interfaces;
 using Firmeza.Domain.Constants;
+using Firmeza.Domain.Entities;
+using Firmeza.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Firmeza.Infrastructure.Identity;
 
@@ -17,6 +19,7 @@ public class AuthService(
     SignInManager<IdentityUser> signInManager,
     RoleManager<IdentityRole> roleManager,
     IConfiguration configuration,
+    ApplicationDbContext dbContext,
     IEmailService? emailService = null,
     ILogger<AuthService>? logger = null) : IAuthService
 {
@@ -112,6 +115,35 @@ public class AuthService(
         }
 
         await userManager.AddToRoleAsync(user, role);
+
+        // Si el usuario se registra como Cliente, asegurar que exista el registro en la tabla Clientes
+        if (role == Roles.Cliente && Guid.TryParse(user.Id, out var clientGuid))
+        {
+            try
+            {
+                var existingCliente = await dbContext.Clientes.FirstOrDefaultAsync(c => c.Email == user.Email);
+                if (existingCliente == null)
+                {
+                    var rawName = user.Email?.Split('@')[0] ?? "Cliente";
+                    var formattedName = char.ToUpper(rawName[0]) + (rawName.Length > 1 ? rawName[1..] : "");
+                    var newCliente = new Cliente
+                    {
+                        Id = clientGuid,
+                        Email = user.Email ?? "",
+                        RazonSocial = formattedName,
+                        DocumentoIdentidad = "CLI-" + user.Id[..8].ToUpperInvariant(),
+                        Telefono = "3001234567",
+                        DireccionEnvio = "Dirección de Despacho Principal"
+                    };
+                    await dbContext.Clientes.AddAsync(newCliente);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "No se pudo sincronizar la entidad Cliente para el usuario {Email}", user.Email);
+            }
+        }
 
         var userRoles = await userManager.GetRolesAsync(user);
         var (token, expiration) = GenerateJwtToken(user, userRoles);

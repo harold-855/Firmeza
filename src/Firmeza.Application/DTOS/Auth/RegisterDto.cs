@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Firmeza.Application.DTOS.Auth;
 
@@ -10,6 +12,7 @@ public class RegisterDto
 
     [Required(ErrorMessage = "La edad es obligatoria.")]
     [Display(Name = "Edad")]
+    [JsonConverter(typeof(StringOrNumberConverter))]
     public string Edad { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "La contraseña es obligatoria.")]
@@ -24,3 +27,33 @@ public class RegisterDto
 
     public string? Role { get; set; }
 }
+
+public class StringOrNumberConverter : JsonConverter<string>
+{
+    public override string? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.Number)
+        {
+            if (reader.TryGetInt64(out long l))
+                return l.ToString();
+            if (reader.TryGetDouble(out double d))
+                return d.ToString();
+        }
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            return reader.GetString();
+        }
+        if (reader.TokenType == JsonTokenType.Null)
+        {
+            return null;
+        }
+        using var doc = JsonDocument.ParseValue(ref reader);
+        return doc.RootElement.GetRawText();
+    }
+
+    public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value);
+    }
+}
+

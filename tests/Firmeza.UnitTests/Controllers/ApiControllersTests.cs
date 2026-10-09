@@ -12,6 +12,7 @@ using Firmeza.Application.UseCases.Ventas;
 using Firmeza.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
@@ -34,13 +35,16 @@ public class ApiControllersTests
         _mockLoggerVenta = new Mock<ILogger<CrearVentaUseCase>>();
         _mockEnv.Setup(e => e.WebRootPath).Returns(Path.GetTempPath());
 
-        var config = new MapperConfiguration(cfg =>
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddAutoMapper(cfg =>
         {
             cfg.AddProfile<ProductoMappingProfile>();
             cfg.AddProfile<ClienteMappingProfile>();
             cfg.AddProfile<VentaMappingProfile>();
         });
-        _mapper = config.CreateMapper();
+        var sp = services.BuildServiceProvider();
+        _mapper = sp.GetRequiredService<IMapper>();
     }
 
     [Fact]

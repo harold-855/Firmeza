@@ -53,6 +53,14 @@ export class ClienteApiService {
   }
 
   /**
+   * Consulta el listado de pedidos realizados por el cliente autenticado.
+   * Endpoint: GET /api/ventas/mis-pedidos
+   */
+  getMisPedidos(): Observable<VentaDto[]> {
+    return this.http.get<VentaDto[]>('/api/ventas/mis-pedidos');
+  }
+
+  /**
    * Descarga el comprobante / recibo en formato PDF de una venta efectuada.
    * Endpoint: GET /api/ventas/{id}/recibo
    */

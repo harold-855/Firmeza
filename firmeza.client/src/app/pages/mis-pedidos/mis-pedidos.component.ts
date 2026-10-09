@@ -154,33 +154,26 @@ export class MisPedidosComponent implements OnInit {
   }
 
   loadOrders(): void {
+    this.clienteApi.getMisPedidos().subscribe({
+      next: (pedidos) => {
+        if (pedidos && pedidos.length > 0) {
+          this.orders.set(pedidos);
+          localStorage.setItem(ORDERS_KEY, JSON.stringify(pedidos));
+        } else {
+          this.loadLocalOrders();
+        }
+      },
+      error: () => {
+        this.loadLocalOrders();
+      }
+    });
+  }
+
+  private loadLocalOrders(): void {
     try {
       const raw = localStorage.getItem(ORDERS_KEY);
       if (raw) {
         this.orders.set(JSON.parse(raw));
-      } else {
-        // Seed default sample order for demo client
-        const defaultOrders: VentaDto[] = [
-          {
-            id: 'd9b736e2-1234-4567-89ab-cdef01234567',
-            numeroComprobante: 'REC-D9B736E2',
-            fechaVenta: new Date().toISOString(),
-            total: 1285000,
-            subtotalBase: 1079832,
-            iva: 205168,
-            estadoDespacho: 'Pendiente',
-            clienteId: '33333333-3333-3333-3333-333333333333',
-            clienteRazonSocial: 'Inversiones Horizonte Ltda.',
-            clienteDocumento: '901234567-8',
-            clienteTelefono: '3204567890',
-            clienteDireccion: 'Avenida 6N # 25-10, Cali',
-            clienteEmail: 'cliente@firmeza.com',
-            detalles: [],
-            totalItems: 2
-          }
-        ];
-        this.orders.set(defaultOrders);
-        localStorage.setItem(ORDERS_KEY, JSON.stringify(defaultOrders));
       }
     } catch {
       this.orders.set([]);
